@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sin Studio — Money Machine Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f;--surface:#13131a;--surface2:#1c1c27;
+  --border:rgba(255,255,255,0.08);--border-hover:rgba(160,120,255,0.4);
+  --purple:#a07eff;--purple-dark:#7B5CF0;--teal:#00e5b0;
+  --text:#f0eeff;--muted:#7a7a9a;
+  --mono:'Space Mono',monospace;--display:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--display);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+header{padding:48px 0 32px;text-align:center}
+.logo{font-size:11px;font-family:var(--mono);color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+h1{font-size:clamp(32px,6vw,56px);font-weight:800;line-height:1.1}
+h1 span{color:var(--purple)}
+.tagline{font-size:13px;color:var(--muted);margin-top:12px;font-family:var(--mono)}
+.steps-row{display:flex;align-items:center;gap:0;margin:32px 0 0;justify-content:center}
+.step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:var(--mono);color:var(--muted);transition:all .3s;flex-shrink:0}
+.step-dot.active{border-color:var(--purple);color:var(--purple);background:rgba(160,126,255,.1)}
+.step-dot.done{border-color:var(--teal);color:var(--teal);background:rgba(0,229,176,.1)}
+.step-line{width:40px;height:1.5px;background:var(--border);transition:background .3s}
+.step-line.done{background:var(--teal)}
+.section{padding:40px 0;border-top:1px solid var(--border)}
+.section-label{font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-bottom:20px}
+.section-title{font-size:20px;font-weight:600;margin-bottom:24px}
+.machine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.machine-card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:20px 16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.machine-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(160,126,255,0.07),transparent 70%);opacity:0;transition:opacity .2s}
+.machine-card:hover{border-color:var(--border-hover);transform:translateY(-2px)}
+.machine-card:hover::before,.machine-card.selected::before{opacity:1}
+.machine-card.selected{border-color:var(--purple);background:rgba(160,126,255,.07)}
+.machine-card.custom-card{border-style:dashed}
+.machine-card.custom-card.selected{border-style:solid}
+.mc-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:16px}
+.mc-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.mc-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.mc-badge{position:absolute;top:10px;right:10px;font-size:9px;font-family:var(--mono);background:rgba(0,229,176,.12);color:var(--teal);border:1px solid rgba(0,229,176,.25);border-radius:4px;padding:2px 6px}
+.mc-badge.ai{background:rgba(160,126,255,.15);color:var(--purple);border-color:rgba(160,126,255,.3)}
+.niche-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.niche-pill{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;font-size:12px;font-family:var(--mono);color:var(--muted);text-align:center;transition:all .15s}
+.niche-pill:hover{border-color:var(--border-hover);color:var(--text)}
+.niche-pill.selected{border-color:var(--purple);color:var(--purple);background:rgba(160,126,255,.08)}
+input[type=text],input[type=password],textarea{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;font-family:var(--mono);color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
+input[type=text]:focus,input[type=password]:focus,textarea:focus{border-color:var(--purple)}
+input[type=text]::placeholder,input[type=password]::placeholder,textarea::placeholder{color:var(--muted)}
+.input-row{display:flex;gap:10px}
+.input-row input{flex:1}
+.btn{border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-family:var(--mono);cursor:pointer;transition:all .15s;font-weight:700;letter-spacing:.04em}
+.btn-primary{background:var(--purple);color:#fff}
+.btn-primary:hover{background:var(--purple-dark);transform:translateY(-1px)}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--border-hover);color:var(--text)}
+.btn-sm{padding:8px 16px;font-size:11px}
+.build-shell{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:24px;font-family:var(--mono)}
+.progress-track{background:var(--surface2);border-radius:4px;height:4px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:4px;background:linear-gradient(90deg,var(--purple),var(--teal));border-radius:4px;width:0%;transition:width .5s ease}
+.log-line{font-size:12px;line-height:2;color:var(--muted);opacity:0;transform:translateY(4px);animation:fadeup .3s forwards}
+.log-line.done{color:var(--teal)}
+.log-line.active{color:var(--purple)}
+@keyframes fadeup{to{opacity:1;transform:translateY(0)}}
+.ai-builder{background:var(--surface);border:1.5px solid rgba(160,126,255,.25);border-radius:16px;padding:24px;margin-top:0}
+.ai-builder-title{font-size:12px;font-family:var(--mono);color:var(--purple);margin-bottom:20px;letter-spacing:.08em}
+.groq-note{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:8px}
+.groq-note a{color:var(--purple);text-decoration:none}
+.chat-log{background:var(--surface2);border-radius:8px;padding:16px;min-height:100px;max-height:260px;overflow-y:auto;margin:16px 0;font-family:var(--mono);font-size:12px;line-height:1.9}
+.chat-msg.user{color:var(--purple)}
+.chat-msg.ai{color:var(--teal)}
+.chat-msg.system{color:var(--muted);font-style:italic}
+.paywall-box{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:32px;text-align:center;margin-top:24px}
+.paywall-box h3{font-size:22px;font-weight:800;margin-bottom:8px}
+.paywall-box p{font-size:13px;color:var(--muted);margin-bottom:24px;font-family:var(--mono)}
+.paywall-input-row{display:flex;gap:10px;max-width:420px;margin:0 auto 16px}
+.hint{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.hint a{color:var(--purple);text-decoration:none}
+.error-shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.code-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.unlocked-badge{font-size:11px;font-family:var(--mono);color:var(--teal);background:rgba(0,229,176,.1);border:1px solid rgba(0,229,176,.25);border-radius:4px;padding:4px 10px}
+pre{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:20px;font-family:var(--mono);font-size:11px;line-height:1.9;color:#c8c0ff;overflow-x:auto;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+footer{padding:40px 0;text-align:center;font-size:11px;color:var(--muted);font-family:var(--mono);border-top:1px solid var(--border)}
+footer span{color:var(--purple)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">Sin Studio</div>
+  <h1>Money Machine<br><span>Builder</span></h1>
+  <p class="tagline">// pick. watch it build. unlock your code.</p>
+  <div class="steps-row">
+    <div class="step-dot active" id="sd1">1</div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-dot" id="sd2">2</div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-dot" id="sd3">3</div>
+    <div class="step-line" id="sl3"></div>
+    <div class="step-dot" id="sd4">4</div>
+  </div>
+</header>
+
+<!-- STEP 1 -->
+<div class="section" id="phase1">
+  <div class="section-label">Step 01</div>
+  <div class="section-title">What kind of machine do you want?</div>
+  <div class="machine-grid">
+    <div class="machine-card" onclick="pickMachine('content',this)">
+      <div class="mc-badge">BYOK</div>
+      <div class="mc-icon">&#9654;</div>
+      <div class="mc-title">Content machine</div>
+      <div class="mc-sub">Like Sin</div>
+    </div>
+    <div class="machine-card" onclick="pickMachine('magnet',this)">
+      <div class="mc-badge">BYOK</div>
+      <div class="mc-icon">&#9679;</div>
+      <div class="mc-title">Lead magnet</div>
+      <div class="mc-sub">Like Magneto</div>
+    </div>
+    <div class="machine-card" onclick="pickMachine('social',this)">
+      <div class="mc-badge">BYOK</div>
+      <div class="mc-icon">&#9670;</div>
+      <div class="mc-title">Social agent</div>
+      <div class="mc-sub">Multi-platform</div>
+    </div>
+    <div class="machine-card" onclick="pickMachine('chatbot',this)">
+      <div class="mc-badge">BYOK</div>
+      <div class="mc-icon">&#9632;</div>
+      <div class="mc-title">AI chatbot</div>
+      <div class="mc-sub">Custom niche bot</div>
+    </div>
+    <div class="machine-card" onclick="pickMachine('sleep',this)">
+      <div class="mc-badge">BYOK</div>
+      <div class="mc-icon">&#9675;</div>
+      <div class="mc-title">Wellness tool</div>
+      <div class="mc-sub">Like SleepShift</div>
+    </div>
+    <div class="machine-card" onclick="pickMachine('predict',this)">
+      <div class="mc-badge">BYOK</div>
+      <div class="mc-icon">&#9651;</div>
+      <div class="mc-title">Prediction market</div>
+      <div class="mc-sub">Like SinBet</div>
+    </div>
+    <div class="machine-card custom-card" onclick="pickMachine('custom',this)">
+      <div class="mc-badge ai">AI</div>
+      <div class="mc-icon">&#10022;</div>
+      <div class="mc-title">Custom machine</div>
+      <div class="mc-sub">AI builds it for you</div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2 -->
+<div class="section hidden" id="phase2">
+  <div class="section-label">Step 02</div>
+  <div class="section-title" id="phase2Title">Pick your niche</div>
+
+  <div id="nicheSection">
+    <div class="niche-grid" id="nicheGrid"></div>
+    <div style="margin-top:20px">
+      <div class="section-label">Or type your own</div>
+      <div class="input-row">
+        <input type="text" id="customNiche" placeholder="e.g. real estate, gaming, crypto...">
+        <button class="btn btn-ghost" onclick="setCustomNiche()">Use this</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="customSection" class="hidden">
+    <div class="ai-builder">
+      <div class="ai-builder-title">// AI-powered custom builder — your key, your machine</div>
+      <div class="section-label" style="margin-bottom:8px">Describe your machine</div>
+      <textarea id="customDesc" rows="4" placeholder="e.g. A tool that scrapes job listings, summarizes them with AI, and emails me a daily digest with salary ranges and apply links..."></textarea>
+      <div style="margin-top:20px">
+        <div class="section-label" style="margin-bottom:8px">Your Groq API key (never stored, never sent anywhere except Groq)</div>
+        <input type="password" id="groqKey" placeholder="gsk_...">
+        <p class="groq-note">Free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
+      </div>
+      <div style="margin-top:20px">
+        <button class="btn btn-primary" onclick="startCustomBuild()">Generate my machine &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3 (standard machines only) -->
+<div class="section hidden" id="phase3">
+  <div class="section-label">Step 03</div>
+  <div class="section-title">Name your machine</div>
+  <div class="input-row">
+    <input type="text" id="machineName" placeholder="e.g. LegalBot Pro, FitLead, CryptoSage...">
+    <button class="btn btn-primary" onclick="startBuild()">Build it &#8594;</button>
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="section hidden" id="phase4">
+  <div class="section-label">Step 04</div>
+  <div class="section-title" id="buildTitle">Building your machine...</div>
+
+  <div class="build-shell">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div id="buildLog"></div>
+  </div>
+
+  <div id="aiChatBox" class="hidden" style="margin-top:16px">
+    <div class="ai-builder">
+      <div class="ai-builder-title">// AI generating your custom code</div>
+      <div class="chat-log" id="chatLog"></div>
+    </div>
+  </div>
+
+  <div id="paywall" class="hidden">
+    <div class="paywall-box">
+      <h3>&#128274; Machine ready.</h3>
+      <p>Enter your Sin Studio license key to unlock the full source code.</p>
+      <div class="paywall-input-row">
+        <input type="text" id="licenseKey" placeholder="SINSTUDIO-XXXX-XXXX" style="text-transform:uppercase">
+        <button class="btn btn-primary" onclick="checkKey()">Unlock</button>
+      </div>
+      <p class="hint">No key? <a href="https://simmonstia.gumroad.com" target="_blank">Get one at Sin Studio</a></p>
+    </div>
+  </div>
+
+  <div id="codeReveal" class="hidden" style="margin-top:24px">
+    <div class="code-header">
+      <span class="unlocked-badge">&#10003; Unlocked</span>
+      <button class="btn btn-ghost btn-sm" onclick="copyCode()" id="copyBtn">Copy code</button>
+    </div>
+    <pre id="codeBlock"></pre>
+    <div style="margin-top:16px;text-align:center">
+      <button class="btn btn-ghost btn-sm" onclick="resetAll()">Build another machine</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Built with <span>Sin Studio</span> &mdash; BYOK. No SaaS. Your keys, your code.</p>
+</footer>
+</div>
+
+<script>
+const niches={
+  content:['YouTube','Podcasting','TikTok','Blogging','Music','E-learning','News','Sports'],
+  magnet:['Fitness','Finance','Legal','Real estate','Coaching','E-commerce','Health','Parenting'],
+  social:['Personal brand','Agency','Local biz','Influencer','Nonprofit','Startup','Creator','Artist'],
+  chatbot:['Legal','Medical','Finance','Education','HR','Customer support','Real estate','Fitness'],
+  sleep:['Wellness','Fitness','Mental health','Productivity','Biohacking','Recovery','Nutrition','Mindfulness'],
+  predict:['Sports','Crypto','Politics','Pop culture','Finance','Gaming','Music','Tech']
+};
+
+const buildSteps={
+  content:['Scaffolding video pipeline...','Connecting Groq transcription...','Wiring yt-dlp downloader...','Building clip extractor...','Loading FFmpeg processor...','Injecting voice clone module...','Generating thumbnail AI...','Packaging bundle...'],
+  magnet:['Setting up lead capture shell...','Connecting Groq AI engine...','Building Pixabay media hook...','Wiring email magnet logic...','Injecting niche targeting...','Generating landing template...','Packaging Gumroad connector...','Finalizing BYOK config...'],
+  social:['Scaffolding multi-platform agent...','Loading Moltbook connector...','Wiring Instagram hook...','Building post scheduler...','Injecting engagement logic...','Loading TikTok module...','Wiring Twitter/X API...','Finalizing agent loop...'],
+  chatbot:['Scaffolding BYOK chatbot...','Connecting Groq primary...','Building Ollama fallback...','Injecting niche knowledge base...','Wiring conversation memory...','Building UI shell...','Packaging standalone HTML...','Injecting system prompt...'],
+  sleep:['Scaffolding wellness tool...','Loading sleep cycle engine...','Wiring notification system...','Building tracking dashboard...','Injecting AI coach...','Loading habit module...','Wiring Flutter bindings...','Finalizing release bundle...'],
+  predict:['Scaffolding prediction market...','Building event feed...','Wiring bet logic...','Loading leaderboard engine...','Injecting AI odds calculator...','Building payout system...','Wiring wallet module...','Finalizing SinBet clone...'],
+  custom:['Reading your description...','Analyzing requirements...','Choosing optimal stack...','Scaffolding project structure...','Wiring BYOK config...','Generating core logic with AI...','Building API handlers...','Packaging final bundle...']
+};
+
+const codeTemplates={
+  content:(n,niche)=>`// ${n} — Content Machine (${niche})\n// Sin Studio BYOK Stack\nrequire('dotenv').config();\nconst express = require('express');\nconst app = express();\n\nconst config = {\n  name: "${n}",\n  niche: "${niche}",\n  groqKey: process.env.GROQ_API_KEY,\n  ollamaFallback: true,\n  features: ['yt-download','transcribe','clip-extract','voice-clone','thumbnail-gen']\n};\n\nasync function processVideo(url) {\n  const audio = await ytdlp(url);\n  const transcript = await transcribe(audio, config.groqKey);\n  const clips = await extractClips(transcript, "${niche}");\n  const voiceover = await cloneVoice(clips);\n  return await stitch({ clips, voiceover });\n}\n\napp.post('/process', async (req, res) => {\n  try {\n    const result = await processVideo(req.body.url);\n    res.json({ success: true, result });\n  } catch(e) { res.status(500).json({ error: e.message }); }\n});\n\napp.listen(3000);\n// Replace stub functions with your real implementation`,
+  magnet:(n,niche)=>`// ${n} — Lead Magnet Machine (${niche})\n// Sin Studio BYOK Stack (Magneto)\nrequire('dotenv').config();\n\nconst config = {\n  name: "${n}",\n  niche: "${niche}",\n  apis: {\n    groq: process.env.GROQ_API_KEY,\n    pixabay: process.env.PIXABAY_KEY,\n    gumroad: process.env.GUMROAD_KEY\n  }\n};\n\nasync function generateMagnet(topic) {\n  const copy = await groq.chat({\n    model: 'llama3-70b-8192',\n    messages: [{ role: 'user', content: \`Create ${niche} lead magnet copy for: \${topic}\` }]\n  });\n  const image = await pixabay.fetch({ query: topic + ' ${niche}' });\n  return { headline: copy.headline, body: copy.body, cta: buildCTA("${niche}"), image: image.url };\n}\n\nmodule.exports = { config, generateMagnet };`,
+  social:(n,niche)=>`// ${n} — Social Agent (${niche})\n// Sin Studio BYOK Stack\nrequire('dotenv').config();\n\nconst PLATFORMS = ['moltbook','instagram','tiktok','twitter','linkedin'];\nconst agent = {\n  name: "${n}",\n  niche: "${niche}",\n  schedule: "0 9 * * *",\n  tone: "authentic",\n  groqKey: process.env.GROQ_API_KEY\n};\n\nasync function generatePost(topic) {\n  return await groq.complete(\`Write a ${niche} post about \${topic}. Direct, no fluff.\`, agent.groqKey);\n}\n\nasync function broadcast(content) {\n  for (const p of PLATFORMS) {\n    await send(p, adapt(content, p, "${niche}"));\n    await sleep(2000);\n  }\n}\n\nmodule.exports = { agent, generatePost, broadcast };`,
+  chatbot:(n,niche)=>`// ${n} — AI Chatbot (${niche})\n// Sin Studio BYOK Stack — Groq + Ollama fallback\nrequire('dotenv').config();\nconst Groq = require('groq-sdk');\n\nconst config = {\n  name: "${n}",\n  niche: "${niche}",\n  system: \`You are ${n}, a helpful ${niche} expert. Be direct and accurate.\`,\n  groqModel: "llama3-70b-8192",\n  ollamaModel: "llama3",\n  ollamaUrl: "http://localhost:11434"\n};\n\nconst groq = new Groq({ apiKey: process.env.GROQ_API_KEY });\n\nasync function chat(message, history=[]) {\n  const messages = [\n    { role:'system', content: config.system },\n    ...history,\n    { role:'user', content: message }\n  ];\n  try {\n    const res = await groq.chat.completions.create({ model: config.groqModel, messages, max_tokens: 1024 });\n    return res.choices[0].message.content;\n  } catch {\n    const res = await fetch(\`\${config.ollamaUrl}/api/chat\`, { method:'POST', body: JSON.stringify({ model: config.ollamaModel, messages }) });\n    return (await res.json()).message.content;\n  }\n}\n\nmodule.exports = { config, chat };`,
+  sleep:(n,niche)=>`// ${n} — Wellness Tool (${niche})\n// Sin Studio BYOK Stack (SleepShift)\nrequire('dotenv').config();\n\nconst config = {\n  name: "${n}",\n  niche: "${niche}",\n  features: ['sleep-tracking','habit-coach','ai-daily-insight','smart-notifications','streak-tracker'],\n  groqKey: process.env.GROQ_API_KEY\n};\n\nasync function getDailyInsight(userData) {\n  const { sleepHours, mood, habits } = userData;\n  const prompt = \`You are a ${niche} wellness coach. User slept \${sleepHours}h, mood \${mood}/10. Habits: \${habits.join(', ')}. Give a short actionable insight.\`;\n  return await groq.complete(prompt, config.groqKey);\n}\n\nfunction checkStreak(userId) { return db.streak.get(userId); }\nfunction scheduleNotification(userId, time, message) { return notifications.schedule({ userId, time, message }); }\n\nmodule.exports = { config, getDailyInsight, checkStreak, scheduleNotification };`,
+  predict:(n,niche)=>`// ${n} — Prediction Market (${niche})\n// Sin Studio BYOK Stack (SinBet)\nrequire('dotenv').config();\n\nconst config = {\n  name: "${n}",\n  niche: "${niche}",\n  features: ['events','bets','leaderboard','ai-odds','payouts'],\n  groqKey: process.env.GROQ_API_KEY\n};\n\nasync function getAIOdds(event) {\n  const prompt = \`Analyze this ${niche} event and give probability: \${event.title}. Return JSON: {yes: number, no: number}\`;\n  return JSON.parse(await groq.complete(prompt, config.groqKey));\n}\n\nfunction placeBet(userId, eventId, prediction, amount) {\n  return db.bets.create({ userId, eventId, prediction, amount, odds: calcOdds(eventId), timestamp: Date.now() });\n}\n\nasync function resolveEvent(eventId) {\n  const outcome = await aiResolve(eventId, "${niche}");\n  return payout(await db.bets.findWinners(eventId, outcome));\n}\n\nmodule.exports = { config, getAIOdds, placeBet, resolveEvent };`
+};
+
+let chosenType='', chosenNiche='', chosenName='', generatedCode='';
+
+function updateSteps(active){
+  for(let i=1;i<=4;i++){
+    const dot=document.getElementById('sd'+i);
+    if(i<active){dot.className='step-dot done';dot.innerHTML='&#10003;';}
+    else if(i===active){dot.className='step-dot active';dot.textContent=i;}
+    else{dot.className='step-dot';dot.textContent=i;}
+    if(i<4) document.getElementById('sl'+i).className=i<active?'step-line done':'step-line';
+  }
+}
+function show(id){document.getElementById(id).classList.remove('hidden');}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+function goTo(id){setTimeout(()=>document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}),150);}
+
+function pickMachine(type, el){
+  chosenType=type;
+  document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  show('phase2');
+  updateSteps(2);
+  if(type==='custom'){
+    document.getElementById('phase2Title').textContent='Describe your custom machine';
+    hide('nicheSection');
+    show('customSection');
+  } else {
+    document.getElementById('phase2Title').textContent='Pick your niche';
+    show('nicheSection');
+    hide('customSection');
+    const grid=document.getElementById('nicheGrid');
+    grid.innerHTML='';
+    (niches[type]||[]).forEach(n=>{
+      const d=document.createElement('div');
+      d.className='niche-pill';
+      d.textContent=n;
+      d.onclick=()=>pickNiche(n,d);
+      grid.appendChild(d);
+    });
+  }
+  goTo('phase2');
+}
+
+function pickNiche(n,el){
+  chosenNiche=n;
+  document.querySelectorAll('.niche-pill').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  show('phase3');
+  updateSteps(3);
+  goTo('phase3');
+}
+
+function setCustomNiche(){
+  const v=document.getElementById('customNiche').value.trim();
+  if(!v)return;
+  chosenNiche=v;
+  show('phase3');
+  updateSteps(3);
+  goTo('phase3');
+}
+
+function startBuild(){
+  const n=document.getElementById('machineName').value.trim();
+  if(!n){document.getElementById('machineName').focus();return;}
+  chosenName=n;
+  prepareBuildPhase();
+  runBuild(()=>{ show('paywall'); goTo('paywall'); });
+}
+
+function prepareBuildPhase(){
+  show('phase4');
+  updateSteps(4);
+  document.getElementById('buildTitle').textContent='Building '+(chosenName||'your machine')+'...';
+  hide('paywall');hide('codeReveal');hide('aiChatBox');
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('buildLog').innerHTML='';
+  goTo('phase4');
+}
+
+function runBuild(onDone){
+  const steps=buildSteps[chosenType]||buildSteps.chatbot;
+  const log=document.getElementById('buildLog');
+  const bar=document.getElementById('progressFill');
+  let i=0;
+  function next(){
+    if(i>0&&log.children[i-1]){
+      log.children[i-1].className='log-line done';
+      log.children[i-1].textContent='  [done] '+steps[i-1];
+    }
+    if(i<steps.length){
+      const line=document.createElement('div');
+      line.className='log-line active';
+      line.textContent='> '+steps[i];
+      log.appendChild(line);
+      bar.style.width=Math.round(((i+1)/steps.length)*88)+'%';
+      i++;
+      setTimeout(next,480+Math.random()*220);
+    } else {
+      bar.style.width='100%';
+      const done=document.createElement('div');
+      done.className='log-line done';
+      done.textContent='> '+(chosenName||'Machine')+' built successfully.';
+      log.appendChild(done);
+      document.getElementById('buildTitle').textContent=(chosenName||'Your machine')+' is ready.';
+      setTimeout(onDone,700);
+    }
+  }
+  next();
+}
+
+async function startCustomBuild(){
+  const desc=document.getElementById('customDesc').value.trim();
+  const key=document.getElementById('groqKey').value.trim();
+  if(!desc){document.getElementById('customDesc').focus();return;}
+  if(!key){document.getElementById('groqKey').focus();return;}
+  chosenNiche='custom';
+  chosenName='Custom Machine';
+  prepareBuildPhase();
+  show('aiChatBox');
+  document.getElementById('chatLog').innerHTML='';
+  addChat('system','Analyzing your description...');
+  runBuild(async ()=>{
+    addChat('user', desc.length>120 ? desc.slice(0,120)+'...' : desc);
+    addChat('system','Sending to Groq AI — generating your code...');
+    try {
+      const code = await callGroq(key, desc);
+      generatedCode = code;
+      addChat('ai','Done. Your machine code is ready.');
+      show('paywall');
+      goTo('paywall');
+    } catch(e){
+      addChat('system','Error: '+e.message);
+      addChat('system','Check your Groq key and try again.');
+    }
+  });
+}
+
+function addChat(role, text){
+  const log=document.getElementById('chatLog');
+  const div=document.createElement('div');
+  div.className='chat-msg '+role;
+  const prefix=role==='user'?'you > ':role==='ai'?'ai  > ':'//  ';
+  div.textContent=prefix+text;
+  log.appendChild(div);
+  log.scrollTop=log.scrollHeight;
+}
+
+async function callGroq(apiKey, description){
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    body:JSON.stringify({
+      model:'llama3-70b-8192',
+      messages:[
+        {role:'system',content:`You are Sin Studio's BYOK code generator. Generate clean working Node.js code for a custom AI tool.
+Use Groq API (process.env.GROQ_API_KEY) as primary LLM, Ollama as fallback.
+Include: config object (name, niche, features), core async functions, basic error handling.
+Add inline comments. Return ONLY the code. No markdown fences. No explanation.`},
+        {role:'user',content:'Build this machine: '+description}
+      ],
+      max_tokens:2048,
+      temperature:0.3
+    })
+  });
+  if(!res.ok){
+    const err=await res.json().catch(()=>({}));
+    throw new Error(err.error?.message||'Groq returned '+res.status);
+  }
+  const data=await res.json();
+  return data.choices[0].message.content;
+}
+
+function checkKey(){
+  const k=document.getElementById('licenseKey').value.trim().toUpperCase();
+  if(k.startsWith('SINSTUDIO')){
+    hide('paywall');
+    let code='';
+    if(chosenType==='custom'){
+      code=generatedCode||'// No AI-generated code found. Try regenerating.';
+    } else {
+      const tmpl=codeTemplates[chosenType]||codeTemplates.chatbot;
+      code=tmpl(chosenName,chosenNiche);
+    }
+    document.getElementById('codeBlock').textContent=code;
+    show('codeReveal');
+    goTo('codeReveal');
+  } else {
+    const inp=document.getElementById('licenseKey');
+    inp.classList.add('error-shake');
+    inp.style.borderColor='#E24B4A';
+    setTimeout(()=>{inp.classList.remove('error-shake');inp.style.borderColor='';},800);
+  }
+}
+
+function copyCode(){
+  navigator.clipboard.writeText(document.getElementById('codeBlock').textContent).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy code',1500);
+  });
+}
+
+function resetAll(){
+  chosenType='';chosenNiche='';chosenName='';generatedCode='';
+  hide('phase2');hide('phase3');hide('phase4');
+  document.querySelectorAll('.machine-card').forEach(c=>c.classList.remove('selected'));
+  updateSteps(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
