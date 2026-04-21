@@ -321,40 +321,8 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
   }
 })();
 
-// ---- ONE-TIME KEYS ----
-// Add as many as you want. Used keys are burned in localStorage on first use.
-const VALID_KEYS = [
-  'MM-A1B2-C3D4',
-  'MM-E5F6-G7H8',
-  'MM-I9J0-K1L2',
-  'MM-M3N4-O5P6',
-  'MM-Q7R8-S9T0',
-  'MM-U1V2-W3X4',
-  'MM-Y5Z6-A7B8',
-  'MM-C9D0-E1F2',
-  'MM-G3H4-I5J6',
-  'MM-K7L8-M9N0',
-  'MM-O1P2-Q3R4',
-  'MM-S5T6-U7V8',
-  'MM-W9X0-Y1Z2',
-  'MM-A3B4-C5D6',
-  'MM-E7F8-G9H0',
-  'MM-I1J2-K3L4',
-  'MM-M5N6-O7P8',
-  'MM-Q9R0-S1T2',
-  'MM-U3V4-W5X6',
-  'MM-Y7Z8-A9B0'
-];
-
-function isKeyUsed(key){
-  const used=JSON.parse(localStorage.getItem('usedKeys')||'[]');
-  return used.includes(key);
-}
-function burnKey(key){
-  const used=JSON.parse(localStorage.getItem('usedKeys')||'[]');
-  used.push(key);
-  localStorage.setItem('usedKeys',JSON.stringify(used));
-}
+// ---- KEY API ----
+const KEY_API = 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec';
 
 // ---- DATA ----
 const niches={
@@ -1336,7 +1304,7 @@ async function callGroq(apiKey,description){
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
     body:JSON.stringify({
-      model: "mixtral-8x7b-32768"
+      model:'llama3-70b-8192',
       messages:[
         {role:'system',content:`You are a senior Node.js developer and BYOK tool builder.
 Generate COMPLETE, production-ready Node.js code. No placeholders. No pseudo-code.
@@ -1354,35 +1322,45 @@ Return ONLY the complete code. No markdown. No backticks. No explanation.`},
 }
 
 // ---- KEY CHECK ----
-function checkKey(){
+async function checkKey(){
   const raw=document.getElementById('licenseKey').value.trim();
   const k=raw.toUpperCase();
+  if(!k){return;}
 
-  if(!VALID_KEYS.includes(k)){
-    const inp=document.getElementById('licenseKey');
-    inp.classList.add('shake');inp.style.borderColor='#f87171';
-    setTimeout(()=>{inp.classList.remove('shake');inp.style.borderColor='';},800);
-    return;
-  }
+  const btn=document.querySelector('.pw-box .btn');
+  const inp=document.getElementById('licenseKey');
+  btn.textContent='Checking...';btn.disabled=true;
 
-  if(isKeyUsed(k)){
-    const inp=document.getElementById('licenseKey');
+  try{
+    const res=await fetch(KEY_API,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({key:k})
+    });
+    const data=await res.json();
+
+    if(data.valid){
+      hide('paywall');
+      if(chosenType==='custom'){
+        renderCustomCode();
+      } else {
+        const output=buildOutput(chosenType,chosenName,chosenNiche);
+        renderOutput(output);
+      }
+      show('codeReveal');goTo('codeReveal');
+    } else if(data.reason==='already_used'){
+      inp.style.borderColor='#f87171';
+      document.querySelector('.pw-box p').innerHTML='This key has already been used.<br><a href="https://simmonstia.gumroad.com" target="_blank" style="color:var(--cyan)">Get a new key at Sin Studio</a>';
+    } else {
+      inp.classList.add('shake');inp.style.borderColor='#f87171';
+      setTimeout(()=>{inp.classList.remove('shake');inp.style.borderColor='';},800);
+    }
+  }catch(e){
     inp.style.borderColor='#f87171';
-    document.querySelector('.pw-box p').innerHTML='This key has already been used on this device.<br><a href="https://simmonstia.gumroad.com" target="_blank" style="color:var(--cyan)">Get a new key at Sin Studio</a>';
-    return;
+    document.querySelector('.pw-box p').innerHTML='Could not connect. Check your connection and try again.';
+  }finally{
+    btn.textContent='Unlock';btn.disabled=false;
   }
-
-  burnKey(k);
-  hide('paywall');
-
-  let output;
-  if(chosenType==='custom'){
-    renderCustomCode();
-  } else {
-    output=buildOutput(chosenType,chosenName,chosenNiche);
-    renderOutput(output);
-  }
-  show('codeReveal');goTo('codeReveal');
 }
 
 function renderOutput(output){
