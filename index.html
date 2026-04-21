@@ -1332,11 +1332,7 @@ async function checkKey(){
   btn.textContent='Checking...';btn.disabled=true;
 
   try{
-    const res=await fetch(KEY_API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({key:k})
-    });
+    const res=await fetch(KEY_API+'?key='+encodeURIComponent(k));
     const data=await res.json();
 
     if(data.valid){
