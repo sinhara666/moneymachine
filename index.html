@@ -168,6 +168,15 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
     <button class="btn-hero p" onclick="document.getElementById('builder').scrollIntoView({behavior:'smooth'})">&#128640; Start Building</button>
     <button class="btn-hero g" onclick="randomMachine()">&#127922; Random Idea</button>
   </div>
+  
+  <div class="hero-input">
+  <input id="ideaInput" type="text" placeholder="What do you want to build?" />
+  <button class="btn-hero p" onclick="buildFromInput()">Build My Machine</button>
+</div>
+
+</div>
+</div>
+  </div>
 </div>
 
 <div class="divider"></div>
@@ -287,8 +296,19 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 </div></div>
 
 </div>
+function buildFromInput(){
+  const idea = document.getElementById('ideaInput').value.trim();
 
-<script>
+  if(!idea){
+    alert('Type what you want to build');
+    return;
+  }
+
+  document.getElementById('builder').scrollIntoView({behavior:'smooth'});
+
+  // optional later:
+  // startBuild(idea);
+}
 // ---- STARS ----
 (()=>{
   const c=document.getElementById('stars');
