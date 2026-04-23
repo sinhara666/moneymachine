@@ -276,6 +276,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
       <span class="unlocked">&#10003; Unlocked</span>
       <div class="dl-btns">
         <button class="btn t sm" onclick="downloadZip()" id="zipBtn">&#11015; Download ZIP</button>
+        <button class="btn p sm" onclick="downloadApk()" id="apkBtn">&#11015; Download APK</button>
         <button class="btn g sm" onclick="copyAll()" id="copyAllBtn">Copy all</button>
       </div>
     </div>
@@ -1090,7 +1091,7 @@ Learning objectives: \${(objectives||[]).join(', ')||'standard curriculum goals'
 
 Include: Learning objectives, materials needed, warm-up (5 min), direct instruction (15 min), guided practice (15 min), independent practice (10 min), closure/assessment (5 min), differentiation strategies, homework assignment.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
+    const res = await groq.chat.completions.create({ model: llama-3.3-70b-versatile, messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
     return res.choices[0].message.content.trim();
   } catch { return 'Lesson plan generation failed.'; }
 }
@@ -1707,7 +1708,40 @@ function copyAll(){
   });
 }
 
-// ---- ZIP DOWNLOAD ----
+// ---- APK DOWNLOAD ----
+const APK_BASE = 'https://github.com/sinhara666/ss-machine-zips/releases/latest/download/';
+
+const APK_MAP = {
+  chatbot:    'chatbot-machine.apk',
+  support:    'support-machine.apk',
+  attorney:   'attorney-machine.apk',
+  ecommerce:  'ecommerce-machine.apk',
+  education:  'education-machine.apk',
+  fitness:    'fitness-machine.apk',
+  finance:    'finance-machine.apk',
+  realestate: 'realestate-machine.apk',
+  restaurant: 'restaurant-machine.apk',
+  travel:     'travel-machine.apk',
+  hr:         'hr-machine.apk',
+  marketing:  'marketing-machine.apk',
+  healthcare: 'healthcare-machine.apk',
+  custom:     'custom-machine.apk',
+};
+
+function downloadApk(){
+  const btn = document.getElementById('apkBtn');
+  const type = (chosenType || 'custom').toLowerCase().replace(/\s+/g,'-');
+  const file = APK_MAP[type] || 'custom-machine.apk';
+  const url = APK_BASE + file;
+  btn.textContent = 'Downloading APK...';
+  btn.disabled = true;
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = file;
+  a.click();
+  setTimeout(()=>{ btn.textContent = '&#11015; Download APK'; btn.disabled = false; }, 2000);
+}
+
 async function downloadZip(){
   const btn=document.getElementById('zipBtn');
   btn.textContent='Building ZIP...';btn.disabled=true;
