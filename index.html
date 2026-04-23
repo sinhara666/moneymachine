@@ -1090,7 +1090,7 @@ Learning objectives: \${(objectives||[]).join(', ')||'standard curriculum goals'
 
 Include: Learning objectives, materials needed, warm-up (5 min), direct instruction (15 min), guided practice (15 min), independent practice (10 min), closure/assessment (5 min), differentiation strategies, homework assignment.\`;
   try {
-    const res = await groq.chat.completions.create({ model: llama-3.3-70b-versatile, messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
     return res.choices[0].message.content.trim();
   } catch { return 'Lesson plan generation failed.'; }
 }
