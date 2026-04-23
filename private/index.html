@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -241,7 +241,10 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
     <div class="demo-box">
       <div class="demo-head">
         <div class="demo-title">// try it live — free demo</div>
-        <div class="demo-badge">LIVE</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button id="ttsToggle" onclick="toggleTTS()" title="Toggle voice" style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:var(--pl);border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--mono)">🔇 voice off</button>
+          <div class="demo-badge">LIVE</div>
+        </div>
       </div>
       <div class="demo-messages" id="demoMessages"></div>
       <div class="demo-input-row">
@@ -301,29 +304,38 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 })();
 
 // ---- KEY API ----
-https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec
+const KEY_API = 'YOUR_APPS_SCRIPT_URL_HERE'; // DO NOT commit — paste your URL here locally before deploying
+
 // ---- DEMO GROQ KEY (shared, rate-limited) ----
 // Add your own Groq key here for the live demo feature
 const DEMO_KEY = '';
 
 // ---- MACHINES ----
 const MACHINES = [
-  {id:'content',icon:'&#9654;',title:'Content machine',sub:'Like Sin',badge:'bk'},
-  {id:'magnet',icon:'&#9679;',title:'Lead magnet',sub:'Like Magneto',badge:'bk'},
-  {id:'social',icon:'&#9670;',title:'Social agent',sub:'Multi-platform',badge:'bk'},
+  {id:'content',icon:'🎬',title:'Content machine',sub:'Like Sin',badge:'bk'},
+  {id:'magnet',icon:'🧲',title:'Lead magnet',sub:'Like Magneto',badge:'bk'},
+  {id:'social',icon:'📱',title:'Social agent',sub:'Multi-platform',badge:'bk'},
   {id:'chatbot',icon:'🤖',title:'AI chatbot',sub:'Custom niche bot',badge:'bk'},
   {id:'sleep',icon:'🌙',title:'Wellness tool',sub:'Like SleepShift',badge:'bk'},
   {id:'predict',icon:'📈',title:'Prediction market',sub:'Like SinBet',badge:'bk'},
-  {id:'listing',icon:'&#127968;',title:'Listing bot',sub:'Real estate / products',badge:'bk'},
-  {id:'nanny',icon:'&#128144;',title:'Nanny checklist',sub:'Childcare assistant',badge:'bk'},
-  {id:'teacher',icon:'&#128218;',title:'Curriculum builder',sub:'Teacher tools',badge:'bk'},
-  {id:'adhd',icon:'&#9889;',title:'ADHD coach',sub:'Learn differently',badge:'bk'},
-  {id:'support',icon:'&#128149;',title:'Support bot',sub:'Emotional support AI',badge:'bk'},
-  {id:'trucker',icon:'&#128666;',title:'Trucker assistant',sub:'Road & logistics AI',badge:'bk'},
-  {id:'attorney',icon:'&#9878;',title:'Attorney bot',sub:'Legal research AI',badge:'bk'},
-  {id:'soccer',icon:'&#9917;',title:'Soccer coach',sub:'Training & tactics AI',badge:'bk'},
-  {id:'dad',icon:'&#128106;',title:'Dad life bot',sub:'Parenting assistant',badge:'bk'},
-  {id:'custom',icon:'&#10022;',title:'Custom machine',sub:'AI builds it for you',badge:'ai',custom:true}
+  {id:'listing',icon:'🏠',title:'Listing bot',sub:'Real estate / products',badge:'bk'},
+  {id:'nanny',icon:'👶',title:'Nanny checklist',sub:'Childcare assistant',badge:'bk'},
+  {id:'teacher',icon:'📚',title:'Curriculum builder',sub:'Teacher tools',badge:'bk'},
+  {id:'adhd',icon:'⚡',title:'ADHD coach',sub:'Learn differently',badge:'bk'},
+  {id:'adhd-tutor',icon:'🧠',title:'ADHD tutor',sub:'Focus & study AI',badge:'bk'},
+  {id:'support',icon:'💕',title:'Support bot',sub:'Emotional support AI',badge:'bk'},
+  {id:'trucker',icon:'🚚',title:'Trucker assistant',sub:'Road & logistics AI',badge:'bk'},
+  {id:'attorney',icon:'⚖️',title:'Attorney bot',sub:'Legal research AI',badge:'bk'},
+  {id:'soccer',icon:'⚽',title:'Soccer coach',sub:'Training & tactics AI',badge:'bk'},
+  {id:'dad',icon:'👨‍👧',title:'Dad life bot',sub:'Parenting assistant',badge:'bk'},
+  {id:'fitness',icon:'💪',title:'Fitness coach',sub:'Workout & wellness AI',badge:'bk'},
+  {id:'fundraiser',icon:'🎗️',title:'Fundraiser bot',sub:'Nonprofit & campaigns',badge:'bk'},
+  {id:'homework',icon:'✏️',title:'Homework helper',sub:'Student study AI',badge:'bk'},
+  {id:'tiktok',icon:'🎵',title:'TikTok agent',sub:'Short form content AI',badge:'bk'},
+  {id:'mom-life',icon:'🌸',title:'Mom life bot',sub:'Parenting & home AI',badge:'bk'},
+  {id:'womens-health',icon:'🩺',title:'Women\'s health',sub:'Wellness & care AI',badge:'bk'},
+  {id:'young-adults',icon:'🎓',title:'Young adults',sub:'Life skills AI',badge:'bk'},
+  {id:'custom',icon:'⚙️',title:'Custom machine',sub:'AI builds it for you',badge:'ai',custom:true}
 ];
 
 const NICHES = {
@@ -341,7 +353,15 @@ const NICHES = {
   trucker:['Long haul','Local delivery','Fleet owner','Owner operator','Logistics','Safety','Compliance','Meal planning'],
   attorney:['Personal injury','Family law','Criminal','Immigration','Business','Real estate','Employment','Estate planning'],
   soccer:['Youth U8-U12','Youth U13-U18','Adult recreational','Competitive','Goalkeeper','Fitness','Tactics','Nutrition'],
-  dad:['New dad','Toddler dad','Teen dad','Single dad','Step dad','Work-life balance','Activities','Discipline']
+  dad:['New dad','Toddler dad','Teen dad','Single dad','Step dad','Work-life balance','Activities','Discipline'],
+  'adhd-tutor':['Elementary','Middle school','High school','College','Executive function','Reading focus','Math focus','Test prep'],
+  fitness:['Weight loss','Muscle gain','Endurance','Flexibility','Home workout','Gym','Sports performance','Senior fitness'],
+  fundraiser:['Nonprofit','School','Church','Medical','Disaster relief','Community project','Animal rescue','Political'],
+  homework:['Elementary','Middle school','High school','Math','Science','English','History','Test prep'],
+  tiktok:['Fashion','Food','Comedy','Fitness','Beauty','Education','Music','Lifestyle'],
+  'mom-life':['New mom','Toddler mom','Working mom','Stay at home','Single mom','Homeschool mom','Teen mom','Empty nester'],
+  'womens-health':['Hormonal health','Pregnancy','Postpartum','Menopause','Fitness','Mental health','Nutrition','Fertility'],
+  'young-adults':['College','First job','Moving out','Budgeting','Dating','Mental health','Career','Self-care']
 };
 
 const MODULES = {
@@ -360,6 +380,14 @@ const MODULES = {
   attorney:['Groq AI','Case Analyzer','Law Searcher','Doc Generator','Deadline Track','Client Notes','Citation Gen','Ollama'],
   soccer:['Groq AI','Drill Generator','Tactics Board','Player Tracker','Fitness Plan','Match Analyzer','Parent Report','Output'],
   dad:['Groq AI','Activity Finder','Chore Charts','Meal Planner','School Tracker','Bedtime Stories','Emergency Info','Output'],
+  'adhd-tutor':['Groq AI','Focus Timer','Lesson Breaker','Visual Aids','Quiz Builder','Reward System','Progress Track','Output'],
+  fitness:['Groq AI','Workout Builder','Nutrition Guide','Progress Tracker','Rest Timer','Form Checker','Goal Setter','Output'],
+  fundraiser:['Groq AI','Campaign Builder','Donor Manager','Email Writer','Goal Tracker','Social Posts','Thank You Gen','Output'],
+  homework:['Groq AI','Subject Router','Step Explainer','Quiz Maker','Progress Track','Hint System','Parent Report','Output'],
+  tiktok:['Groq AI','Hook Writer','Caption Gen','Hashtag Engine','Trend Scanner','Script Writer','Sound Picker','Output'],
+  'mom-life':['Groq AI','Meal Planner','Schedule Builder','Activity Finder','Self-care Coach','School Tracker','Budget Helper','Output'],
+  'womens-health':['Groq AI','Symptom Tracker','Cycle Log','Nutrition Guide','Fitness Planner','Mental Health','Resource Finder','Output'],
+  'young-adults':['Groq AI','Budget Planner','Resume Builder','Life Skills','Mental Health','Career Coach','Social Guide','Output'],
   custom:['Groq AI','Parser','Config','Logic A','Logic B','Handler','Formatter','Output']
 };
 
@@ -379,6 +407,14 @@ const STATUS_MSGS = {
   attorney:['Scaffolding attorney bot...','Connecting Groq AI...','Building case analyzer...','Wiring law searcher...','Loading doc generator...','Building citation engine...','Wiring deadline tracker...','Packaging bundle...'],
   soccer:['Scaffolding soccer coach...','Connecting Groq AI...','Building drill generator...','Wiring tactics board...','Loading player tracker...','Building fitness plan...','Wiring match analyzer...','Packaging bundle...'],
   dad:['Scaffolding dad assistant...','Connecting Groq AI...','Building activity finder...','Wiring chore charts...','Loading meal planner...','Building school tracker...','Wiring bedtime stories...','Packaging bundle...'],
+  'adhd-tutor':['Scaffolding ADHD tutor...','Connecting Groq AI...','Building focus timer...','Wiring lesson breaker...','Loading visual aids...','Building quiz engine...','Wiring reward system...','Packaging bundle...'],
+  fitness:['Scaffolding fitness coach...','Connecting Groq AI...','Building workout engine...','Wiring nutrition guide...','Loading progress tracker...','Building goal setter...','Wiring form checker...','Packaging bundle...'],
+  fundraiser:['Scaffolding fundraiser bot...','Connecting Groq AI...','Building campaign engine...','Wiring donor manager...','Loading email writer...','Building goal tracker...','Wiring social posts...','Packaging bundle...'],
+  homework:['Scaffolding homework helper...','Connecting Groq AI...','Building subject router...','Wiring step explainer...','Loading quiz maker...','Building hint system...','Wiring progress tracker...','Packaging bundle...'],
+  tiktok:['Scaffolding TikTok agent...','Connecting Groq AI...','Building hook writer...','Wiring caption engine...','Loading hashtag generator...','Building trend scanner...','Wiring script writer...','Packaging bundle...'],
+  'mom-life':['Scaffolding mom life bot...','Connecting Groq AI...','Building meal planner...','Wiring schedule builder...','Loading activity finder...','Building self-care coach...','Wiring budget helper...','Packaging bundle...'],
+  'womens-health':['Scaffolding women\'s health bot...','Connecting Groq AI...','Building symptom tracker...','Wiring cycle log...','Loading nutrition guide...','Building fitness planner...','Wiring resource finder...','Packaging bundle...'],
+  'young-adults':['Scaffolding young adults bot...','Connecting Groq AI...','Building budget planner...','Wiring resume builder...','Loading life skills engine...','Building career coach...','Wiring mental health tools...','Packaging bundle...'],
   custom:['Reading your description...','Analyzing requirements...','Choosing optimal stack...','Scaffolding structure...','Wiring BYOK config...','Generating core logic...','Building handlers...','Packaging bundle...']
 };
 
@@ -398,6 +434,14 @@ const DEMO_PROMPTS = {
   attorney:'What is the statute of limitations for personal injury in Texas?',
   soccer:'Design a 45-minute training drill for U12 players.',
   dad:'Give me 5 fun weekend activities for a 7-year-old.',
+  'adhd-tutor':'Help me break down a 30-minute study session for a student with ADHD.',
+  fitness:'Create a beginner 3-day workout plan for weight loss.',
+  fundraiser:'Write a compelling fundraiser pitch for a community garden project.',
+  homework:'Help me explain long division step by step.',
+  tiktok:'Write a hook for a TikTok about morning routines.',
+  'mom-life':'Give me a quick 30-minute meal idea for a busy weeknight.',
+  'womens-health':'What are the signs of hormonal imbalance I should watch for?',
+  'young-adults':'How do I create a budget when I just got my first job?',
   custom:'What can you do?'
 };
 
@@ -417,6 +461,14 @@ const SYSTEM_PROMPTS = {
   attorney:(n,niche)=>`You are ${n}, a ${niche} legal research assistant. Help with case research, document drafting, and legal analysis. Always note you are an AI and recommend consulting a licensed attorney. Be thorough and precise.`,
   soccer:(n,niche)=>`You are ${n}, a ${niche} soccer coach AI. Help coaches design training drills, tactics, fitness plans, and player development programs. Be specific and football-smart.`,
   dad:(n,niche)=>`You are ${n}, a ${niche} parenting assistant. Help dads with activities, routines, discipline strategies, and connecting with their kids. Be real, fun, and supportive.`,
+  'adhd-tutor':(n,niche)=>`You are ${n}, an ${niche} ADHD tutor. Break lessons into small steps, use encouraging language, and provide focus strategies. Be patient, creative, and structured.`,
+  fitness:(n,niche)=>`You are ${n}, a ${niche} fitness coach. Create personalized workout plans, nutrition advice, and motivation strategies. Be energetic, science-based, and encouraging.`,
+  fundraiser:(n,niche)=>`You are ${n}, a ${niche} fundraising expert. Help craft compelling campaigns, donor outreach, and impact stories. Be persuasive, empathetic, and results-focused.`,
+  homework:(n,niche)=>`You are ${n}, a ${niche} homework helper. Explain concepts clearly, break problems into steps, and never just give answers — guide the student to understand. Be patient and encouraging.`,
+  tiktok:(n,niche)=>`You are ${n}, a ${niche} TikTok content strategist. Write viral hooks, captions, scripts, and hashtag strategies. Be punchy, trendy, and platform-savvy.`,
+  'mom-life':(n,niche)=>`You are ${n}, a ${niche} mom life assistant. Help with meal planning, schedules, self-care, and family management. Be warm, practical, and non-judgmental.`,
+  'womens-health':(n,niche)=>`You are ${n}, a ${niche} women's health guide. Provide wellness information, symptom awareness, and health tips. Always recommend consulting a doctor for medical decisions. Be caring and informative.`,
+  'young-adults':(n,niche)=>`You are ${n}, a ${niche} life coach for young adults. Help with budgeting, career, relationships, and adulting skills. Be relatable, honest, and practical.`,
   custom:(n,niche)=>`You are ${n}, a helpful AI assistant. Be direct, accurate, and conversational.`
 };
 
@@ -640,6 +692,26 @@ function showDemo(){
   },800);
 }
 
+let ttsEnabled = false;
+function toggleTTS(){
+  ttsEnabled = !ttsEnabled;
+  const btn = document.getElementById('ttsToggle');
+  btn.textContent = ttsEnabled ? '🔊 voice on' : '🔇 voice off';
+  btn.style.color = ttsEnabled ? 'var(--cyan)' : 'var(--pl)';
+  btn.style.borderColor = ttsEnabled ? 'rgba(34,211,238,.4)' : 'rgba(139,92,246,.3)';
+  if(!ttsEnabled) speechSynthesis.cancel();
+}
+
+function speakText(text){
+  if(!ttsEnabled || !window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = 1.0;
+  utt.pitch = 1.0;
+  utt.volume = 1.0;
+  speechSynthesis.speak(utt);
+}
+
 function addDemoMsg(text,role){
   const msgs=document.getElementById('demoMessages');
   const d=document.createElement('div');
@@ -647,6 +719,7 @@ function addDemoMsg(text,role){
   d.textContent=text;
   msgs.appendChild(d);
   msgs.scrollTop=msgs.scrollHeight;
+  if(role==='bot') speakText(text);
 }
 
 async function sendDemo(){
@@ -1711,20 +1784,30 @@ function copyAll(){
 const APK_BASE = 'https://github.com/sinhara666/ss-machine-zips/releases/latest/download/';
 
 const APK_MAP = {
-  chatbot:    'chatbot-machine.apk',
-  support:    'support-machine.apk',
-  attorney:   'attorney-machine.apk',
-  ecommerce:  'ecommerce-machine.apk',
-  education:  'education-machine.apk',
-  fitness:    'fitness-machine.apk',
-  finance:    'finance-machine.apk',
-  realestate: 'realestate-machine.apk',
-  restaurant: 'restaurant-machine.apk',
-  travel:     'travel-machine.apk',
-  hr:         'hr-machine.apk',
-  marketing:  'marketing-machine.apk',
-  healthcare: 'healthcare-machine.apk',
-  custom:     'custom-machine.apk',
+  chatbot:      'chatbot-machine.apk',
+  support:      'support-machine.apk',
+  attorney:     'attorney-machine.apk',
+  listing:      'listing-machine.apk',
+  nanny:        'nanny-machine.apk',
+  teacher:      'teacher-machine.apk',
+  adhd:         'adhd-machine.apk',
+  'adhd-tutor': 'adhd-tutor-machine.apk',
+  trucker:      'trucker-machine.apk',
+  soccer:       'soccer-machine.apk',
+  dad:          'dad-machine.apk',
+  content:      'content-machine.apk',
+  magnet:       'magnet-machine.apk',
+  social:       'social-machine.apk',
+  sleep:        'wellness-machine.apk',
+  predict:      'predict-machine.apk',
+  fitness:      'fitness-machine.apk',
+  fundraiser:   'fundraiser-machine.apk',
+  homework:     'homework-machine.apk',
+  tiktok:       'tiktok-machine.apk',
+  'mom-life':   'mom-life-machine.apk',
+  'womens-health': 'womens-health-machine.apk',
+  'young-adults':  'young-adults-machine.apk',
+  custom:       'custom-machine.apk',
 };
 
 function downloadApk(){
