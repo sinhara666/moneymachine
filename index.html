@@ -1,158 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Money Machine | Under Maintenance</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Machine | Early Access</title>
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(circle at top, rgba(0,255,170,0.18), transparent 35%),
-        linear-gradient(135deg, #07140f 0%, #0b1f18 45%, #030806 100%);
-      color: #f5fff8;
-      padding: 24px;
-    }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
 
-    .wrap {
-      width: 100%;
-      max-width: 780px;
-    }
+body{
+  font-family:sans-serif;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:linear-gradient(270deg,#ff0080,#7928ca,#00c6ff,#00ff94);
+  background-size:800% 800%;
+  animation:gradient 12s ease infinite;
+  color:white;
+}
 
-    .card {
-      background: rgba(9, 20, 16, 0.92);
-      border: 1px solid rgba(0, 255, 170, 0.18);
-      border-radius: 28px;
-      padding: 42px 30px;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
-      text-align: center;
-      backdrop-filter: blur(10px);
-    }
+@keyframes gradient{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 
-    .badge {
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(0, 255, 170, 0.1);
-      border: 1px solid rgba(0, 255, 170, 0.24);
-      color: #7effca;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 22px;
-    }
+.wrap{
+  width:100%;
+  max-width:1000px;
+  padding:20px;
+}
 
-    h1 {
-      font-size: clamp(2rem, 5vw, 4rem);
-      line-height: 1.05;
-      margin-bottom: 18px;
-    }
+.card{
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(20px);
+  border-radius:30px;
+  padding:50px 30px;
+  text-align:center;
+  box-shadow:0 0 60px rgba(0,0,0,0.6);
+}
 
-    .accent {
-      color: #7effca;
-      text-shadow: 0 0 16px rgba(126, 255, 202, 0.28);
-    }
+.badge{
+  display:inline-block;
+  padding:8px 14px;
+  background:#00ff94;
+  color:#000;
+  border-radius:999px;
+  font-weight:700;
+  margin-bottom:18px;
+}
 
-    p {
-      max-width: 640px;
-      margin: 0 auto 16px;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: #d7e8dd;
-    }
+h1{
+  font-size:clamp(2.5rem,6vw,4rem);
+  margin-bottom:15px;
+}
 
-    .small {
-      font-size: 0.95rem;
-      color: #9fb7aa;
-    }
+.highlight{
+  color:#00ff94;
+}
 
-    .actions {
-      margin-top: 28px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
-    }
+p{
+  font-size:1.1rem;
+  margin-bottom:12px;
+  opacity:.9;
+}
 
-    .btn {
-      display: inline-block;
-      text-decoration: none;
-      padding: 14px 22px;
-      border-radius: 14px;
-      font-weight: 700;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
+/* HERO IMAGE */
+.hero-img{
+  margin:25px 0;
+}
+.hero-img img{
+  width:100%;
+  max-width:500px;
+  border-radius:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.6);
+}
 
-    .btn:hover { transform: translateY(-2px); }
+/* BIG VISUAL STRIP */
+.visual{
+  margin:30px 0;
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+}
 
-    .btn-primary {
-      background: linear-gradient(135deg, #00d48a, #41ffb4);
-      color: #03110a;
-    }
+.machine{
+  min-width:220px;
+  padding:20px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#00ff94,#00c6ff);
+  color:#000;
+  font-weight:700;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
 
-    .btn-secondary {
-      border: 1px solid rgba(255,255,255,0.16);
-      color: #f5fff8;
-      background: rgba(255,255,255,0.04);
-    }
+.machine small{
+  display:block;
+  font-weight:400;
+  margin-top:6px;
+}
 
-    .status {
-      margin-top: 26px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.95rem;
-      color: #a8c2b4;
-    }
+/* FORM */
+.signup{
+  margin-top:20px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+}
 
-    @media (max-width: 640px) {
-      .card {
-        padding: 34px 22px;
-        border-radius: 22px;
-      }
+.signup input{
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  width:260px;
+}
 
-      p {
-        font-size: 1rem;
-      }
+.btn{
+  padding:14px 20px;
+  border:none;
+  border-radius:12px;
+  background:#00ff94;
+  color:#000;
+  font-weight:700;
+  cursor:pointer;
+}
 
-      .actions {
-        flex-direction: column;
-      }
+.hook{
+  margin-top:15px;
+  font-size:1rem;
+  color:#00ff94;
+}
 
-      .btn {
-        width: 100%;
-      }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <section class="card">
-      <div class="badge">Money Machine Update</div>
-      <h1><span class="accent">Money Machine</span><br />is getting upgraded</h1>
-      <p>
-        We are behind the scenes tightening things up, improving performance, and getting everything ready.
-        The site will be back soon.
-      </p>
-      <p class="small">
-        We are making updates so your experience is smoother, cleaner, and better than before.
-      </p>
+<div class="wrap">
+<div class="card">
 
-      <div class="actions">
-        <a href="#" class="btn btn-primary">Check Back Soon</a>
-        <a href="#" class="btn btn-secondary">Contact Support</a>
-      </div>
+<div class="badge">EARLY ACCESS OPEN</div>
 
-      <div class="status">
-        Status: Maintenance in progress.
-      </div>
-    </section>
+<h1><span class="highlight">Money Machine</span><br>25 machines. Random or custom.</h1>
+
+<p>
+These aren’t basic tools. Money Machine gives you access to 25 machines designed to help you create faster, launch faster, and get more done without wasting time.
+</p>
+
+<p>
+Choose a machine, go random, or request a custom build. Whether you need content, products, automation, or something more tailored, Money Machine is built to help you move quicker.
+</p>
+
+<div class="hero-img">
+  <!-- DROP YOUR IMAGE HERE -->
+  <img src="YOUR_IMAGE_URL_HERE" alt="Money Machine Preview">
+</div>
+
+<div class="visual">
+  <div class="machine">25 Machines
+    <small>choose from a growing lineup</small>
   </div>
+  <div class="machine">Random Option
+    <small>get a machine picked for you</small>
+  </div>
+  <div class="machine">Custom Builds
+    <small>request something made for your needs</small>
+  </div>
+  <div class="machine">Launch Faster
+    <small>less guesswork • more output</small>
+  </div>
+</div>
+
+<p>
+Early access members get first look, priority entry, and lower pricing before the public launch.
+</p>
+
+<form class="signup" action="YOUR_SIGNUP_FORM_URL" method="POST">
+  <input type="email" name="email" placeholder="Enter your email for early access" required>
+  <button class="btn">Join Early Access</button>
+</form>
+
+<div class="hook">
+Sign up now to get early-bird pricing, early access, and first shot at the machines before everyone else.
+</div>
+
+</div>
+</div>
 </body>
 </html>
