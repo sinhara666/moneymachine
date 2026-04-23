@@ -676,7 +676,7 @@ async function callDemoGroq(message){
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+DEMO_KEY},
       body:JSON.stringify({
-        model:'llama3-70b-8192',
+        model:'llama-3.3-70b-versatile',
         messages:[{role:'system',content:system},...demoHistory.slice(-6)],
         max_tokens:256,temperature:0.7
       })
@@ -728,7 +728,7 @@ async function callGroqGen(apiKey,description){
     method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
     body:JSON.stringify({
-      model:'llama3-70b-8192',
+      model:'llama-3.3-70b-versatile',
       messages:[
         {role:'system',content:`You are a senior Node.js developer. Generate COMPLETE, production-ready code.
 Use Groq API (process.env.GROQ_API_KEY) primary, Ollama fallback.
@@ -837,7 +837,7 @@ const SYSTEM = \`You are ${n}, an expert AI assistant specializing in ${niche}. 
 async function chat(message, history = []) {
   const messages = [{ role: 'system', content: SYSTEM }, ...history.slice(-20), { role: 'user', content: message }];
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages, max_tokens: 1024, temperature: 0.7 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages, max_tokens: 1024, temperature: 0.7 });
     return res.choices[0].message.content;
   } catch {
     const res = await fetch('http://localhost:11434/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'llama3', messages, stream: false }) });
@@ -920,7 +920,7 @@ Write a compelling property listing description for:
 - Features: \${(features||[]).join(', ')||'standard finishes'}
 Write 3 paragraphs. Be specific, persuasive, and professional. No generic filler.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
     return res.choices[0].message.content.trim();
   } catch {
     const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
@@ -937,7 +937,7 @@ async function analyzePrice({ beds, baths, sqft, location, price, niche }) {
 Give: 1) Fair market range estimate 2) Pricing recommendation 3) One key selling point.
 Be concise and data-aware.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 256 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 256 });
     return res.choices[0].message.content.trim();
   } catch { return 'Price analysis unavailable. Check your Groq API key.'; }
 }
@@ -950,7 +950,7 @@ async function generateSEO({ beds, baths, sqft, location, type }) {
 \${beds}bd/\${baths}ba \${sqft}sqft \${type||'home'} in \${location}.
 Return JSON: {"title": "", "metaDescription": "", "tags": []}\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 256 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 256 });
     const raw = res.choices[0].message.content;
     return JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] || raw);
   } catch { return { title: \`\${beds}bd/\${baths}ba in \${location}\`, metaDescription: '', tags: [] }; }
@@ -1005,7 +1005,7 @@ Requested activities: \${(activities||[]).join(', ')||'standard day'}
 Include: wake-up routine, meals, naps/quiet time, learning activities, outdoor play, and wind-down.
 Format as a time-by-time schedule. Be age-appropriate and specific.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
     return res.choices[0].message.content.trim();
   } catch { return 'Schedule generation failed. Check your API key.'; }
 }
@@ -1019,7 +1019,7 @@ Allergies/restrictions: \${(allergies||[]).join(', ')||'none'}.
 Include breakfast, snack, lunch, snack, dinner for each day.
 Make it nutritious, kid-friendly, and easy to prepare. Be specific with portions.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
     return res.choices[0].message.content.trim();
   } catch { return 'Meal plan generation failed.'; }
 }
@@ -1034,7 +1034,7 @@ Mood: \${mood||'happy'}/10, Activities: \${(activities||[]).join(', ')||'various
 Meals eaten: \${(meals||[]).join(', ')||'all meals'}, Notes: \${notes||'great day'}
 Write 2-3 paragraphs as if from a caring nanny to parents. Be warm and specific.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
     return res.choices[0].message.content.trim();
   } catch { return 'Report generation failed.'; }
 }
@@ -1103,7 +1103,7 @@ async function buildQuiz({ topic, grade, numQuestions, type }) {
 Include answer key. Make questions progressively challenging.
 Format clearly with question numbers, options (A-D for multiple choice), and answers at the end.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
     return res.choices[0].message.content.trim();
   } catch { return 'Quiz generation failed.'; }
 }
@@ -1116,7 +1116,7 @@ async function alignStandards({ lesson, grade, state }) {
 \${lesson?.slice(0,500)||'general lesson'}
 List the standard codes and brief descriptions. Be specific.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
     return res.choices[0].message.content.trim();
   } catch { return 'Standards alignment failed.'; }
 }
@@ -1173,7 +1173,7 @@ Time available: \${timeAvailable||'30 minutes'}
 Rules: Each step max 5 minutes. Use clear simple language. Add a small reward after every 3 steps.
 Include estimated time for each step. Make it feel achievable, not overwhelming.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
     return res.choices[0].message.content.trim();
   } catch { return 'Task breakdown failed.'; }
 }
@@ -1187,7 +1187,7 @@ Known challenges: \${(challenges||[]).join(', ')||'transitions, focus, time awar
 Make each step visual, concrete, and short (under 5 min each).
 Include visual cue suggestions, timer recommendations, and reward checkpoints.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
     return res.choices[0].message.content.trim();
   } catch { return 'Routine generation failed.'; }
 }
@@ -1203,7 +1203,7 @@ Age group: \${ageGroup||'school age'}
 Question: \${question}
 Give practical, evidence-based advice. Be empathetic, direct, and specific. No generic platitudes.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
     return res.choices[0].message.content.trim();
   } catch {
     const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
@@ -1265,7 +1265,7 @@ If appropriate, gently suggest one coping strategy.
 IMPORTANT: If any crisis indicators, always include: "Please reach out to the 988 Suicide & Crisis Lifeline by calling or texting 988."
 Keep response warm, human, and under 150 words.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 256, temperature: 0.7 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 256, temperature: 0.7 });
     return res.choices[0].message.content.trim();
   } catch {
     const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
@@ -1343,7 +1343,7 @@ Last rest: \${lastRest||'unknown'} hours ago.
 FMCSA rules: 11-hour driving limit, 14-hour on-duty limit, 30-min break after 8 hours, 10-hour off-duty minimum.
 Give: 1) Current compliance status 2) Hours remaining 3) When they must stop 4) Any violations to note.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 400 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 400 });
     return res.choices[0].message.content.trim();
   } catch { return 'HOS check failed. Verify compliance manually.'; }
 }
@@ -1358,7 +1358,7 @@ Load type: \${loadType||'general freight'}
 Restrictions: \${(restrictions||[]).join(', ')||'standard'}
 Provide: estimated drive time, recommended rest stops, fuel stop suggestions, weather considerations, and any known route hazards or construction to watch for.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 600 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 600 });
     return res.choices[0].message.content.trim();
   } catch { return 'Route planning failed.'; }
 }
@@ -1372,7 +1372,7 @@ State: \${state||'federal'}, Load: \${loadType||'general'}, Weight: \${weight||'
 Question: \${question||'What are the key compliance requirements?'}
 Give accurate, specific compliance information. Note when regulations vary by state.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
     return res.choices[0].message.content.trim();
   } catch { return 'Compliance check failed.'; }
 }
@@ -1435,7 +1435,7 @@ Practice area: \${practiceArea}
 Provide: 1) Relevant legal principles 2) Key case law references 3) Applicable statutes 4) Jurisdiction-specific notes 5) Practical considerations.
 Be thorough and cite specific laws where possible. Note that this is research assistance only.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
     return res.choices[0].message.content.trim();
   } catch {
     const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
@@ -1454,7 +1454,7 @@ Key facts: \${facts||'to be filled in'}
 Jurisdiction: \${jurisdiction||'general'}
 Create a professional template with placeholders marked as [PLACEHOLDER]. Include standard legal language appropriate for \${practiceArea}.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
     return res.choices[0].message.content.trim();
   } catch { return 'Document draft failed.'; }
 }
@@ -1466,7 +1466,7 @@ async function generateCitations({ topic, jurisdiction }) {
   const prompt = \`Generate relevant legal citations for: \${topic} in \${jurisdiction||'US federal'} law.
 Include: case names, citation format, brief holdings. Focus on ${niche} practice area.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
     return res.choices[0].message.content.trim();
   } catch { return 'Citation generation failed.'; }
 }
@@ -1520,7 +1520,7 @@ Players: \${players||12}, Equipment: \${(equipment||['cones','balls']).join(', '
 
 Include: Setup diagram description, instructions step-by-step, coaching points, progressions (easier/harder), common mistakes to watch for.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
     return res.choices[0].message.content.trim();
   } catch { return 'Drill generation failed.'; }
 }
@@ -1536,7 +1536,7 @@ Our strengths: \${(strengths||[]).join(', ')||'to be assessed'}
 Our weaknesses: \${(weaknesses||[]).join(', ')||'to be assessed'}
 Provide: tactical setup, pressing strategy, set piece approach, key matchups to target, and in-game adjustments.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
     return res.choices[0].message.content.trim();
   } catch { return 'Tactics generation failed.'; }
 }
@@ -1549,7 +1549,7 @@ async function buildFitnessPlan({ ageGroup, position, fitnessLevel, weeks, niche
 Age group: \${ageGroup||'adult'}, Position: \${position||'general'}, Fitness level: \${fitnessLevel||'intermediate'}
 Include weekly structure, specific workouts, recovery days, and ${niche}-appropriate intensity levels.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
     return res.choices[0].message.content.trim();
   } catch { return 'Fitness plan generation failed.'; }
 }
@@ -1597,7 +1597,7 @@ app.post('/chat', async (req, res) => {
     const Groq = require('groq-sdk');
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
     const res2 = await groq.chat.completions.create({
-      model: 'llama3-70b-8192',
+      model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'system', content: \`You are ${n}, a ${niche} parenting assistant. Be real, supportive, and practical.\` }, { role: 'user', content: question }],
       max_tokens: 512
     });
@@ -1617,7 +1617,7 @@ Weather: \${weather||'any'}, Budget: \${budget||'low cost'}, Duration: \${durati
 Interests: \${(interests||[]).join(', ')||'general kids stuff'}
 For each activity: name, what you need, step-by-step how to do it, why kids love it, dad tip.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
     return res.choices[0].message.content.trim();
   } catch { return 'Activity suggestions failed.'; }
 }
@@ -1630,7 +1630,7 @@ async function buildChoreChart({ childAge, childName, numChores }) {
 Include \${numChores} age-appropriate chores with: chore name, how to do it (simple steps), how often, reward points.
 Make it encouraging and achievable. Kids with ADHD should get extra clear, short instructions.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
     return res.choices[0].message.content.trim();
   } catch { return 'Chore chart generation failed.'; }
 }
@@ -1645,7 +1645,7 @@ Theme: \${theme||'adventure and friendship'}.
 Length: ~\${wordCount} words. Make it imaginative, age-appropriate, with a positive message at the end.
 The child's name should appear as the hero of the story.\`;
   try {
-    const res = await groq.chat.completions.create({ model: 'llama3-70b-8192', messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
+    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
     return res.choices[0].message.content.trim();
   } catch { return 'Story generation failed.'; }
 }
