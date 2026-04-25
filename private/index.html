@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -211,8 +211,31 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 
 <div class="divider hidden" id="d2"></div>
 
-<div class="wrap"><div class="sec hidden" id="phase3">
+<div class="wrap"><div class="sec hidden" id="phaseFeatures">
   <div class="sec-eye">Step 03</div>
+  <div class="sec-head">Pick your features</div>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:18px;font-family:var(--mono)">// select the features you want built into your machine</p>
+  <div style="margin-bottom:18px">
+    <div style="color:var(--pl);font-size:12px;font-family:var(--mono);margin-bottom:8px">// output language</div>
+    <select id="botLanguage" style="background:var(--surface);border:1px solid rgba(139,92,246,.3);color:var(--pl);border-radius:10px;padding:10px 14px;font-size:13px;font-family:var(--mono);width:100%;cursor:pointer">
+      <option value="English">🇺🇸 English</option>
+      <option value="Spanish">🇪🇸 Spanish</option>
+      <option value="French">🇫🇷 French</option>
+      <option value="Portuguese">🇧🇷 Portuguese</option>
+      <option value="German">🇩🇪 German</option>
+      <option value="Swahili">🌍 Swahili</option>
+      <option value="Yoruba">🌍 Yoruba</option>
+      <option value="Nigerian Pidgin">🇳🇬 Nigerian Pidgin</option>
+    </select>
+  </div>
+  <div id="featureGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px"></div>
+  <button class="btn p" onclick="confirmFeatures()">Continue &#8594;</button>
+</div></div>
+
+<div class="divider hidden" id="dFeatures"></div>
+
+<div class="wrap"><div class="sec hidden" id="phase3">
+  <div class="sec-eye">Step 04</div>
   <div class="sec-head">Name your machine</div>
   <div class="irow">
     <input type="text" id="machineName" placeholder="e.g. LegalBot, FitLead, CoachAI...">
@@ -529,13 +552,13 @@ function pickNiche(n,el){
   chosenNiche=n;
   document.querySelectorAll('.np').forEach(p=>p.classList.remove('sel'));
   el.classList.add('sel');
-  show('phase3');show('d3');goTo('phase3');
+  showFeaturePicker();
 }
 
 function setCustomNiche(){
   const v=document.getElementById('customNiche').value.trim();
   if(!v)return;
-  chosenNiche=v;show('phase3');show('d3');goTo('phase3');
+  chosenNiche=v;showFeaturePicker();
 }
 
 function startBuild(){
@@ -692,7 +715,73 @@ function showDemo(){
   },800);
 }
 
-let ttsEnabled = false;
+let chosenFeatures = [];
+let chosenLanguage = 'English';
+
+const FEATURES = {
+  chatbot:       ['Custom greeting','Memory / context','Tone selector','Language support','FAQ mode','Escalation handler'],
+  content:       ['YouTube transcriber','Clip extractor','Thumbnail gen','Voice clone','Viral hook writer','Auto-caption'],
+  magnet:        ['Lead capture form','Email sequence','Niche targeting','Landing page gen','Gumroad integration','Analytics'],
+  social:        ['Multi-platform posting','Hashtag engine','Caption writer','Trend scanner','Scheduler','Engagement replies'],
+  sleep:         ['Sleep tracker','Habit logger','Wellness tips','Mood check-in','Reminder system','Progress reports'],
+  predict:       ['Prediction market','Coin economy','Leaderboard','Voting system','Auto-resolve','User profiles'],
+  listing:       ['Property details','Image captions','Price estimator','Listing copy','Lead capture','PDF export'],
+  nanny:         ['Daily schedule','Meal planner','Activity ideas','Incident log','Parent reports','Emergency info'],
+  teacher:       ['Lesson planner','Quiz builder','Progress tracker','Parent reports','Differentiation','Resource finder'],
+  adhd:          ['Focus timer','Task breaker','Reward system','Distraction blocker','Progress log','Parent dashboard'],
+  'adhd-tutor':  ['Step-by-step lessons','Visual aids','Quiz mode','Focus timer','Reward system','Progress tracker'],
+  support:       ['Empathy mode','Crisis detection','Resource finder','Journal prompts','Mood tracker','Check-in reminders'],
+  trucker:       ['DOT hours tracker','Route planner','Invoice generator','Weather alerts','Load calculator','Fuel logger'],
+  attorney:      ['Case research','Document drafts','Statute lookup','Timeline builder','Client intake','Deadline tracker'],
+  soccer:        ['Drill generator','Tactic board','Player stats','Formation builder','Match analysis','Training schedule'],
+  dad:           ['Activity finder','Chore charts','Meal planner','School tracker','Bedtime stories','Emergency info'],
+  fitness:       ['Workout builder','Nutrition guide','Progress tracker','Rest timer','Goal setter','Form tips'],
+  fundraiser:    ['Campaign builder','Donor outreach','Email writer','Goal tracker','Social posts','Thank you gen'],
+  homework:      ['Step explainer','Quiz maker','Hint system','Progress tracker','Subject router','Parent report'],
+  tiktok:        ['Hook writer','Caption gen','Hashtag engine','Trend scanner','Script writer','Sound picker'],
+  'mom-life':    ['Meal planner','Schedule builder','Activity finder','Self-care coach','Budget helper','School tracker'],
+  'womens-health':['Symptom tracker','Cycle log','Nutrition guide','Fitness planner','Mental health','Resource finder'],
+  'young-adults':['Budget planner','Resume builder','Life skills','Career coach','Mental health tools','Social guide'],
+  custom:        ['Custom feature 1','Custom feature 2','Custom feature 3','Custom feature 4','Custom feature 5','Custom feature 6']
+};
+
+function showFeaturePicker(){
+  const features = FEATURES[chosenType] || FEATURES.custom;
+  const grid = document.getElementById('featureGrid');
+  grid.innerHTML = '';
+  chosenFeatures = [];
+  features.forEach(f => {
+    const btn = document.createElement('button');
+    btn.textContent = f;
+    btn.style.cssText = 'background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);color:var(--pl);border-radius:10px;padding:10px 14px;font-size:12px;font-family:var(--mono);cursor:pointer;text-align:left;transition:all .2s';
+    btn.onclick = () => {
+      const idx = chosenFeatures.indexOf(f);
+      if(idx > -1){
+        chosenFeatures.splice(idx,1);
+        btn.style.background = 'rgba(139,92,246,.1)';
+        btn.style.borderColor = 'rgba(139,92,246,.25)';
+        btn.style.color = 'var(--pl)';
+      } else {
+        chosenFeatures.push(f);
+        btn.style.background = 'rgba(34,211,238,.15)';
+        btn.style.borderColor = 'rgba(34,211,238,.5)';
+        btn.style.color = 'var(--cyan)';
+      }
+    };
+    grid.appendChild(btn);
+  });
+  show('phaseFeatures'); show('dFeatures'); goTo('phaseFeatures');
+}
+
+function confirmFeatures(){
+  chosenLanguage = document.getElementById('botLanguage').value || 'English';
+  if(chosenFeatures.length === 0){
+    const btns = document.querySelectorAll('#featureGrid button');
+    btns.forEach(btn => btn.click());
+  }
+  show('phase3'); show('d3'); goTo('phase3');
+}
+
 function toggleTTS(){
   ttsEnabled = !ttsEnabled;
   const btn = document.getElementById('ttsToggle');
@@ -741,7 +830,7 @@ async function callDemoGroq(message){
   document.getElementById('demoMessages').appendChild(typing);
 
   const sysFn=SYSTEM_PROMPTS[chosenType]||SYSTEM_PROMPTS.chatbot;
-  const system=sysFn(chosenName,chosenNiche||chosenType);
+  const system=sysFn(chosenName,chosenNiche||chosenType)+` Always respond in ${chosenLanguage}.`;
   demoHistory.push({role:'user',content:message});
 
   try{
@@ -833,7 +922,7 @@ async function checkKey(){
       if(chosenType==='custom'){
         renderCustomCode();
       } else {
-        const output=buildOutput(chosenType,chosenName,chosenNiche);
+        const output=buildOutput(chosenType,chosenName,chosenNiche,chosenFeatures);
         renderOutput(output);
       }
       show('codeReveal');goTo('codeReveal');
@@ -853,7 +942,10 @@ async function checkKey(){
 }
 
 // ---- CODE OUTPUT ----
-function buildOutput(type,name,niche){
+function buildOutput(type,name,niche,features){
+  const featureComment = features && features.length > 0
+    ? `\n// Features included: ${features.join(', ')}\n// Language: ${chosenLanguage}\n`
+    : `\n// Language: ${chosenLanguage}\n`;
   const generators={
     chatbot:chatbotOutput,
     predict:predictOutput,
@@ -872,7 +964,14 @@ function buildOutput(type,name,niche){
     dad:dadOutput
   };
   const fn=generators[type]||generators.chatbot;
-  return fn(name,niche);
+  const result=fn(name,niche);
+  if(featureComment && result.files && result.files.length > 0){
+    result.files[0].code = featureComment + result.files[0].code;
+  }
+  if(featureComment && result.overview){
+    result.overview = result.overview + `\nSelected features: ${(features||[]).join(', ')}`;
+  }
+  return result;
 }
 
 function chatbotOutput(n,niche){return{
@@ -1856,9 +1955,9 @@ async function downloadZip(){
 }
 
 function resetAll(){
-  chosenType='';chosenNiche='';chosenName='';generatedCode='';demoHistory=[];
+  chosenType='';chosenNiche='';chosenName='';generatedCode='';demoHistory=[];chosenFeatures=[];chosenLanguage='English';
   if(gearAnimId){cancelAnimationFrame(gearAnimId);gearAnimId=null;}
-  hide('phase2');hide('phase3');hide('phase4');hide('d2');hide('d3');
+  hide('phase2');hide('phase3');hide('phaseFeatures');hide('phase4');hide('d2');hide('d3');hide('dFeatures');
   document.querySelectorAll('.mc').forEach(c=>c.classList.remove('sel'));
   window.scrollTo({top:0,behavior:'smooth'});
 }
