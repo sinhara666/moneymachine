@@ -358,6 +358,8 @@ const MACHINES = [
   {id:'mom-life',icon:'🌸',title:'Mom life bot',sub:'Parenting & home AI',badge:'bk'},
   {id:'womens-health',icon:'🩺',title:'Women\'s health',sub:'Wellness & care AI',badge:'bk'},
   {id:'young-adults',icon:'🎓',title:'Young adults',sub:'Life skills AI',badge:'bk'},
+  {id:'recipe',icon:'🍳',title:'Recipe & meal bot',sub:'Meal planning & nutrition',badge:'bk'},
+  {id:'petcare',icon:'🐾',title:'Pet care bot',sub:'Training & vet reminders',badge:'bk'},
   {id:'custom',icon:'⚙️',title:'Custom machine',sub:'AI builds it for you',badge:'ai',custom:true}
 ];
 
@@ -384,6 +386,8 @@ const NICHES = {
   tiktok:['Fashion','Food','Comedy','Fitness','Beauty','Education','Music','Lifestyle'],
   'mom-life':['New mom','Toddler mom','Working mom','Stay at home','Single mom','Homeschool mom','Teen mom','Empty nester'],
   'womens-health':['Hormonal health','Pregnancy','Postpartum','Menopause','Fitness','Mental health','Nutrition','Fertility'],
+  recipe:['Vegan','Keto','Mediterranean','Family meals','Meal prep','Budget cooking','Gluten-free','Quick & easy'],
+  petcare:['Dog','Cat','Bird','Reptile','Small animals','Senior pets','Puppies & kittens','Multi-pet household'],
   'young-adults':['College','First job','Moving out','Budgeting','Dating','Mental health','Career','Self-care']
 };
 
@@ -411,6 +415,8 @@ const MODULES = {
   'mom-life':['Groq AI','Meal Planner','Schedule Builder','Activity Finder','Self-care Coach','School Tracker','Budget Helper','Output'],
   'womens-health':['Groq AI','Symptom Tracker','Cycle Log','Nutrition Guide','Fitness Planner','Mental Health','Resource Finder','Output'],
   'young-adults':['Groq AI','Budget Planner','Resume Builder','Life Skills','Mental Health','Career Coach','Social Guide','Output'],
+  recipe:['Groq AI','Recipe Gen','Meal Planner','Grocery List','Nutrition Calc','Diet Filter','Substitutions','Output'],
+  petcare:['Groq AI','Health Tracker','Vet Reminders','Training Guide','Nutrition Guide','Breed Info','Emergency Tips','Output'],
   custom:['Groq AI','Parser','Config','Logic A','Logic B','Handler','Formatter','Output']
 };
 
@@ -438,6 +444,8 @@ const STATUS_MSGS = {
   'mom-life':['Scaffolding mom life bot...','Connecting Groq AI...','Building meal planner...','Wiring schedule builder...','Loading activity finder...','Building self-care coach...','Wiring budget helper...','Packaging bundle...'],
   'womens-health':['Scaffolding women\'s health bot...','Connecting Groq AI...','Building symptom tracker...','Wiring cycle log...','Loading nutrition guide...','Building fitness planner...','Wiring resource finder...','Packaging bundle...'],
   'young-adults':['Scaffolding young adults bot...','Connecting Groq AI...','Building budget planner...','Wiring resume builder...','Loading life skills engine...','Building career coach...','Wiring mental health tools...','Packaging bundle...'],
+  recipe:['Scaffolding recipe bot...','Connecting Groq AI...','Building recipe engine...','Wiring meal planner...','Loading grocery list...','Building nutrition calc...','Wiring diet filter...','Packaging bundle...'],
+  petcare:['Scaffolding pet care bot...','Connecting Groq AI...','Building health tracker...','Wiring vet reminders...','Loading training guide...','Building nutrition guide...','Wiring breed info...','Packaging bundle...'],
   custom:['Reading your description...','Analyzing requirements...','Choosing optimal stack...','Scaffolding structure...','Wiring BYOK config...','Generating core logic...','Building handlers...','Packaging bundle...']
 };
 
@@ -465,6 +473,8 @@ const DEMO_PROMPTS = {
   'mom-life':'Give me a quick 30-minute meal idea for a busy weeknight.',
   'womens-health':'What are the signs of hormonal imbalance I should watch for?',
   'young-adults':'How do I create a budget when I just got my first job?',
+  recipe:'Give me a quick healthy dinner recipe for 4 people.',
+  petcare:'What vaccinations does my dog need each year?',
   custom:'What can you do?'
 };
 
@@ -492,6 +502,8 @@ const SYSTEM_PROMPTS = {
   'mom-life':(n,niche)=>`You are ${n}, a ${niche} mom life assistant. Help with meal planning, schedules, self-care, and family management. Be warm, practical, and non-judgmental.`,
   'womens-health':(n,niche)=>`You are ${n}, a ${niche} women's health guide. Provide wellness information, symptom awareness, and health tips. Always recommend consulting a doctor for medical decisions. Be caring and informative.`,
   'young-adults':(n,niche)=>`You are ${n}, a ${niche} life coach for young adults. Help with budgeting, career, relationships, and adulting skills. Be relatable, honest, and practical.`,
+  recipe:(n,niche)=>`You are ${n}, a ${niche} recipe and meal planning assistant. Provide detailed recipes, meal plans, grocery lists, and nutrition info. Be practical and food-savvy.`,
+  petcare:(n,niche)=>`You are ${n}, a ${niche} pet care assistant. Help with training, nutrition, health tracking, and vet reminders. Always recommend a vet for medical concerns. Be caring and breed-aware.`,
   custom:(n,niche)=>`You are ${n}, a helpful AI assistant. Be direct, accurate, and conversational.`
 };
 
@@ -742,6 +754,8 @@ const FEATURES = {
   'mom-life':    ['Meal planner','Schedule builder','Activity finder','Self-care coach','Budget helper','School tracker'],
   'womens-health':['Symptom tracker','Cycle log','Nutrition guide','Fitness planner','Mental health','Resource finder'],
   'young-adults':['Budget planner','Resume builder','Life skills','Career coach','Mental health tools','Social guide'],
+  recipe:['Recipe generator','Meal planner','Grocery list','Nutrition info','Diet filters','Ingredient substitutions'],
+  petcare:['Health tracker','Vet reminders','Training guide','Nutrition guide','Breed info','Emergency tips'],
   custom:        ['Custom feature 1','Custom feature 2','Custom feature 3','Custom feature 4','Custom feature 5','Custom feature 6']
 };
 
@@ -1906,6 +1920,8 @@ const APK_MAP = {
   'mom-life':   'mom-life-machine.apk',
   'womens-health': 'womens-health-machine.apk',
   'young-adults':  'young-adults-machine.apk',
+  recipe:        'recipe-machine.apk',
+  petcare:       'petcare-machine.apk',
   custom:       'custom-machine.apk',
 };
 
