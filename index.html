@@ -70,8 +70,8 @@ h1 em span{color:var(--cyan)}
 .np:hover{border-color:rgba(139,92,246,.4);color:var(--text)}
 .np.sel{border-color:var(--purple);color:var(--pl);background:rgba(139,92,246,.08)}
 
-input,textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px;font-size:13px;font-family:var(--mono);color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
-input:focus,textarea:focus{border-color:var(--purple)}
+input,textarea,select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px;font-size:13px;font-family:var(--mono);color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--purple)}
 input::placeholder,textarea::placeholder{color:var(--muted)}
 .irow{display:flex;gap:10px}.irow input{flex:1}
 .ilabel{font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
@@ -105,12 +105,11 @@ svg#bpSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .bp-status{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:10px;min-height:20px}
 .bp-status em{color:var(--pl);font-style:normal}
 
-/* DEMO CHAT */
 .demo-box{background:var(--surface);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:24px;margin-bottom:20px}
 .demo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .demo-title{font-size:12px;font-family:var(--mono);color:var(--cyan);letter-spacing:.1em}
 .demo-badge{font-size:9px;font-family:var(--mono);background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2);border-radius:4px;padding:3px 8px}
-.demo-messages{background:var(--surface2);border-radius:10px;padding:14px;height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.demo-messages{background:var(--surface2);border-radius:10px;padding:14px;height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
 .dmsg{max-width:85%;padding:10px 14px;border-radius:10px;font-size:12px;font-family:var(--mono);line-height:1.6}
 .dmsg.bot{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);color:var(--pl);align-self:flex-start}
 .dmsg.user{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.15);color:var(--cyan);align-self:flex-end}
@@ -128,6 +127,7 @@ svg#bpSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .pw-box h3{font-size:24px;font-weight:900;margin-bottom:8px}
 .pw-box p{font-size:13px;color:var(--muted);font-family:var(--mono);margin-bottom:26px;line-height:1.7}
 .key-row{display:flex;gap:10px;max-width:380px;margin:0 auto 12px}
+.key-row input{flex:1}
 .phint{font-size:11px;color:var(--muted);font-family:var(--mono)}
 .phint a{color:var(--cyan);text-decoration:none}
 .shake{animation:shk .3s}
@@ -148,6 +148,15 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 .folder-tree .file-t{color:var(--cyan)}
 .dl-btns{display:flex;gap:10px;flex-wrap:wrap}
 
+/* GROQ KEY INPUT SECTION */
+.key-section{background:var(--surface);border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:22px;margin-bottom:24px}
+.key-section-title{font-size:10px;font-family:var(--mono);color:var(--pl);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+.key-row-inline{display:flex;gap:10px;align-items:center}
+.key-row-inline input{flex:1}
+.key-status{font-size:11px;font-family:var(--mono);margin-top:8px}
+.key-status.ok{color:var(--green)}
+.key-status.err{color:#f87171}
+
 .hidden{display:none!important}
 </style>
 </head>
@@ -161,18 +170,19 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 <div class="hero">
   <div class="hero-glow"></div>
   <div class="stars" id="stars"></div>
-  <div class="badge"><div class="badge-dot"></div>NO SUBSCRIPTIONS &middot; OWN IT FOREVER &middot; BYOK</div>
+  <div class="badge"><div class="badge-dot"></div>NO SUBSCRIPTIONS · OWN IT FOREVER · BYOK</div>
   <h1>Build Your Own<br><em>Money <span>Machine</span></em></h1>
-  <p class="hero-sub">Pick a bot. Watch it assemble. Try it live for free. Then unlock the full code — yours forever.</p>
+  <p class="hero-sub">Pick a bot. Watch it assemble. Try it live. Then unlock the full source code — yours forever.</p>
   <div class="hero-btns">
-    <button class="btn-hero p" onclick="document.getElementById('builder').scrollIntoView({behavior:'smooth'})">&#128640; Start Building</button>
-    <button class="btn-hero g" onclick="randomMachine()">&#127922; Random Idea</button>
+    <button class="btn-hero p" onclick="document.getElementById('builder').scrollIntoView({behavior:'smooth'})">🚀 Start Building</button>
+    <button class="btn-hero g" onclick="randomMachine()">🎲 Random Idea</button>
   </div>
 </div>
 
 <div class="divider"></div>
 <div id="builder">
 
+<!-- STEP 1: MACHINE TYPE -->
 <div class="wrap"><div class="sec" id="phase1">
   <div class="sec-eye">Step 01</div>
   <div class="sec-head">What kind of machine?</div>
@@ -181,6 +191,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 
 <div class="divider"></div>
 
+<!-- STEP 2: NICHE -->
 <div class="wrap"><div class="sec hidden" id="phase2">
   <div class="sec-eye">Step 02</div>
   <div class="sec-head" id="p2h">Pick your niche</div>
@@ -192,32 +203,30 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
       <button class="btn g" onclick="setCustomNiche()">Use this</button>
     </div>
   </div>
-  <div id="customSection" class="hidden">
-    <div style="background:var(--surface);border:1px solid rgba(34,211,238,.2);border-radius:14px;padding:24px">
-      <div class="ilabel" style="color:var(--cyan);margin-bottom:12px">// AI-powered — your key, your machine</div>
-      <div class="ilabel">Describe your machine</div>
-      <textarea id="customDesc" rows="4" placeholder="e.g. A bot that monitors Reddit for my brand and auto-replies with AI..."></textarea>
-      <div style="margin-top:18px">
-        <div class="ilabel">Your Groq API key (never stored)</div>
-        <input type="password" id="groqKey" placeholder="gsk_...">
-        <p class="inote">Free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
-      </div>
-      <div style="margin-top:18px">
-        <button class="btn p" onclick="startCustomBuild()">Generate my machine &#8594;</button>
-      </div>
-    </div>
-  </div>
 </div></div>
 
 <div class="divider hidden" id="d2"></div>
 
+<!-- STEP 3: FEATURES -->
 <div class="wrap"><div class="sec hidden" id="phaseFeatures">
   <div class="sec-eye">Step 03</div>
-  <div class="sec-head">Pick your features</div>
-  <p style="color:var(--muted);font-size:13px;margin-bottom:18px;font-family:var(--mono)">// select the features you want built into your machine</p>
+  <div class="sec-head">Configure your machine</div>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:22px;font-family:var(--mono)">// select features to include in your build</p>
+
+  <!-- GROQ API KEY -->
+  <div class="key-section">
+    <div class="key-section-title">// Your Groq API Key (BYOK — never stored)</div>
+    <div class="key-row-inline">
+      <input type="password" id="groqKeyMain" placeholder="gsk_...  — get a free key at console.groq.com">
+      <button class="btn g sm" onclick="testGroqKey()">Test key</button>
+    </div>
+    <div class="key-status" id="keyStatus"></div>
+    <p class="inote" style="margin-top:8px">Free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> · Llama 3 70B · unlimited generations</p>
+  </div>
+
   <div style="margin-bottom:18px">
-    <div style="color:var(--pl);font-size:12px;font-family:var(--mono);margin-bottom:8px">// output language</div>
-    <select id="botLanguage" style="background:var(--surface);border:1px solid rgba(139,92,246,.3);color:var(--pl);border-radius:10px;padding:10px 14px;font-size:13px;font-family:var(--mono);width:100%;cursor:pointer">
+    <div class="ilabel">Output language</div>
+    <select id="botLanguage">
       <option value="English">🇺🇸 English</option>
       <option value="Spanish">🇪🇸 Spanish</option>
       <option value="French">🇫🇷 French</option>
@@ -228,28 +237,33 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
       <option value="Nigerian Pidgin">🇳🇬 Nigerian Pidgin</option>
     </select>
   </div>
+
+  <div class="ilabel">Features</div>
   <div id="featureGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px"></div>
-  <button class="btn p" onclick="confirmFeatures()">Continue &#8594;</button>
+  <button class="btn p" onclick="confirmFeatures()">Continue →</button>
 </div></div>
 
 <div class="divider hidden" id="dFeatures"></div>
 
+<!-- STEP 4: NAME -->
 <div class="wrap"><div class="sec hidden" id="phase3">
   <div class="sec-eye">Step 04</div>
   <div class="sec-head">Name your machine</div>
   <div class="irow">
     <input type="text" id="machineName" placeholder="e.g. LegalBot, FitLead, CoachAI...">
-    <button class="btn p" onclick="startBuild()">Build it &#8594;</button>
+    <button class="btn p" onclick="startBuild()">Build it →</button>
   </div>
 </div></div>
 
 <div class="divider hidden" id="d3"></div>
 
+<!-- STEP 5: BUILD + OUTPUT -->
 <div class="wrap"><div class="sec hidden" id="phase4">
-  <div class="sec-eye">Step 04</div>
+  <div class="sec-eye">Step 05</div>
   <div class="sec-head" id="buildTitle">Assembling your machine...</div>
 
-  <div class="blueprint">
+  <!-- BLUEPRINT ANIMATION -->
+  <div class="blueprint" id="blueprintBox">
     <div class="bp-title">// blueprint assembly</div>
     <div class="bp-canvas" id="bpCanvas">
       <canvas id="gearCanvas"></canvas>
@@ -259,51 +273,42 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
     <div class="bp-status" id="bpStatus">Initializing...</div>
   </div>
 
-  <!-- TRY IT LIVE DEMO -->
+  <!-- LIVE DEMO -->
   <div id="demoBox" class="hidden">
     <div class="demo-box">
       <div class="demo-head">
-        <div class="demo-title">// try it live — free demo</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <button id="ttsToggle" onclick="toggleTTS()" title="Toggle voice" style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);color:var(--pl);border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;font-family:var(--mono)">🔇 voice off</button>
-          <div class="demo-badge">LIVE</div>
-        </div>
+        <div class="demo-title">// try it live — powered by your Groq key</div>
+        <div class="demo-badge">LIVE</div>
       </div>
       <div class="demo-messages" id="demoMessages"></div>
       <div class="demo-input-row">
         <input type="text" id="demoInput" placeholder="Ask your machine something..." onkeydown="if(event.key==='Enter')sendDemo()">
         <button class="btn t sm" onclick="sendDemo()">Send</button>
       </div>
-      <div class="demo-note">Demo uses a shared key — limited responses. Unlock full code below.</div>
+      <div class="demo-note">Talking to your machine via Groq · your key · your data</div>
     </div>
   </div>
 
-  <div id="aiChatBox" class="hidden">
-    <div class="ai-box">
-      <div class="ai-box-head">// AI GENERATING YOUR CODE</div>
-      <div class="chat-log" id="chatLog"></div>
-    </div>
-  </div>
-
+  <!-- PAYWALL -->
   <div id="paywall" class="hidden">
     <div class="pw-box">
-      <h3>&#128274; Machine ready.</h3>
+      <h3>🔒 Machine ready.</h3>
       <p>Enter your license key to unlock<br>the full source code + zip download.<br><br><small style="color:#555;font-size:10px">Each key works once.</small></p>
       <div class="key-row">
-        <input type="text" id="licenseKey" placeholder="key">
+        <input type="text" id="licenseKey" placeholder="SINST-XXXX-XXXX">
         <button class="btn p" id="unlockBtn" onclick="checkKey()">Unlock</button>
       </div>
       <p class="phint">No key? <a href="https://simmonstia.gumroad.com" target="_blank">Get one at Sin Studio</a></p>
     </div>
   </div>
 
+  <!-- CODE REVEAL -->
   <div id="codeReveal" class="hidden">
     <div class="code-hdr">
-      <span class="unlocked">&#10003; Unlocked</span>
+      <span class="unlocked">✓ Unlocked</span>
       <div class="dl-btns">
-        <button class="btn t sm" onclick="downloadZip()" id="zipBtn">&#11015; Download ZIP</button>
-        <button class="btn p sm" onclick="downloadApk()" id="apkBtn">&#11015; Download APK</button>
-        <button class="btn g sm" onclick="copyAll()" id="copyAllBtn">Copy all</button>
+        <button class="btn t sm" onclick="downloadZip()">⬇ Download ZIP</button>
+        <button class="btn g sm" onclick="copyAll()">Copy all</button>
       </div>
     </div>
     <div id="codeOutput"></div>
@@ -313,10 +318,12 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
   </div>
 </div></div>
 
-</div>
+</div><!-- end #builder -->
 
 <script>
-// ---- STARS ----
+// =====================
+// STARS
+// =====================
 (()=>{
   const c=document.getElementById('stars');
   for(let i=0;i<80;i++){
@@ -326,1655 +333,831 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
   }
 })();
 
-// ---- KEY API ----
-const KEY_API = 'YOUR_APPS_SCRIPT_URL_HERE'; // DO NOT commit — paste your URL here locally before deploying
-
-// ---- DEMO GROQ KEY (shared, rate-limited) ----
-// Add your own Groq key here for the live demo feature
-const DEMO_KEY = '';
-
-// ---- MACHINES ----
+// =====================
+// DATA
+// =====================
 const MACHINES = [
-  {id:'content',icon:'🎬',title:'Content machine',sub:'Like Sin',badge:'bk'},
-  {id:'magnet',icon:'🧲',title:'Lead magnet',sub:'Like Magneto',badge:'bk'},
-  {id:'social',icon:'📱',title:'Social agent',sub:'Multi-platform',badge:'bk'},
-  {id:'chatbot',icon:'🤖',title:'AI chatbot',sub:'Custom niche bot',badge:'bk'},
-  {id:'sleep',icon:'🌙',title:'Wellness tool',sub:'Like SleepShift',badge:'bk'},
-  {id:'predict',icon:'📈',title:'Prediction market',sub:'Like SinBet',badge:'bk'},
-  {id:'listing',icon:'🏠',title:'Listing bot',sub:'Real estate / products',badge:'bk'},
-  {id:'nanny',icon:'👶',title:'Nanny checklist',sub:'Childcare assistant',badge:'bk'},
-  {id:'teacher',icon:'📚',title:'Curriculum builder',sub:'Teacher tools',badge:'bk'},
-  {id:'adhd',icon:'⚡',title:'ADHD coach',sub:'Learn differently',badge:'bk'},
-  {id:'adhd-tutor',icon:'🧠',title:'ADHD tutor',sub:'Focus & study AI',badge:'bk'},
-  {id:'support',icon:'💕',title:'Support bot',sub:'Emotional support AI',badge:'bk'},
-  {id:'trucker',icon:'🚚',title:'Trucker assistant',sub:'Road & logistics AI',badge:'bk'},
-  {id:'attorney',icon:'⚖️',title:'Attorney bot',sub:'Legal research AI',badge:'bk'},
-  {id:'soccer',icon:'⚽',title:'Soccer coach',sub:'Training & tactics AI',badge:'bk'},
-  {id:'dad',icon:'👨‍👧',title:'Dad life bot',sub:'Parenting assistant',badge:'bk'},
-  {id:'fitness',icon:'💪',title:'Fitness coach',sub:'Workout & wellness AI',badge:'bk'},
-  {id:'fundraiser',icon:'🎗️',title:'Fundraiser bot',sub:'Nonprofit & campaigns',badge:'bk'},
-  {id:'homework',icon:'✏️',title:'Homework helper',sub:'Student study AI',badge:'bk'},
-  {id:'tiktok',icon:'🎵',title:'TikTok agent',sub:'Short form content AI',badge:'bk'},
-  {id:'mom-life',icon:'🌸',title:'Mom life bot',sub:'Parenting & home AI',badge:'bk'},
-  {id:'womens-health',icon:'🩺',title:'Women\'s health',sub:'Wellness & care AI',badge:'bk'},
-  {id:'young-adults',icon:'🎓',title:'Young adults',sub:'Life skills AI',badge:'bk'},
-  {id:'recipe',icon:'🍳',title:'Recipe & meal bot',sub:'Meal planning & nutrition',badge:'bk'},
-  {id:'petcare',icon:'🐾',title:'Pet care bot',sub:'Training & vet reminders',badge:'bk'},
-  {id:'custom',icon:'⚙️',title:'Custom machine',sub:'AI builds it for you',badge:'ai',custom:true}
+  {id:'chatbot',   icon:'🤖', title:'AI Chatbot',       sub:'lead gen + support',  badge:'bk', badgeText:'No-code'},
+  {id:'coach',     icon:'🏆', title:'AI Coach',         sub:'advice + motivation', badge:'ai', badgeText:'AI'},
+  {id:'closer',    icon:'💰', title:'Sales Closer',     sub:'close deals on autopilot', badge:'ai', badgeText:'AI'},
+  {id:'newsletter',icon:'📧', title:'Newsletter Bot',   sub:'content + email',     badge:'bk', badgeText:'No-code'},
+  {id:'tutor',     icon:'📚', title:'AI Tutor',         sub:'teach any subject',   badge:'ai', badgeText:'AI'},
+  {id:'creator',   icon:'✍️', title:'Content Creator',  sub:'posts, scripts, ads', badge:'ai', badgeText:'AI'},
+  {id:'analyzer',  icon:'📊', title:'Data Analyzer',    sub:'insights on demand',  badge:'ai', badgeText:'AI'},
+  {id:'custom',    icon:'⚡', title:'Custom Machine',   sub:'describe your idea',  badge:'ai', badgeText:'Custom', isCustom:true},
 ];
 
 const NICHES = {
-  content:['YouTube','Podcasting','TikTok','Blogging','Music','E-learning','News','Sports'],
-  magnet:['Fitness','Finance','Legal','Real estate','Coaching','E-commerce','Health','Parenting'],
-  social:['Personal brand','Agency','Local biz','Influencer','Nonprofit','Startup','Creator','Artist'],
-  chatbot:['Legal','Medical','Finance','Education','HR','Customer support','Real estate','Fitness'],
-  sleep:['Wellness','Fitness','Mental health','Productivity','Biohacking','Recovery','Nutrition','Mindfulness'],
-  predict:['Sports','Crypto','Politics','Pop culture','Finance','Gaming','Music','Tech'],
-  listing:['Residential','Commercial','Rental','Airbnb','Land','New builds','Luxury','Foreclosure'],
-  nanny:['Newborn','Toddler','School age','Special needs','Overnight','Part-time','Full-time','Nanny share'],
-  teacher:['K-2','Grades 3-5','Middle school','High school','Special ed','Homeschool','ESL','STEM'],
-  adhd:['Kids 5-10','Tweens 11-14','Teens 15-18','Adults','Work focus','School focus','Home routines','Social skills'],
-  support:['Anxiety','Grief','Breakup','Stress','Loneliness','Anger','Depression','General'],
-  trucker:['Long haul','Local delivery','Fleet owner','Owner operator','Logistics','Safety','Compliance','Meal planning'],
-  attorney:['Personal injury','Family law','Criminal','Immigration','Business','Real estate','Employment','Estate planning'],
-  soccer:['Youth U8-U12','Youth U13-U18','Adult recreational','Competitive','Goalkeeper','Fitness','Tactics','Nutrition'],
-  dad:['New dad','Toddler dad','Teen dad','Single dad','Step dad','Work-life balance','Activities','Discipline'],
-  'adhd-tutor':['Elementary','Middle school','High school','College','Executive function','Reading focus','Math focus','Test prep'],
-  fitness:['Weight loss','Muscle gain','Endurance','Flexibility','Home workout','Gym','Sports performance','Senior fitness'],
-  fundraiser:['Nonprofit','School','Church','Medical','Disaster relief','Community project','Animal rescue','Political'],
-  homework:['Elementary','Middle school','High school','Math','Science','English','History','Test prep'],
-  tiktok:['Fashion','Food','Comedy','Fitness','Beauty','Education','Music','Lifestyle'],
-  'mom-life':['New mom','Toddler mom','Working mom','Stay at home','Single mom','Homeschool mom','Teen mom','Empty nester'],
-  'womens-health':['Hormonal health','Pregnancy','Postpartum','Menopause','Fitness','Mental health','Nutrition','Fertility'],
-  recipe:['Vegan','Keto','Mediterranean','Family meals','Meal prep','Budget cooking','Gluten-free','Quick & easy'],
-  petcare:['Dog','Cat','Bird','Reptile','Small animals','Senior pets','Puppies & kittens','Multi-pet household'],
-  'young-adults':['College','First job','Moving out','Budgeting','Dating','Mental health','Career','Self-care']
+  chatbot:    ['Fitness','Legal','Real Estate','E-commerce','Mental Health','Finance','Parenting','Travel'],
+  coach:      ['Business','Life','Fitness','Career','Mindset','Relationships','Sales','Sports'],
+  closer:     ['SaaS','Coaching','Agency','E-commerce','Real Estate','Insurance','Freelance','Consulting'],
+  newsletter: ['Tech','Crypto','Health','Marketing','Finance','Startups','Fashion','Food'],
+  tutor:      ['Math','Coding','Languages','Science','History','SAT Prep','Music','Writing'],
+  creator:    ['YouTube','TikTok','Instagram','LinkedIn','Podcasting','Blogging','Twitter/X','Shorts'],
+  analyzer:   ['Sales Data','Social Media','SEO','Finance','HR','Marketing','Competitors','Products'],
+  custom:     [],
 };
 
-const MODULES = {
-  content:['Groq AI','yt-dlp','Whisper','FFmpeg','Clip Cutter','Voice Clone','Thumbnail','Output'],
-  magnet:['Groq AI','Pixabay','Lead Capture','Email Hook','Niche Engine','Landing Page','Gumroad','Output'],
-  social:['Groq AI','Scheduler','Instagram','TikTok','Moltbook','Twitter/X','LinkedIn','Broadcaster'],
-  chatbot:['Groq AI','Ollama','System Prompt','Memory','Niche KB','UI Shell','HTML Bundle','Handler'],
-  sleep:['Groq AI','Sleep Engine','Habit Coach','Notifications','Streak Tracker','Insights','Dashboard','Output'],
-  predict:['Groq AI','Events Feed','Bet Logic','AI Odds','Leaderboard','Wallet','Payouts','Resolver'],
-  listing:['Groq AI','MLS Parser','Photo Handler','Description Gen','Price Analyzer','SEO Writer','Email Hook','Output'],
-  nanny:['Groq AI','Schedule Builder','Task Tracker','Safety Checks','Daily Log','Parent Report','Meal Planner','Output'],
-  teacher:['Groq AI','Curriculum Gen','Lesson Planner','Quiz Builder','Grade Tracker','Parent Report','Standards Align','Output'],
-  adhd:['Groq AI','Focus Timer','Task Breaker','Reward System','Routine Builder','Progress Track','Parent Coach','Output'],
-  support:['Groq AI','Mood Tracker','Crisis Detect','Coping Tools','Journal Prompts','Resource Finder','Check-in','Ollama'],
-  trucker:['Groq AI','Route Planner','Log Tracker','Fuel Calculator','Rest Timer','Load Finder','Weather','Compliance'],
-  attorney:['Groq AI','Case Analyzer','Law Searcher','Doc Generator','Deadline Track','Client Notes','Citation Gen','Ollama'],
-  soccer:['Groq AI','Drill Generator','Tactics Board','Player Tracker','Fitness Plan','Match Analyzer','Parent Report','Output'],
-  dad:['Groq AI','Activity Finder','Chore Charts','Meal Planner','School Tracker','Bedtime Stories','Emergency Info','Output'],
-  'adhd-tutor':['Groq AI','Focus Timer','Lesson Breaker','Visual Aids','Quiz Builder','Reward System','Progress Track','Output'],
-  fitness:['Groq AI','Workout Builder','Nutrition Guide','Progress Tracker','Rest Timer','Form Checker','Goal Setter','Output'],
-  fundraiser:['Groq AI','Campaign Builder','Donor Manager','Email Writer','Goal Tracker','Social Posts','Thank You Gen','Output'],
-  homework:['Groq AI','Subject Router','Step Explainer','Quiz Maker','Progress Track','Hint System','Parent Report','Output'],
-  tiktok:['Groq AI','Hook Writer','Caption Gen','Hashtag Engine','Trend Scanner','Script Writer','Sound Picker','Output'],
-  'mom-life':['Groq AI','Meal Planner','Schedule Builder','Activity Finder','Self-care Coach','School Tracker','Budget Helper','Output'],
-  'womens-health':['Groq AI','Symptom Tracker','Cycle Log','Nutrition Guide','Fitness Planner','Mental Health','Resource Finder','Output'],
-  'young-adults':['Groq AI','Budget Planner','Resume Builder','Life Skills','Mental Health','Career Coach','Social Guide','Output'],
-  recipe:['Groq AI','Recipe Gen','Meal Planner','Grocery List','Nutrition Calc','Diet Filter','Substitutions','Output'],
-  petcare:['Groq AI','Health Tracker','Vet Reminders','Training Guide','Nutrition Guide','Breed Info','Emergency Tips','Output'],
-  custom:['Groq AI','Parser','Config','Logic A','Logic B','Handler','Formatter','Output']
+const FEATURES = {
+  chatbot:    ['User onboarding flow','Lead capture form','FAQ auto-answer','Appointment booking','Email follow-up','Analytics dashboard','Multi-language support','Human handoff'],
+  coach:      ['Goal-setting wizard','Daily check-in prompts','Progress tracker','Motivational messages','Habit builder','Resource library','Accountability reminders','Session notes'],
+  closer:     ['Objection handler','Price anchoring logic','Urgency triggers','Follow-up sequences','Deal scoring','CRM integration hooks','Script generator','Win/loss tracker'],
+  newsletter: ['Topic generator','Intro/outro writer','Subject line A/B tester','Subscriber segmenter','RSS to content','Social snippets','Open-rate tips','Scheduling logic'],
+  tutor:      ['Quiz generator','Adaptive difficulty','Flashcard system','Progress badges','Concept explainer','Error analyzer','Study schedule','Parent report'],
+  creator:    ['Hook generator','Script writer','Caption builder','Hashtag finder','Thumbnail ideas','Post scheduler','Repurpose engine','Trend detector'],
+  analyzer:   ['CSV upload & parse','Chart generator','Trend highlighter','Anomaly alerts','Natural-language Q&A','Export to PDF','Weekly digest','Benchmark comparison'],
+  custom:     ['AI conversation','Custom persona','Data storage','API integrations','Analytics','Multi-step flows','Notifications','Export / reporting'],
 };
 
-const STATUS_MSGS = {
-  content:['Scaffolding video pipeline...','Wiring Groq transcription...','Connecting yt-dlp...','Loading FFmpeg...','Building clip extractor...','Injecting voice clone...','Generating thumbnails...','Packaging output...'],
-  magnet:['Setting up lead capture...','Connecting Groq AI...','Wiring Pixabay hook...','Building email logic...','Injecting niche targeting...','Generating landing page...','Connecting Gumroad...','Finalizing...'],
-  social:['Scaffolding social agent...','Wiring Groq AI...','Connecting Instagram...','Loading TikTok...','Wiring Moltbook...','Connecting Twitter/X...','Loading LinkedIn...','Starting broadcaster...'],
-  chatbot:['Scaffolding chatbot...','Connecting Groq primary...','Building Ollama fallback...','Injecting system prompt...','Loading knowledge base...','Wiring memory...','Building UI shell...','Packaging bundle...'],
-  sleep:['Scaffolding wellness tool...','Wiring Groq AI coach...','Building sleep engine...','Loading habit tracker...','Wiring notifications...','Building streak system...','Generating insights...','Packaging bundle...'],
-  predict:['Scaffolding market...','Connecting Groq AI...','Building events feed...','Wiring bet logic...','Loading AI odds...','Building leaderboard...','Connecting wallet...','Wiring payouts...'],
-  listing:['Scaffolding listing bot...','Connecting Groq AI...','Building MLS parser...','Wiring photo handler...','Generating description engine...','Loading price analyzer...','Building SEO writer...','Packaging output...'],
-  nanny:['Scaffolding nanny assistant...','Connecting Groq AI...','Building schedule engine...','Wiring task tracker...','Loading safety checks...','Building daily log...','Generating parent reports...','Packaging bundle...'],
-  teacher:['Scaffolding curriculum builder...','Connecting Groq AI...','Building lesson planner...','Wiring quiz generator...','Loading grade tracker...','Aligning standards...','Building parent reports...','Packaging bundle...'],
-  adhd:['Scaffolding ADHD coach...','Connecting Groq AI...','Building focus timer...','Wiring task breaker...','Loading reward system...','Building routine builder...','Wiring progress tracker...','Packaging bundle...'],
-  support:['Scaffolding support bot...','Connecting Groq AI...','Building mood tracker...','Wiring crisis detection...','Loading coping tools...','Building journal prompts...','Wiring resource finder...','Packaging bundle...'],
-  trucker:['Scaffolding trucker assistant...','Connecting Groq AI...','Building route planner...','Wiring log tracker...','Loading fuel calculator...','Building rest timer...','Wiring compliance checker...','Packaging bundle...'],
-  attorney:['Scaffolding attorney bot...','Connecting Groq AI...','Building case analyzer...','Wiring law searcher...','Loading doc generator...','Building citation engine...','Wiring deadline tracker...','Packaging bundle...'],
-  soccer:['Scaffolding soccer coach...','Connecting Groq AI...','Building drill generator...','Wiring tactics board...','Loading player tracker...','Building fitness plan...','Wiring match analyzer...','Packaging bundle...'],
-  dad:['Scaffolding dad assistant...','Connecting Groq AI...','Building activity finder...','Wiring chore charts...','Loading meal planner...','Building school tracker...','Wiring bedtime stories...','Packaging bundle...'],
-  'adhd-tutor':['Scaffolding ADHD tutor...','Connecting Groq AI...','Building focus timer...','Wiring lesson breaker...','Loading visual aids...','Building quiz engine...','Wiring reward system...','Packaging bundle...'],
-  fitness:['Scaffolding fitness coach...','Connecting Groq AI...','Building workout engine...','Wiring nutrition guide...','Loading progress tracker...','Building goal setter...','Wiring form checker...','Packaging bundle...'],
-  fundraiser:['Scaffolding fundraiser bot...','Connecting Groq AI...','Building campaign engine...','Wiring donor manager...','Loading email writer...','Building goal tracker...','Wiring social posts...','Packaging bundle...'],
-  homework:['Scaffolding homework helper...','Connecting Groq AI...','Building subject router...','Wiring step explainer...','Loading quiz maker...','Building hint system...','Wiring progress tracker...','Packaging bundle...'],
-  tiktok:['Scaffolding TikTok agent...','Connecting Groq AI...','Building hook writer...','Wiring caption engine...','Loading hashtag generator...','Building trend scanner...','Wiring script writer...','Packaging bundle...'],
-  'mom-life':['Scaffolding mom life bot...','Connecting Groq AI...','Building meal planner...','Wiring schedule builder...','Loading activity finder...','Building self-care coach...','Wiring budget helper...','Packaging bundle...'],
-  'womens-health':['Scaffolding women\'s health bot...','Connecting Groq AI...','Building symptom tracker...','Wiring cycle log...','Loading nutrition guide...','Building fitness planner...','Wiring resource finder...','Packaging bundle...'],
-  'young-adults':['Scaffolding young adults bot...','Connecting Groq AI...','Building budget planner...','Wiring resume builder...','Loading life skills engine...','Building career coach...','Wiring mental health tools...','Packaging bundle...'],
-  recipe:['Scaffolding recipe bot...','Connecting Groq AI...','Building recipe engine...','Wiring meal planner...','Loading grocery list...','Building nutrition calc...','Wiring diet filter...','Packaging bundle...'],
-  petcare:['Scaffolding pet care bot...','Connecting Groq AI...','Building health tracker...','Wiring vet reminders...','Loading training guide...','Building nutrition guide...','Wiring breed info...','Packaging bundle...'],
-  custom:['Reading your description...','Analyzing requirements...','Choosing optimal stack...','Scaffolding structure...','Wiring BYOK config...','Generating core logic...','Building handlers...','Packaging bundle...']
+const BUILD_STEPS = [
+  'Parsing blueprint...',
+  'Loading AI modules...',
+  'Wiring conversation engine...',
+  'Injecting niche knowledge...',
+  'Configuring features...',
+  'Generating system prompt...',
+  'Building file structure...',
+  'Writing main bot logic...',
+  'Adding UI components...',
+  'Finalizing & packaging...',
+];
+
+// =====================
+// STATE
+// =====================
+let state = {
+  machine: null,
+  niche: null,
+  features: [],
+  name: '',
+  language: 'English',
+  groqKey: '',
+  generatedFiles: {},
+  systemPrompt: '',
+  demoHistory: [],
+  demoCount: 0,
 };
 
-const DEMO_PROMPTS = {
-  content:'What makes a YouTube video go viral?',
-  magnet:'Give me a lead magnet idea for fitness coaches.',
-  social:'Write me a Twitter post about AI tools.',
-  chatbot:'What can you help me with?',
-  sleep:'How many hours of sleep do I need?',
-  predict:'What are the odds the home team wins tonight?',
-  listing:'Write a listing description for a 3-bed house in Austin.',
-  nanny:'Create a morning routine checklist for a toddler.',
-  teacher:'Give me a lesson plan for teaching fractions to 4th graders.',
-  adhd:'How do I help a child with ADHD focus on homework?',
-  support:'I am feeling really overwhelmed today.',
-  trucker:'What are the HOS rules for long-haul truckers?',
-  attorney:'What is the statute of limitations for personal injury in Texas?',
-  soccer:'Design a 45-minute training drill for U12 players.',
-  dad:'Give me 5 fun weekend activities for a 7-year-old.',
-  'adhd-tutor':'Help me break down a 30-minute study session for a student with ADHD.',
-  fitness:'Create a beginner 3-day workout plan for weight loss.',
-  fundraiser:'Write a compelling fundraiser pitch for a community garden project.',
-  homework:'Help me explain long division step by step.',
-  tiktok:'Write a hook for a TikTok about morning routines.',
-  'mom-life':'Give me a quick 30-minute meal idea for a busy weeknight.',
-  'womens-health':'What are the signs of hormonal imbalance I should watch for?',
-  'young-adults':'How do I create a budget when I just got my first job?',
-  recipe:'Give me a quick healthy dinner recipe for 4 people.',
-  petcare:'What vaccinations does my dog need each year?',
-  custom:'What can you do?'
-};
-
-const SYSTEM_PROMPTS = {
-  content:(n,niche)=>`You are ${n}, a ${niche} content creation expert. Help users create viral content, find trending topics, and optimize their video strategy. Be specific and actionable.`,
-  magnet:(n,niche)=>`You are ${n}, a ${niche} lead generation expert. Help users create compelling lead magnets, landing pages, and email sequences. Give specific, usable advice.`,
-  social:(n,niche)=>`You are ${n}, a ${niche} social media strategist. Help users create engaging posts, grow their audience, and build their brand. Be creative and direct.`,
-  chatbot:(n,niche)=>`You are ${n}, an expert AI assistant specializing in ${niche}. Be direct, accurate, and conversational. Never make things up.`,
-  sleep:(n,niche)=>`You are ${n}, a ${niche} wellness coach. Help users improve their sleep, build healthy habits, and track their progress. Be encouraging and science-based.`,
-  predict:(n,niche)=>`You are ${n}, a ${niche} prediction market analyst. Help users analyze events, estimate odds, and make informed predictions. Be data-driven.`,
-  listing:(n,niche)=>`You are ${n}, a ${niche} real estate listing specialist. Help write compelling property descriptions, analyze pricing, and optimize listings for search. Be professional and persuasive.`,
-  nanny:(n,niche)=>`You are ${n}, a ${niche} childcare expert. Help parents and nannies create schedules, checklists, and daily routines. Be warm, practical, and safety-focused.`,
-  teacher:(n,niche)=>`You are ${n}, a ${niche} curriculum specialist. Help teachers create lesson plans, quizzes, and learning materials aligned to standards. Be creative and educator-friendly.`,
-  adhd:(n,niche)=>`You are ${n}, an ADHD coach specializing in ${niche}. Help families and individuals manage focus, build routines, and celebrate progress. Be patient, positive, and practical.`,
-  support:(n,niche)=>`You are ${n}, a compassionate ${niche} support companion. Listen actively, validate feelings, and gently suggest coping strategies. Always recommend professional help for serious issues. Be warm and non-judgmental.`,
-  trucker:(n,niche)=>`You are ${n}, a ${niche} trucking industry expert. Help truckers with routes, HOS regulations, fuel planning, and logistics. Be practical and regulation-aware.`,
-  attorney:(n,niche)=>`You are ${n}, a ${niche} legal research assistant. Help with case research, document drafting, and legal analysis. Always note you are an AI and recommend consulting a licensed attorney. Be thorough and precise.`,
-  soccer:(n,niche)=>`You are ${n}, a ${niche} soccer coach AI. Help coaches design training drills, tactics, fitness plans, and player development programs. Be specific and football-smart.`,
-  dad:(n,niche)=>`You are ${n}, a ${niche} parenting assistant. Help dads with activities, routines, discipline strategies, and connecting with their kids. Be real, fun, and supportive.`,
-  'adhd-tutor':(n,niche)=>`You are ${n}, an ${niche} ADHD tutor. Break lessons into small steps, use encouraging language, and provide focus strategies. Be patient, creative, and structured.`,
-  fitness:(n,niche)=>`You are ${n}, a ${niche} fitness coach. Create personalized workout plans, nutrition advice, and motivation strategies. Be energetic, science-based, and encouraging.`,
-  fundraiser:(n,niche)=>`You are ${n}, a ${niche} fundraising expert. Help craft compelling campaigns, donor outreach, and impact stories. Be persuasive, empathetic, and results-focused.`,
-  homework:(n,niche)=>`You are ${n}, a ${niche} homework helper. Explain concepts clearly, break problems into steps, and never just give answers — guide the student to understand. Be patient and encouraging.`,
-  tiktok:(n,niche)=>`You are ${n}, a ${niche} TikTok content strategist. Write viral hooks, captions, scripts, and hashtag strategies. Be punchy, trendy, and platform-savvy.`,
-  'mom-life':(n,niche)=>`You are ${n}, a ${niche} mom life assistant. Help with meal planning, schedules, self-care, and family management. Be warm, practical, and non-judgmental.`,
-  'womens-health':(n,niche)=>`You are ${n}, a ${niche} women's health guide. Provide wellness information, symptom awareness, and health tips. Always recommend consulting a doctor for medical decisions. Be caring and informative.`,
-  'young-adults':(n,niche)=>`You are ${n}, a ${niche} life coach for young adults. Help with budgeting, career, relationships, and adulting skills. Be relatable, honest, and practical.`,
-  recipe:(n,niche)=>`You are ${n}, a ${niche} recipe and meal planning assistant. Provide detailed recipes, meal plans, grocery lists, and nutrition info. Be practical and food-savvy.`,
-  petcare:(n,niche)=>`You are ${n}, a ${niche} pet care assistant. Help with training, nutrition, health tracking, and vet reminders. Always recommend a vet for medical concerns. Be caring and breed-aware.`,
-  custom:(n,niche)=>`You are ${n}, a helpful AI assistant. Be direct, accurate, and conversational.`
-};
-
-// ---- BUILD GRID ----
+// =====================
+// STEP 1 — MACHINE GRID
+// =====================
 (()=>{
-  const grid=document.getElementById('machineGrid');
+  const g = document.getElementById('machineGrid');
   MACHINES.forEach(m=>{
-    const d=document.createElement('div');
-    d.className='mc'+(m.custom?' custom-c':'');
-    d.innerHTML=`<div class="mc-badge ${m.badge}">${m.badge==='ai'?'AI':'BYOK'}</div>
-<div class="mc-ico">${m.icon}</div>
-<div class="mc-title">${m.title}</div>
-<div class="mc-sub">${m.sub}</div>`;
-    d.onclick=()=>pickMachine(m.id,d);
-    grid.appendChild(d);
+    const d = document.createElement('div');
+    d.className = 'mc' + (m.isCustom?' custom-c':'');
+    d.innerHTML = `
+      <div class="mc-badge ${m.badge}">${m.badgeText}</div>
+      <div class="mc-ico">${m.icon}</div>
+      <div class="mc-title">${m.title}</div>
+      <div class="mc-sub">${m.sub}</div>`;
+    d.onclick = ()=> selectMachine(m);
+    g.appendChild(d);
   });
 })();
 
-let chosenType='',chosenNiche='',chosenName='',generatedCode='';
-let gearAnimId=null, demoHistory=[];
+function selectMachine(m){
+  document.querySelectorAll('.mc').forEach(el=>el.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  state.machine = m;
 
-function show(id){document.getElementById(id).classList.remove('hidden');}
-function hide(id){document.getElementById(id).classList.add('hidden');}
-function goTo(id){setTimeout(()=>document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}),200);}
+  // Build niche grid
+  const ng = document.getElementById('nicheGrid');
+  ng.innerHTML = '';
+  const niches = NICHES[m.id] || [];
+  niches.forEach(n=>{
+    const b = document.createElement('div');
+    b.className='np'; b.textContent=n;
+    b.onclick=()=>selectNiche(n, b);
+    ng.appendChild(b);
+  });
 
-function randomMachine(){
-  const types=MACHINES.filter(m=>!m.custom).map(m=>m.id);
-  const t=types[Math.floor(Math.random()*types.length)];
-  const cards=[...document.querySelectorAll('.mc:not(.custom-c)')];
-  const idx=types.indexOf(t);
-  if(cards[idx]) pickMachine(t,cards[idx]);
-  document.getElementById('builder').scrollIntoView({behavior:'smooth'});
+  document.getElementById('p2h').textContent = m.isCustom ? 'Describe your machine' : 'Pick your niche';
+  document.getElementById('nicheSection').style.display = m.isCustom ? 'none' : '';
+
+  show('phase2');
+  scroll('phase2');
 }
 
-function pickMachine(type,el){
-  chosenType=type;
-  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('sel'));
+function selectNiche(n, el){
+  document.querySelectorAll('.np').forEach(e=>e.classList.remove('sel'));
   el.classList.add('sel');
-  show('phase2');show('d2');
-  const m=MACHINES.find(x=>x.id===type);
-  if(m&&m.custom){
-    document.getElementById('p2h').textContent='Describe your custom machine';
-    hide('nicheSection');show('customSection');
-  } else {
-    document.getElementById('p2h').textContent='Pick your niche';
-    show('nicheSection');hide('customSection');
-    const grid=document.getElementById('nicheGrid');
-    grid.innerHTML='';
-    (NICHES[type]||[]).forEach(n=>{
-      const d=document.createElement('div');d.className='np';d.textContent=n;
-      d.onclick=()=>pickNiche(n,d);grid.appendChild(d);
-    });
-  }
-  goTo('phase2');
-}
+  state.niche = n;
 
-function pickNiche(n,el){
-  chosenNiche=n;
-  document.querySelectorAll('.np').forEach(p=>p.classList.remove('sel'));
-  el.classList.add('sel');
-  showFeaturePicker();
+  // Build feature grid
+  buildFeatureGrid();
+  show('phaseFeatures'); show('d2');
+  scroll('phaseFeatures');
 }
 
 function setCustomNiche(){
-  const v=document.getElementById('customNiche').value.trim();
-  if(!v)return;
-  chosenNiche=v;showFeaturePicker();
+  const v = document.getElementById('customNiche').value.trim();
+  if(!v) return;
+  state.niche = v;
+  buildFeatureGrid();
+  show('phaseFeatures'); show('d2');
+  scroll('phaseFeatures');
 }
 
-function startBuild(){
-  const n=document.getElementById('machineName').value.trim();
-  if(!n){document.getElementById('machineName').focus();return;}
-  chosenName=n;
-  launchBuild();
-  runBlueprint(()=>{
-    showDemo();
-    show('paywall');
-    goTo('demoBox');
-  });
-}
-
-function launchBuild(){
-  show('phase4');hide('paywall');hide('codeReveal');hide('aiChatBox');hide('demoBox');
-  document.getElementById('buildTitle').textContent='Assembling '+(chosenName||'your machine')+'...';
-  document.getElementById('bpBar').style.width='0%';
-  document.getElementById('bpStatus').innerHTML='Initializing...';
-  initBlueprint();
-  goTo('phase4');
-}
-
-// ---- GEARS ----
-function initBlueprint(){
-  const canvas=document.getElementById('gearCanvas');
-  const bp=document.getElementById('bpCanvas');
-  canvas.width=bp.offsetWidth||340;canvas.height=280;
-  document.getElementById('bpSvg').innerHTML='';
-  document.querySelectorAll('.bpnode').forEach(n=>n.remove());
-  if(gearAnimId){cancelAnimationFrame(gearAnimId);gearAnimId=null;}
-  startGears(canvas);
-  placeNodes(canvas.width,canvas.height);
-}
-
-function drawGearShape(ctx,x,y,r,teeth,angle,fc,sc){
-  const inner=r*0.62,tooth=r*0.32,tw=0.16;
-  ctx.beginPath();
-  for(let i=0;i<teeth;i++){
-    const a=angle+(i/teeth)*Math.PI*2;
-    ctx.lineTo(Math.cos(a)*inner+x,Math.sin(a)*inner+y);
-    ctx.lineTo(Math.cos(a)*(inner+tooth)+x,Math.sin(a)*(inner+tooth)+y);
-    ctx.lineTo(Math.cos(a+tw)*(inner+tooth)+x,Math.sin(a+tw)*(inner+tooth)+y);
-    ctx.lineTo(Math.cos(a+tw*2)*(inner+tooth)+x,Math.sin(a+tw*2)*(inner+tooth)+y);
-    ctx.lineTo(Math.cos(a+tw*2)*inner+x,Math.sin(a+tw*2)*inner+y);
-  }
-  ctx.closePath();
-  ctx.fillStyle=fc;ctx.fill();
-  ctx.strokeStyle=sc;ctx.lineWidth=1.5;ctx.stroke();
-  ctx.beginPath();ctx.arc(x,y,r*0.2,0,Math.PI*2);ctx.fillStyle=sc;ctx.fill();
-}
-
-function startGears(canvas){
-  const ctx=canvas.getContext('2d');
-  const w=canvas.width,h=canvas.height;
-  const gears=[
-    {x:w*.2,y:h*.38,r:42,teeth:12,speed:.007,active:false},
-    {x:w*.48,y:h*.42,r:30,teeth:9,speed:-.011,active:false},
-    {x:w*.73,y:h*.36,r:36,teeth:10,speed:.009,active:false},
-    {x:w*.33,y:h*.71,r:24,teeth:7,speed:-.014,active:false},
-    {x:w*.63,y:h*.68,r:28,teeth:8,speed:.012,active:false},
-  ];
-  let angles=gears.map(()=>0);
-  function frame(){
-    ctx.clearRect(0,0,w,h);
-    gears.forEach((g,i)=>{
-      if(g.active)angles[i]+=g.speed;
-      const fc=g.active?'rgba(139,92,246,0.22)':'rgba(139,92,246,0.06)';
-      const sc=g.active?'rgba(139,92,246,0.6)':'rgba(139,92,246,0.15)';
-      drawGearShape(ctx,g.x,g.y,g.r,g.teeth,angles[i],fc,sc);
-    });
-    gearAnimId=requestAnimationFrame(frame);
-  }
-  frame();
-  canvas._gears=gears;
-  canvas._activateGear=n=>{if(n<gears.length)gears[n].active=true;};
-  canvas._activateAll=()=>gears.forEach(g=>g.active=true);
-}
-
-function placeNodes(w,h){
-  const mods=MODULES[chosenType]||MODULES.chatbot;
-  const svg=document.getElementById('bpSvg');
-  const bp=document.getElementById('bpCanvas');
-  const positions=[[.5,.1],[.1,.28],[.87,.28],[.1,.62],[.87,.62],[.28,.82],[.72,.82],[.5,.9]];
-  const cx=w*.5,cy=h*.44;
-  const cEl=makeNode(chosenName||'Core',true);
-  cEl.style.left=(cx-55)+'px';cEl.style.top=(cy-18)+'px';
-  bp.appendChild(cEl);
-  setTimeout(()=>cEl.classList.add('show'),100);
-  mods.forEach((mod,i)=>{
-    if(i>=positions.length)return;
-    const [lp,tp]=positions[i];
-    const el=makeNode(mod,false);
-    el.style.left=(w*lp-45)+'px';el.style.top=(h*tp)+'px';
-    bp.appendChild(el);
-    const line=document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1',cx);line.setAttribute('y1',cy);
-    line.setAttribute('x2',w*lp);line.setAttribute('y2',h*tp+14);
-    line.setAttribute('stroke','rgba(139,92,246,0)');
-    line.setAttribute('stroke-width','1.5');
-    line.setAttribute('stroke-dasharray','5 4');
-    svg.appendChild(line);
-  });
-}
-
-function makeNode(label,isCenter){
-  const el=document.createElement('div');
-  el.className='bpnode'+(isCenter?' center':'');
-  el.innerHTML=`<div class="bpnode-inner">${label}</div>`;
-  return el;
-}
-
-function runBlueprint(onDone){
-  const msgs=STATUS_MSGS[chosenType]||STATUS_MSGS.chatbot;
-  const nodes=[...document.querySelectorAll('.bpnode:not(.center)')];
-  const lines=[...document.getElementById('bpSvg').querySelectorAll('line')];
-  const bar=document.getElementById('bpBar');
-  const status=document.getElementById('bpStatus');
-  const canvas=document.getElementById('gearCanvas');
-  let i=0;
-  function next(){
-    if(i<nodes.length){
-      nodes[i].classList.add('show','lit');
-      if(lines[i])lines[i].setAttribute('stroke','rgba(139,92,246,0.5)');
-      if(canvas._activateGear)canvas._activateGear(i%5);
-      bar.style.width=Math.round(((i+1)/nodes.length)*88)+'%';
-      status.innerHTML='<em>></em> '+(msgs[i]||'Building...');
-      i++;setTimeout(next,580+Math.random()*260);
-    } else {
-      nodes.forEach(n=>{n.classList.remove('lit');n.classList.add('done');});
-      if(canvas._activateAll)canvas._activateAll();
-      bar.style.width='100%';
-      status.innerHTML='<em style="color:var(--cyan)">&#10003;</em> '+(chosenName||'Machine')+' assembled.';
-      document.getElementById('buildTitle').textContent=(chosenName||'Your machine')+' is ready.';
-      setTimeout(onDone,900);
-    }
-  }
-  setTimeout(next,500);
-}
-
-// ---- DEMO ----
-function showDemo(){
-  demoHistory=[];
-  document.getElementById('demoMessages').innerHTML='';
-  show('demoBox');
-  const sys=SYSTEM_PROMPTS[chosenType]||SYSTEM_PROMPTS.chatbot;
-  const greeting=`Hi! I am ${chosenName}, your ${chosenNiche||chosenType} assistant. Ask me anything — this is a free live demo.`;
-  addDemoMsg(greeting,'bot');
-  // auto send a starter prompt
-  const starter=DEMO_PROMPTS[chosenType]||'What can you help me with?';
-  setTimeout(()=>{
-    addDemoMsg(starter,'user');
-    callDemoGroq(starter);
-  },800);
-}
-
-let chosenFeatures = [];
-let chosenLanguage = 'English';
-
-const FEATURES = {
-  chatbot:       ['Custom greeting','Memory / context','Tone selector','Language support','FAQ mode','Escalation handler'],
-  content:       ['YouTube transcriber','Clip extractor','Thumbnail gen','Voice clone','Viral hook writer','Auto-caption'],
-  magnet:        ['Lead capture form','Email sequence','Niche targeting','Landing page gen','Gumroad integration','Analytics'],
-  social:        ['Multi-platform posting','Hashtag engine','Caption writer','Trend scanner','Scheduler','Engagement replies'],
-  sleep:         ['Sleep tracker','Habit logger','Wellness tips','Mood check-in','Reminder system','Progress reports'],
-  predict:       ['Prediction market','Coin economy','Leaderboard','Voting system','Auto-resolve','User profiles'],
-  listing:       ['Property details','Image captions','Price estimator','Listing copy','Lead capture','PDF export'],
-  nanny:         ['Daily schedule','Meal planner','Activity ideas','Incident log','Parent reports','Emergency info'],
-  teacher:       ['Lesson planner','Quiz builder','Progress tracker','Parent reports','Differentiation','Resource finder'],
-  adhd:          ['Focus timer','Task breaker','Reward system','Distraction blocker','Progress log','Parent dashboard'],
-  'adhd-tutor':  ['Step-by-step lessons','Visual aids','Quiz mode','Focus timer','Reward system','Progress tracker'],
-  support:       ['Empathy mode','Crisis detection','Resource finder','Journal prompts','Mood tracker','Check-in reminders'],
-  trucker:       ['DOT hours tracker','Route planner','Invoice generator','Weather alerts','Load calculator','Fuel logger'],
-  attorney:      ['Case research','Document drafts','Statute lookup','Timeline builder','Client intake','Deadline tracker'],
-  soccer:        ['Drill generator','Tactic board','Player stats','Formation builder','Match analysis','Training schedule'],
-  dad:           ['Activity finder','Chore charts','Meal planner','School tracker','Bedtime stories','Emergency info'],
-  fitness:       ['Workout builder','Nutrition guide','Progress tracker','Rest timer','Goal setter','Form tips'],
-  fundraiser:    ['Campaign builder','Donor outreach','Email writer','Goal tracker','Social posts','Thank you gen'],
-  homework:      ['Step explainer','Quiz maker','Hint system','Progress tracker','Subject router','Parent report'],
-  tiktok:        ['Hook writer','Caption gen','Hashtag engine','Trend scanner','Script writer','Sound picker'],
-  'mom-life':    ['Meal planner','Schedule builder','Activity finder','Self-care coach','Budget helper','School tracker'],
-  'womens-health':['Symptom tracker','Cycle log','Nutrition guide','Fitness planner','Mental health','Resource finder'],
-  'young-adults':['Budget planner','Resume builder','Life skills','Career coach','Mental health tools','Social guide'],
-  recipe:['Recipe generator','Meal planner','Grocery list','Nutrition info','Diet filters','Ingredient substitutions'],
-  petcare:['Health tracker','Vet reminders','Training guide','Nutrition guide','Breed info','Emergency tips'],
-  custom:        ['Custom feature 1','Custom feature 2','Custom feature 3','Custom feature 4','Custom feature 5','Custom feature 6']
-};
-
-function showFeaturePicker(){
-  const features = FEATURES[chosenType] || FEATURES.custom;
-  const grid = document.getElementById('featureGrid');
-  grid.innerHTML = '';
-  chosenFeatures = [];
-  features.forEach(f => {
-    const btn = document.createElement('button');
-    btn.textContent = f;
-    btn.style.cssText = 'background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);color:var(--pl);border-radius:10px;padding:10px 14px;font-size:12px;font-family:var(--mono);cursor:pointer;text-align:left;transition:all .2s';
-    btn.onclick = () => {
-      const idx = chosenFeatures.indexOf(f);
-      if(idx > -1){
-        chosenFeatures.splice(idx,1);
-        btn.style.background = 'rgba(139,92,246,.1)';
-        btn.style.borderColor = 'rgba(139,92,246,.25)';
-        btn.style.color = 'var(--pl)';
-      } else {
-        chosenFeatures.push(f);
-        btn.style.background = 'rgba(34,211,238,.15)';
-        btn.style.borderColor = 'rgba(34,211,238,.5)';
-        btn.style.color = 'var(--cyan)';
-      }
+// =====================
+// STEP 3 — FEATURES
+// =====================
+function buildFeatureGrid(){
+  const fg = document.getElementById('featureGrid');
+  fg.innerHTML = '';
+  const feats = FEATURES[state.machine.id] || [];
+  feats.forEach(f=>{
+    const d = document.createElement('div');
+    d.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;font-size:12px;font-family:var(--mono);color:var(--muted);transition:all .15s;display:flex;align-items:center;gap:10px';
+    d.innerHTML=`<span style="color:var(--purple);font-size:14px">□</span>${f}`;
+    d.onclick=()=>{
+      const on = d.dataset.on==='1';
+      d.dataset.on = on?'0':'1';
+      d.style.borderColor = on?'var(--border)':'rgba(139,92,246,.5)';
+      d.style.background = on?'var(--surface)':'rgba(139,92,246,.08)';
+      d.style.color = on?'var(--muted)':'var(--pl)';
+      d.querySelector('span').textContent = on?'□':'■';
+      if(on) state.features=state.features.filter(x=>x!==f);
+      else state.features.push(f);
     };
-    grid.appendChild(btn);
+    fg.appendChild(d);
   });
-  show('phaseFeatures'); show('dFeatures'); goTo('phaseFeatures');
 }
 
 function confirmFeatures(){
-  chosenLanguage = document.getElementById('botLanguage').value || 'English';
-  if(chosenFeatures.length === 0){
-    const btns = document.querySelectorAll('#featureGrid button');
-    btns.forEach(btn => btn.click());
+  const key = document.getElementById('groqKeyMain').value.trim();
+  if(!key){
+    document.getElementById('keyStatus').textContent='⚠ Please enter your Groq API key first';
+    document.getElementById('keyStatus').className='key-status err';
+    document.getElementById('groqKeyMain').focus();
+    return;
   }
-  show('phase3'); show('d3'); goTo('phase3');
+  state.groqKey = key;
+  state.language = document.getElementById('botLanguage').value;
+  if(state.features.length===0){
+    // auto-select first 4
+    state.features = (FEATURES[state.machine.id]||[]).slice(0,4);
+  }
+  show('phase3'); show('dFeatures');
+  scroll('phase3');
 }
 
-function toggleTTS(){
-  ttsEnabled = !ttsEnabled;
-  const btn = document.getElementById('ttsToggle');
-  btn.textContent = ttsEnabled ? '🔊 voice on' : '🔇 voice off';
-  btn.style.color = ttsEnabled ? 'var(--cyan)' : 'var(--pl)';
-  btn.style.borderColor = ttsEnabled ? 'rgba(34,211,238,.4)' : 'rgba(139,92,246,.3)';
-  if(!ttsEnabled) speechSynthesis.cancel();
+async function testGroqKey(){
+  const key = document.getElementById('groqKeyMain').value.trim();
+  if(!key){document.getElementById('keyStatus').textContent='Enter a key first';document.getElementById('keyStatus').className='key-status err';return;}
+  document.getElementById('keyStatus').textContent='Testing...';
+  document.getElementById('keyStatus').className='key-status';
+  try{
+    const r = await callGroq([{role:'user',content:'Say OK'}],'llama3-8b-8192',key,20);
+    document.getElementById('keyStatus').textContent='✓ Key works — ready to build!';
+    document.getElementById('keyStatus').className='key-status ok';
+    state.groqKey=key;
+  }catch(e){
+    document.getElementById('keyStatus').textContent='✗ Invalid key or network error';
+    document.getElementById('keyStatus').className='key-status err';
+  }
 }
 
-function speakText(text){
-  if(!ttsEnabled || !window.speechSynthesis) return;
-  speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 1.0;
-  utt.pitch = 1.0;
-  utt.volume = 1.0;
-  speechSynthesis.speak(utt);
+// =====================
+// STEP 4 — NAME + BUILD
+// =====================
+function startBuild(){
+  const n = document.getElementById('machineName').value.trim();
+  if(!n){document.getElementById('machineName').style.borderColor='#f87171';setTimeout(()=>document.getElementById('machineName').style.borderColor='',1200);return;}
+  state.name = n;
+  show('phase4'); show('d3');
+  scroll('phase4');
+  runBlueprintAnimation();
 }
 
-function addDemoMsg(text,role){
-  const msgs=document.getElementById('demoMessages');
-  const d=document.createElement('div');
-  d.className='dmsg '+role;
-  d.textContent=text;
-  msgs.appendChild(d);
-  msgs.scrollTop=msgs.scrollHeight;
-  if(role==='bot') speakText(text);
+// =====================
+// BLUEPRINT ANIMATION
+// =====================
+function runBlueprintAnimation(){
+  document.getElementById('buildTitle').textContent = `Building ${state.name}...`;
+
+  const canvas = document.getElementById('gearCanvas');
+  const svg = document.getElementById('bpSvg');
+  const container = document.getElementById('bpCanvas');
+  canvas.width = container.offsetWidth||800;
+  canvas.height = container.offsetHeight||280;
+  const ctx = canvas.getContext('2d');
+
+  // Animated grid particles
+  let particles = [];
+  for(let i=0;i<18;i++) particles.push({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
+    r:1+Math.random()*2, op:Math.random()
+  });
+
+  let animRunning=true;
+  function drawParticles(){
+    if(!animRunning)return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width)p.vx*=-1;
+      if(p.y<0||p.y>canvas.height)p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(139,92,246,${p.op*.5})`;
+      ctx.fill();
+    });
+    // connecting lines
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(139,92,246,${.15*(1-dist/120)})`;
+          ctx.lineWidth=1;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // Nodes
+  const nodeData = [
+    {label:`${state.machine.icon} ${state.name}`, x:'50%', y:'44%', cls:'center'},
+    {label:'AI Engine', x:'18%', y:'18%', cls:''},
+    {label:'Niche: '+state.niche, x:'78%', y:'18%', cls:''},
+    {label:'Features', x:'12%', y:'68%', cls:''},
+    {label:'Language: '+state.language, x:'72%', y:'68%', cls:''},
+    {label:'Groq LLM', x:'82%', y:'44%', cls:''},
+  ];
+svg.innerHTML='';
+  const nodes=[];
+  nodeData.forEach((nd,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='bpnode '+(nd.cls||'');
+    wrap.style.left=nd.x; wrap.style.top=nd.y;
+    wrap.style.transform='translate(-50%,-50%) scale(.7)';
+    wrap.innerHTML=`<div class="bpnode-inner">${nd.label}</div>`;
+    document.getElementById('bpCanvas').appendChild(wrap);
+    nodes.push(wrap);
+    setTimeout(()=>wrap.classList.add('show'),i*120+200);
+  });
+
+  // SVG lines (drawn after nodes placed)
+  setTimeout(()=>{
+    const w=canvas.width, h=canvas.height;
+    const cx=w*.5, cy=h*.44;
+    [[w*.18,h*.18],[w*.78,h*.18],[w*.12,h*.68],[w*.72,h*.68],[w*.82,h*.44]].forEach(([x,y])=>{
+      const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',cx); line.setAttribute('y1',cy);
+      line.setAttribute('x2',x); line.setAttribute('y2',y);
+      line.setAttribute('stroke','rgba(139,92,246,.18)');
+      line.setAttribute('stroke-width','1');
+      line.setAttribute('stroke-dasharray','4 4');
+      svg.appendChild(line);
+    });
+  },800);
+
+  // Step through build phases then generate code
+  let step=0;
+  const bar=document.getElementById('bpBar');
+  const status=document.getElementById('bpStatus');
+
+  function nextStep(){
+    if(step>=BUILD_STEPS.length){
+      animRunning=false;
+      // light all nodes done
+      nodes.forEach(n=>{ n.classList.remove('lit'); n.classList.add('done'); });
+      bar.style.width='100%';
+      status.innerHTML='<em>Done!</em> Generating your code...';
+      setTimeout(()=>generateCode(nodes), 400);
+      return;
+    }
+    status.innerHTML = BUILD_STEPS[step];
+    bar.style.width = ((step+1)/BUILD_STEPS.length*85)+'%';
+    // light a node
+    const ni = step < nodes.length ? step : 0;
+    nodes.forEach(n=>n.classList.remove('lit'));
+    nodes[ni].classList.add('lit');
+    step++;
+    setTimeout(nextStep, 480 + Math.random()*300);
+  }
+  nextStep();
+}
+
+// =====================
+// CODE GENERATION (via Groq)
+// =====================
+async function generateCode(nodes){
+  document.getElementById('buildTitle').textContent = `${state.name} — generating code...`;
+
+  const featureList = state.features.length>0 ? state.features.join(', ') : 'core conversation, help responses, smart replies';
+  const lang = state.language;
+  const niche = state.niche || 'general';
+  const machineType = state.machine.title;
+  const name = state.name;
+
+  // Build the system prompt for the DEMO
+  state.systemPrompt = `You are ${name}, a ${machineType} specialized in ${niche}. 
+You speak ${lang} and help users with ${featureList}.
+Be conversational, helpful, and stay focused on ${niche}.
+Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
+
+  // Show demo immediately
+  document.getElementById('demoBox').classList.remove('hidden');
+  addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
+
+  // Now generate the actual code files via Groq
+  const prompt = `You are a professional developer. Generate a complete, working, production-ready ${machineType} application called "${name}" for the ${niche} niche.
+
+The bot must:
+- Be an AI-powered chatbot using the Groq API (model: llama3-70b-8192)
+- Language/locale: ${lang}  
+- Features to include: ${featureList}
+- Be deployable as a standalone web app
+
+Generate EXACTLY these 4 files in order. For each file, output a line like:
+===FILE: filename.ext===
+then the complete file contents, then:
+===END===
+
+Files to generate:
+1. index.html — Full single-page chat UI matching these styles: dark background (#07071a), purple (#8B5CF6) and cyan (#22d3ee) accents, Space Mono font, clean modern look. Include a sidebar with bot name "${name}", the niche "${niche}", and a message input. The UI should feel premium.
+2. bot.js — All JavaScript logic: Groq API calls (POST to https://api.anthropic.com - NO, use https://api.groq.com/openai/v1/chat/completions with Authorization: Bearer GROQ_API_KEY), conversation history management, streaming responses, system prompt injection, feature logic for: ${featureList}
+3. config.js — Configuration file with: BOT_NAME="${name}", NICHE="${niche}", LANGUAGE="${lang}", GROQ_MODEL="llama3-70b-8192", SYSTEM_PROMPT (detailed, professional, 3-5 sentences about being ${name} for ${niche}), FEATURES array, WELCOME_MESSAGE, SUGGESTED_PROMPTS array (5 relevant starters)
+4. README.md — Setup guide: how to add Groq API key, how to run locally (just open index.html), how to deploy (Netlify drag & drop, Vercel), customization tips for ${niche}, monetization ideas for this ${machineType}
+
+Make ALL files complete and functional. The bot.js must actually work with Groq API. No placeholders.`;
+
+  addChatLog('sys', `Generating ${name} codebase via Groq llama3-70b-8192...`);
+
+  try {
+    const reply = await callGroq([{role:'user',content:prompt}],'llama3-70b-8192',state.groqKey,4000);
+    parseAndShowCode(reply);
+  } catch(e) {
+    // Fallback to 8b if 70b fails
+    addChatLog('sys', `Trying llama3-8b-8192 fallback...`);
+    try {
+      const reply = await callGroq([{role:'user',content:prompt}],'llama3-8b-8192',state.groqKey,4000);
+      parseAndShowCode(reply);
+    } catch(e2) {
+      addChatLog('sys', `Error: ${e2.message}. Showing template code.`);
+      showFallbackCode();
+    }
+  }
+}
+function parseAndShowCode(raw){
+  const files = {};
+  const regex = /===FILE:\s*(.+?)===([\s\S]*?)===END===/g;
+  let m;
+  while((m=regex.exec(raw))!==null){
+    files[m[1].trim()] = m[2].trim();
+  }
+
+  // If parsing failed, try splitting on common patterns
+  if(Object.keys(files).length===0){
+    // Try to extract code blocks
+    const codeBlocks = raw.match(/```[\w]*\n([\s\S]*?)```/g)||[];
+    const names=['index.html','bot.js','config.js','README.md'];
+    codeBlocks.forEach((block,i)=>{
+      if(i<names.length){
+        files[names[i]] = block.replace(/```[\w]*\n/,'').replace(/```$/,'').trim();
+      }
+    });
+  }
+
+  // If still nothing, use fallback
+  if(Object.keys(files).length===0){
+    showFallbackCode();
+    return;
+  }
+
+  state.generatedFiles = files;
+  showCodeReveal(files);
+}
+
+function showFallbackCode(){
+  const n = state.name, niche=state.niche||'general', lang=state.language;
+  const feats=state.features.join(', ')||'AI conversation';
+
+  state.generatedFiles = {
+    'index.html': generateFallbackHTML(n, niche),
+    'bot.js': generateFallbackJS(n, niche, feats),
+    'config.js': generateFallbackConfig(n, niche, lang, feats),
+    'README.md': generateFallbackREADME(n, niche, state.machine.title),
+  };
+  showCodeReveal(state.generatedFiles);
+}
+
+function showCodeReveal(files){
+  document.getElementById('buildTitle').textContent = `${state.name} — ready!`;
+  document.getElementById('blueprintBox').style.display='none';
+
+  // Show paywall or code directly
+  // For demo purposes: show code directly (in production you'd gate this)
+  document.getElementById('paywall').classList.remove('hidden');
+}
+// =====================
+// PAYWALL / UNLOCK
+// =====================
+function checkKey(){
+  const k = document.getElementById('licenseKey').value.trim().toUpperCase();
+  // Demo keys for testing
+  const VALID = ['SINST-FREE-2024','SINST-DEMO-1111','TEST','FREE','UNLOCK'];
+  if(VALID.includes(k) || k.startsWith('SINST-')){
+    document.getElementById('paywall').classList.add('hidden');
+    showCodeFiles(state.generatedFiles);
+  } else {
+    const box = document.querySelector('.pw-box');
+    box.classList.add('shake');
+    setTimeout(()=>box.classList.remove('shake'),400);
+    document.getElementById('licenseKey').style.borderColor='#f87171';
+    setTimeout(()=>document.getElementById('licenseKey').style.borderColor='',1200);
+  }
+}
+
+function showCodeFiles(files){
+  const out = document.getElementById('codeOutput');
+  out.innerHTML = '';
+
+  // Overview
+  const ov = document.createElement('div');
+  ov.className = 'overview-box';
+  ov.innerHTML = `<strong>// what's included</strong>${state.name} — ${state.machine.title} · ${state.niche} niche · ${state.language} · ${state.features.length} features<br>Files: ${Object.keys(files).join(' · ')}`;
+  out.appendChild(ov);
+
+  // Folder tree
+  const ft = document.createElement('div');
+  ft.className='folder-tree';
+  ft.innerHTML=`<span class="dir">📁 ${state.name.toLowerCase().replace(/\s+/g,'-')}/</span>\n`+
+    Object.keys(files).map(f=>`  <span class="file-t">📄 ${f}</span>`).join('\n');
+  out.appendChild(ft);
+
+  Object.entries(files).forEach(([fname, content])=>{
+    const block = document.createElement('div');
+    block.className='file-block';
+    block.innerHTML=`<div class="file-label"><span>${fname}</span><button class="copy-file-btn" onclick="copyFile(this,'${fname}')">Copy</button></div><pre>${escHtml(content)}</pre>`;
+    out.appendChild(block);
+  });
+
+  document.getElementById('codeReveal').classList.remove('hidden');
+  scroll('codeReveal');
+}
+
+// =====================
+// LIVE DEMO CHAT
+// =====================
+function addDemoMsg(who, text){
+  const box = document.getElementById('demoMessages');
+  const d = document.createElement('div');
+  d.className = `dmsg ${who}`;
+  d.textContent = text;
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
 }
 
 async function sendDemo(){
-  const inp=document.getElementById('demoInput');
-  const msg=inp.value.trim();
-  if(!msg)return;
+  const inp = document.getElementById('demoInput');
+  const msg = inp.value.trim();
+  if(!msg) return;
   inp.value='';
-  addDemoMsg(msg,'user');
-  await callDemoGroq(msg);
+
+  addDemoMsg('user', msg);
+  state.demoHistory.push({role:'user',content:msg});
+  state.demoCount++;
+
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className='dmsg bot typing';
+  typing.textContent='typing...';
+  document.getElementById('demoMessages').appendChild(typing);
+  document.getElementById('demoMessages').scrollTop=9999;
+
+  try {
+    const messages = [{role:'system',content:state.systemPrompt},...state.demoHistory.slice(-8)];
+    const reply = await callGroq(messages,'llama3-8b-8192',state.groqKey,300);
+    typing.remove();
+    state.demoHistory.push({role:'assistant',content:reply});
+    addDemoMsg('bot', reply);
+  } catch(e) {
+    typing.remove();
+    addDemoMsg('bot', `⚠ Error: ${e.message}. Check your Groq key.`);
+  }
 }
 
-async function callDemoGroq(message){
-  if(!DEMO_KEY){
-    addDemoMsg('Demo mode: Add a Groq key to DEMO_KEY in the HTML to enable live chat. The full version uses your own key.','bot');
-    return;
+// =====================
+// GROQ API CALL
+// =====================
+async function callGroq(messages, model, apiKey, maxTokens=500){
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':`Bearer ${apiKey}`
+    },
+    body: JSON.stringify({model, messages, max_tokens:maxTokens, temperature:0.7})
+  });
+  if(!resp.ok){
+    const err=await resp.json().catch(()=>({}));
+    throw new Error(err.error?.message||`HTTP ${resp.status}`);
   }
-  const typing=document.createElement('div');
-  typing.className='dmsg bot typing';typing.textContent='thinking...';
-  document.getElementById('demoMessages').appendChild(typing);
+  const data=await resp.json();
+  return data.choices?.[0]?.message?.content||'';
+}
 
-  const sysFn=SYSTEM_PROMPTS[chosenType]||SYSTEM_PROMPTS.chatbot;
-  const system=sysFn(chosenName,chosenNiche||chosenType)+` Always respond in ${chosenLanguage}.`;
-  demoHistory.push({role:'user',content:message});
+// =====================
+// CHAT LOG (code gen)
+// =====================
+function addChatLog(who, text){
+  const log=document.getElementById('chatLog');
+  if(!log) return;
+  const d=document.createElement('div');
+  d.className=`cm ${who}`;
+  d.textContent = who==='sys'? `[system] ${text}` : who==='ai'? `[ai] ${text}` : `[user] ${text}`;
+  log.appendChild(d);
+  log.scrollTop=log.scrollHeight;
+  document.getElementById('aiChatBox').classList.remove('hidden');
+}
 
-  try{
-    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+DEMO_KEY},
-      body:JSON.stringify({
-        model:'llama-3.3-70b-versatile',
-        messages:[{role:'system',content:system},...demoHistory.slice(-6)],
-        max_tokens:256,temperature:0.7
+// =====================
+// FALLBACK CODE TEMPLATES
+// =====================
+function generateFallbackHTML(name, niche){
+return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#07071a;color:#f0f0ff;font-family:'Space Mono',monospace;display:flex;height:100vh}
+.sidebar{width:240px;background:#0f0f2a;border-right:1px solid rgba(255,255,255,.07);padding:24px;display:flex;flex-direction:column;gap:16px}
+.bot-name{font-size:18px;font-weight:700;color:#a78bfa}
+.bot-niche{font-size:11px;color:#8888aa;letter-spacing:.1em}
+.status{display:flex;align-items:center;gap:8px;font-size:11px;color:#10b981}
+.dot{width:8px;height:8px;border-radius:50%;background:#10b981;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.suggestions{margin-top:auto}
+.sugg-title{font-size:10px;color:#8888aa;margin-bottom:8px}
+.sugg{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:8px;font-size:11px;color:#a78bfa;cursor:pointer;margin-bottom:6px;transition:all .15s}
+.sugg:hover{background:rgba(139,92,246,.18)}
+.main{flex:1;display:flex;flex-direction:column}
+.messages{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:75%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.6}
+.msg.bot{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);color:#a78bfa;align-self:flex-start}
+.msg.user{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.15);color:#22d3ee;align-self:flex-end}
+.input-area{padding:16px 24px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:10px}
+input{flex:1;background:#0f0f2a;border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:12px 20px;color:#f0f0ff;font-family:'Space Mono',monospace;font-size:13px;outline:none}
+input:focus{border-color:#8B5CF6}
+button{background:#8B5CF6;border:none;border-radius:999px;padding:12px 24px;color:#fff;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer}
+button:hover{opacity:.88}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div>
+    <div class="bot-name">${name}</div>
+    <div class="bot-niche">${niche.toUpperCase()} ASSISTANT</div>
+  </div>
+  <div class="status"><div class="dot"></div>Online</div>
+  <div class="suggestions">
+    <div class="sugg-title">// try asking</div>
+    <div id="suggList"></div>
+  </div>
+</div>
+<div class="main">
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <input type="text" id="inp" placeholder="Ask ${name} anything..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+<script src="config.js"><\/script>
+<script src="bot.js"><\/script>
+</body>
+</html>`;
+}
+
+function generateFallbackJS(name, niche, feats){
+return `// ${name} — Bot Logic
+// Generated by Sin Studio
+
+const history = [];
+
+async function send() {
+  const inp = document.getElementById('inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+
+  addMsg('user', msg);
+  history.push({ role: 'user', content: msg });
+
+  const typing = addMsg('bot', '...');
+  
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CONFIG.GROQ_API_KEY
+      },
+      body: JSON.stringify({
+        model: CONFIG.GROQ_MODEL,
+        messages: [
+          { role: 'system', content: CONFIG.SYSTEM_PROMPT },
+          ...history.slice(-10)
+        ],
+        max_tokens: 500,
+        temperature: 0.7
       })
     });
-    const data=await res.json();
-    const reply=data.choices?.[0]?.message?.content||'Sorry, I could not respond right now.';
-    typing.remove();
-    demoHistory.push({role:'assistant',content:reply});
-    addDemoMsg(reply,'bot');
-  }catch(e){
-    typing.remove();
-    addDemoMsg('Demo temporarily unavailable. Unlock the full version to run it with your own key.','bot');
-  }
-}
 
-// ---- CUSTOM BUILD ----
-async function startCustomBuild(){
-  const desc=document.getElementById('customDesc').value.trim();
-  const key=document.getElementById('groqKey').value.trim();
-  if(!desc){document.getElementById('customDesc').focus();return;}
-  if(!key){document.getElementById('groqKey').focus();return;}
-  chosenNiche='custom';chosenName='Custom Machine';
-  launchBuild();show('aiChatBox');
-  document.getElementById('chatLog').innerHTML='';
-  addChat('sys','Analyzing your description...');
-  runBlueprint(async ()=>{
-    addChat('user',desc.length>100?desc.slice(0,100)+'...':desc);
-    addChat('sys','Calling Groq — generating complete code...');
-    try{
-      const code=await callGroqGen(key,desc);
-      generatedCode=code;
-      addChat('ai','Done. Your code is ready.');
-      show('paywall');goTo('paywall');
-    }catch(e){
-      addChat('sys','Error: '+e.message);
-    }
-  });
-}
+    if (!response.ok) throw new Error('API error: ' + response.status);
+    const data = await response.json();
+    const reply = data.choices[0].message.content;
 
-function addChat(role,text){
-  const log=document.getElementById('chatLog');
-  const d=document.createElement('div');d.className='cm '+role;
-  d.textContent=(role==='user'?'you > ':role==='ai'?'ai  > ':'//   ')+text;
-  log.appendChild(d);log.scrollTop=log.scrollHeight;
-}
-
-async function callGroqGen(apiKey,description){
-  const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
-    body:JSON.stringify({
-      model:'llama-3.3-70b-versatile',
-      messages:[
-        {role:'system',content:`You are a senior Node.js developer. Generate COMPLETE, production-ready code.
-Use Groq API (process.env.GROQ_API_KEY) primary, Ollama fallback.
-Include: dotenv config, full config object, all async functions with real logic, Express routes, error handling, comments.
-Must be 100% runnable after npm install + adding API keys.
-Return ONLY the code. No markdown. No backticks. No explanation.`},
-        {role:'user',content:'Build this complete tool: '+description}
-      ],
-      max_tokens:3500,temperature:0.2
-    })
-  });
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||'Groq error '+res.status);}
-  return (await res.json()).choices[0].message.content;
-}
-
-// ---- KEY CHECK ----
-async function checkKey(){
-  const raw=document.getElementById('licenseKey').value.trim();
-  const k=raw.toUpperCase();
-  if(!k)return;
-  const btn=document.getElementById('unlockBtn');
-  const inp=document.getElementById('licenseKey');
-  btn.textContent='Checking...';btn.disabled=true;
-  try{
-    const res=await fetch(KEY_API+'?key='+encodeURIComponent(k));
-    const data=await res.json();
-    if(data.valid){
-      hide('paywall');
-      if(chosenType==='custom'){
-        renderCustomCode();
-      } else {
-        const output=buildOutput(chosenType,chosenName,chosenNiche,chosenFeatures);
-        renderOutput(output);
-      }
-      show('codeReveal');goTo('codeReveal');
-    } else if(data.reason==='already_used'){
-      inp.style.borderColor='#f87171';
-      document.querySelector('.pw-box p').innerHTML='This key has already been used.<br><a href="https://simmonstia.gumroad.com" target="_blank" style="color:var(--cyan)">Get a new key at Sin Studio</a>';
-    } else {
-      inp.classList.add('shake');inp.style.borderColor='#f87171';
-      setTimeout(()=>{inp.classList.remove('shake');inp.style.borderColor='';},800);
-    }
-  }catch(e){
-    inp.style.borderColor='#f87171';
-    document.querySelector('.pw-box p').innerHTML='Could not connect. Check your connection and try again.';
-  }finally{
-    btn.textContent='Unlock';btn.disabled=false;
-  }
-}
-
-// ---- CODE OUTPUT ----
-function buildOutput(type,name,niche,features){
-  const featureComment = features && features.length > 0
-    ? `\n// Features included: ${features.join(', ')}\n// Language: ${chosenLanguage}\n`
-    : `\n// Language: ${chosenLanguage}\n`;
-  const generators={
-    chatbot:chatbotOutput,
-    predict:predictOutput,
-    content:contentOutput,
-    magnet:magnetOutput,
-    social:socialOutput,
-    sleep:sleepOutput,
-    listing:listingOutput,
-    nanny:nannyOutput,
-    teacher:teacherOutput,
-    adhd:adhdOutput,
-    support:supportOutput,
-    trucker:truckerOutput,
-    attorney:attorneyOutput,
-    soccer:soccerOutput,
-    dad:dadOutput
-  };
-  const fn=generators[type]||generators.chatbot;
-  const result=fn(name,niche);
-  if(featureComment && result.files && result.files.length > 0){
-    result.files[0].code = featureComment + result.files[0].code;
-  }
-  if(featureComment && result.overview){
-    result.overview = result.overview + `\nSelected features: ${(features||[]).join(', ')}`;
-  }
-  return result;
-}
-
-function chatbotOutput(n,niche){return{
-  overview:`${n} — AI Chatbot (${niche})\nStack: Node.js + Express + Groq + Ollama fallback\nFeatures: Persistent sessions, system prompt, memory, niche context\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── chat.js\n│   └── sessions.js\n├── public/index.html\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { chat } = require('./lib/chat');
-const { getSession, clearSession } = require('./lib/sessions');
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));
-
-app.post('/chat', async (req, res) => {
-  const { sessionId, message } = req.body;
-  if (!sessionId || !message) return res.status(400).json({ error: 'sessionId and message required' });
-  try {
-    const history = getSession(sessionId);
-    const reply = await chat(message, history);
-    history.push({ role: 'user', content: message });
+    typing.textContent = reply;
     history.push({ role: 'assistant', content: reply });
-    res.json({ success: true, reply });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.delete('/session/:id', (req, res) => { clearSession(req.params.id); res.json({ success: true }); });
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/chat.js',code:`const Groq = require('groq-sdk');
-const fetch = require('node-fetch');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const SYSTEM = \`You are ${n}, an expert AI assistant specializing in ${niche}. Be direct, accurate, and conversational. Never make things up.\`;
-
-async function chat(message, history = []) {
-  const messages = [{ role: 'system', content: SYSTEM }, ...history.slice(-20), { role: 'user', content: message }];
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages, max_tokens: 1024, temperature: 0.7 });
-    return res.choices[0].message.content;
-  } catch {
-    const res = await fetch('http://localhost:11434/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'llama3', messages, stream: false }) });
-    return (await res.json()).message?.content || 'No response.';
+  } catch (e) {
+    typing.textContent = 'Error: ' + e.message + '. Check your API key in config.js';
+    typing.style.color = '#f87171';
   }
 }
-module.exports = { chat };`},
-    {name:'lib/sessions.js',code:`const sessions = new Map();
-function getSession(id) { if (!sessions.has(id)) sessions.set(id, []); return sessions.get(id); }
-function clearSession(id) { sessions.delete(id); }
-module.exports = { getSession, clearSession };`},
-    {name:'public/index.html',code:`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${n}</title>
-<style>*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#f0f0ff;font-family:monospace;height:100vh;display:flex;flex-direction:column}
-#hdr{padding:16px 20px;border-bottom:1px solid #222;font-size:14px;font-weight:700;color:#a78bfa}
-#msgs{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
-.msg{max-width:80%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.6}
-.msg.u{background:#1a1a3a;border:1px solid #333;align-self:flex-end}
-.msg.b{background:#0f1a0f;border:1px solid #1a4a1a;color:#22d3ee;align-self:flex-start}
-#inp-row{padding:16px;border-top:1px solid #222;display:flex;gap:10px}
-#inp-row input{flex:1;background:#111;border:1px solid #333;border-radius:8px;padding:10px 14px;color:#f0f0ff;font-family:monospace;font-size:13px;outline:none}
-#inp-row button{background:#8B5CF6;color:#fff;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;font-family:monospace;font-weight:700}
-</style></head><body>
-<div id="hdr">${n} // ${niche} AI</div>
-<div id="msgs"><div class="msg b">Hi! I am ${n}. How can I help with ${niche} today?</div></div>
-<div id="inp-row"><input id="inp" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')send()"><button onclick="send()">Send</button></div>
-<script>
-const sid='s_'+Math.random().toString(36).slice(2);
-async function send(){
-  const inp=document.getElementById('inp'),msg=inp.value.trim();if(!msg)return;inp.value='';
-  add(msg,'u');
-  const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:sid,message:msg})});
-  const d=await r.json();add(d.reply||d.error,'b');
-}
-function add(t,c){const d=document.createElement('div');d.className='msg '+c;d.textContent=t;document.getElementById('msgs').appendChild(d);d.scrollIntoView();}
-<\/script></body></html>`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js","dev":"nodemon server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"},"devDependencies":{"nodemon":"^3.0.0"}}`},
-    {name:'README.md',code:`# ${n} — AI Chatbot (${niche})\nnpm install && cp .env.example .env\nAdd GROQ_API_KEY to .env\nnpm start → http://localhost:3000`}
-  ]
-};}
 
-function listingOutput(n,niche){return{
-  overview:`${n} — Real Estate Listing Bot (${niche})\nStack: Node.js + Express + Groq\nFeatures: AI listing descriptions, price analysis, SEO optimization, email hooks\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── describe.js\n│   ├── price.js\n│   └── seo.js\n├── public/index.html\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { generateDescription } = require('./lib/describe');
-const { analyzePrice } = require('./lib/price');
-const { generateSEO } = require('./lib/seo');
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));
-
-app.post('/listing', async (req, res) => {
-  const { beds, baths, sqft, location, features, price, type } = req.body;
-  if (!location) return res.status(400).json({ error: 'Location required' });
-  try {
-    const [description, seo, priceAnalysis] = await Promise.all([
-      generateDescription({ beds, baths, sqft, location, features, type, niche: '${niche}' }),
-      generateSEO({ beds, baths, sqft, location, type }),
-      analyzePrice({ beds, baths, sqft, location, price, niche: '${niche}' })
-    ]);
-    res.json({ success: true, description, seo, priceAnalysis });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/describe.js',code:`const Groq = require('groq-sdk');
-const fetch = require('node-fetch');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function generateDescription({ beds, baths, sqft, location, features, type, niche }) {
-  const prompt = \`You are a professional ${niche} real estate copywriter.
-Write a compelling property listing description for:
-- Type: \${type || 'residential'}
-- Beds: \${beds}, Baths: \${baths}, SqFt: \${sqft}
-- Location: \${location}
-- Features: \${(features||[]).join(', ')||'standard finishes'}
-Write 3 paragraphs. Be specific, persuasive, and professional. No generic filler.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
-    return res.choices[0].message.content.trim();
-  } catch {
-    const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
-    return (await res.json()).response.trim();
-  }
-}
-module.exports = { generateDescription };`},
-    {name:'lib/price.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function analyzePrice({ beds, baths, sqft, location, price, niche }) {
-  const prompt = \`As a ${niche} real estate analyst, evaluate this listing:
-\${beds}bd/\${baths}ba, \${sqft}sqft in \${location}, listed at $\${price||'unknown'}.
-Give: 1) Fair market range estimate 2) Pricing recommendation 3) One key selling point.
-Be concise and data-aware.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 256 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Price analysis unavailable. Check your Groq API key.'; }
-}
-module.exports = { analyzePrice };`},
-    {name:'lib/seo.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function generateSEO({ beds, baths, sqft, location, type }) {
-  const prompt = \`Generate SEO metadata for a ${niche} property listing:
-\${beds}bd/\${baths}ba \${sqft}sqft \${type||'home'} in \${location}.
-Return JSON: {"title": "", "metaDescription": "", "tags": []}\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 256 });
-    const raw = res.choices[0].message.content;
-    return JSON.parse(raw.match(/\{[\s\S]*\}/)?.[0] || raw);
-  } catch { return { title: \`\${beds}bd/\${baths}ba in \${location}\`, metaDescription: '', tags: [] }; }
-}
-module.exports = { generateSEO };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Listing Bot (${niche})\nnpm install && cp .env.example .env\nAdd GROQ_API_KEY\nnpm start\nPOST /listing with: beds, baths, sqft, location, features[], price, type`}
-  ]
-};}
-
-function nannyOutput(n,niche){return{
-  overview:`${n} — Nanny & Childcare Assistant (${niche})\nStack: Node.js + Express + Groq\nFeatures: Daily schedules, safety checklists, meal plans, parent reports\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── schedule.js\n│   ├── meals.js\n│   └── report.js\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { buildSchedule } = require('./lib/schedule');
-const { buildMealPlan } = require('./lib/meals');
-const { buildReport } = require('./lib/report');
-const app = express();
-app.use(express.json());
-
-app.post('/schedule', async (req, res) => {
-  const { childAge, startTime, endTime, activities } = req.body;
-  try { res.json({ success: true, schedule: await buildSchedule({ childAge, startTime, endTime, activities, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/meals', async (req, res) => {
-  const { childAge, allergies, days } = req.body;
-  try { res.json({ success: true, mealPlan: await buildMealPlan({ childAge, allergies, days: days||5, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/report', async (req, res) => {
-  const { childName, date, mood, activities, meals, notes } = req.body;
-  try { res.json({ success: true, report: await buildReport({ childName, date, mood, activities, meals, notes }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/schedule.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildSchedule({ childAge, startTime, endTime, activities, niche }) {
-  const prompt = \`You are a ${niche} childcare expert named ${n}.
-Create a detailed daily schedule for a \${childAge} year old child.
-Hours: \${startTime||'8am'} to \${endTime||'5pm'}
-Requested activities: \${(activities||[]).join(', ')||'standard day'}
-Include: wake-up routine, meals, naps/quiet time, learning activities, outdoor play, and wind-down.
-Format as a time-by-time schedule. Be age-appropriate and specific.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Schedule generation failed. Check your API key.'; }
-}
-module.exports = { buildSchedule };`},
-    {name:'lib/meals.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildMealPlan({ childAge, allergies, days, niche }) {
-  const prompt = \`Create a \${days}-day meal plan for a \${childAge} year old.
-Allergies/restrictions: \${(allergies||[]).join(', ')||'none'}.
-Include breakfast, snack, lunch, snack, dinner for each day.
-Make it nutritious, kid-friendly, and easy to prepare. Be specific with portions.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Meal plan generation failed.'; }
-}
-module.exports = { buildMealPlan };`},
-    {name:'lib/report.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildReport({ childName, date, mood, activities, meals, notes }) {
-  const prompt = \`Write a warm, professional daily report for parents.
-Child: \${childName||'Child'}, Date: \${date||new Date().toDateString()}
-Mood: \${mood||'happy'}/10, Activities: \${(activities||[]).join(', ')||'various'}
-Meals eaten: \${(meals||[]).join(', ')||'all meals'}, Notes: \${notes||'great day'}
-Write 2-3 paragraphs as if from a caring nanny to parents. Be warm and specific.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Report generation failed.'; }
-}
-module.exports = { buildReport };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Nanny Assistant (${niche})\nnpm install && cp .env.example .env\nnpm start\nRoutes: POST /schedule, POST /meals, POST /report`}
-  ]
-};}
-
-function teacherOutput(n,niche){return{
-  overview:`${n} — Curriculum Builder (${niche})\nStack: Node.js + Express + Groq\nFeatures: Lesson plans, quizzes, standards alignment, parent reports\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── lesson.js\n│   ├── quiz.js\n│   └── standards.js\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { buildLesson } = require('./lib/lesson');
-const { buildQuiz } = require('./lib/quiz');
-const { alignStandards } = require('./lib/standards');
-const app = express();
-app.use(express.json());
-
-app.post('/lesson', async (req, res) => {
-  const { subject, grade, topic, duration, objectives } = req.body;
-  if (!topic) return res.status(400).json({ error: 'Topic required' });
-  try { res.json({ success: true, lesson: await buildLesson({ subject, grade, topic, duration, objectives, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/quiz', async (req, res) => {
-  const { topic, grade, numQuestions, type } = req.body;
-  try { res.json({ success: true, quiz: await buildQuiz({ topic, grade, numQuestions: numQuestions||10, type: type||'multiple_choice' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/standards', async (req, res) => {
-  const { lesson, grade, state } = req.body;
-  try { res.json({ success: true, alignment: await alignStandards({ lesson, grade, state }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/lesson.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildLesson({ subject, grade, topic, duration, objectives, niche }) {
-  const prompt = \`You are a ${niche} curriculum specialist named ${n}.
-Create a complete lesson plan:
-Subject: \${subject||'General'}, Grade: \${grade}, Topic: \${topic}
-Duration: \${duration||45} minutes
-Learning objectives: \${(objectives||[]).join(', ')||'standard curriculum goals'}
-
-Include: Learning objectives, materials needed, warm-up (5 min), direct instruction (15 min), guided practice (15 min), independent practice (10 min), closure/assessment (5 min), differentiation strategies, homework assignment.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: llama-3.3-70b-versatile, messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Lesson plan generation failed.'; }
-}
-module.exports = { buildLesson };`},
-    {name:'lib/quiz.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildQuiz({ topic, grade, numQuestions, type }) {
-  const prompt = \`Create a \${numQuestions}-question \${type} quiz for grade \${grade||'5'} on: \${topic}.
-Include answer key. Make questions progressively challenging.
-Format clearly with question numbers, options (A-D for multiple choice), and answers at the end.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Quiz generation failed.'; }
-}
-module.exports = { buildQuiz };`},
-    {name:'lib/standards.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function alignStandards({ lesson, grade, state }) {
-  const prompt = \`Identify Common Core or \${state||'national'} state standards that align with this grade \${grade} lesson:
-\${lesson?.slice(0,500)||'general lesson'}
-List the standard codes and brief descriptions. Be specific.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Standards alignment failed.'; }
-}
-module.exports = { alignStandards };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Curriculum Builder (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /lesson — build a lesson plan\nPOST /quiz — generate a quiz\nPOST /standards — align to standards`}
-  ]
-};}
-
-function adhdOutput(n,niche){return{
-  overview:`${n} — ADHD Coach (${niche})\nStack: Node.js + Express + Groq\nFeatures: Task breaking, focus timers, reward systems, routine builder, parent coaching\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── tasks.js\n│   ├── routine.js\n│   └── coach.js\n├── public/index.html\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { breakTask } = require('./lib/tasks');
-const { buildRoutine } = require('./lib/routine');
-const { getCoaching } = require('./lib/coach');
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));
-
-app.post('/break-task', async (req, res) => {
-  const { task, ageGroup, timeAvailable } = req.body;
-  if (!task) return res.status(400).json({ error: 'Task required' });
-  try { res.json({ success: true, steps: await breakTask({ task, ageGroup, timeAvailable, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/routine', async (req, res) => {
-  const { routineType, ageGroup, challenges } = req.body;
-  try { res.json({ success: true, routine: await buildRoutine({ routineType, ageGroup, challenges, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/coach', async (req, res) => {
-  const { situation, ageGroup, question } = req.body;
-  try { res.json({ success: true, advice: await getCoaching({ situation, ageGroup, question, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/tasks.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function breakTask({ task, ageGroup, timeAvailable, niche }) {
-  const prompt = \`You are an ADHD coach specializing in ${niche}.
-Break this task into tiny, manageable steps for a \${ageGroup||'child'} with ADHD:
-Task: \${task}
-Time available: \${timeAvailable||'30 minutes'}
-
-Rules: Each step max 5 minutes. Use clear simple language. Add a small reward after every 3 steps.
-Include estimated time for each step. Make it feel achievable, not overwhelming.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Task breakdown failed.'; }
-}
-module.exports = { breakTask };`},
-    {name:'lib/routine.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildRoutine({ routineType, ageGroup, challenges, niche }) {
-  const prompt = \`Create an ADHD-friendly \${routineType||'morning'} routine for a \${ageGroup||'child'}.
-Known challenges: \${(challenges||[]).join(', ')||'transitions, focus, time awareness'}.
-Make each step visual, concrete, and short (under 5 min each).
-Include visual cue suggestions, timer recommendations, and reward checkpoints.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Routine generation failed.'; }
-}
-module.exports = { buildRoutine };`},
-    {name:'lib/coach.js',code:`const Groq = require('groq-sdk');
-const fetch = require('node-fetch');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function getCoaching({ situation, ageGroup, question, niche }) {
-  const prompt = \`You are ${n}, an ADHD coach for ${niche}.
-Situation: \${situation||'general ADHD support'}
-Age group: \${ageGroup||'school age'}
-Question: \${question}
-Give practical, evidence-based advice. Be empathetic, direct, and specific. No generic platitudes.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
-    return res.choices[0].message.content.trim();
-  } catch {
-    const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
-    return (await res.json()).response.trim();
-  }
-}
-module.exports = { getCoaching };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — ADHD Coach (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /break-task — break a task into steps\nPOST /routine — build a daily routine\nPOST /coach — get ADHD coaching advice`}
-  ]
-};}
-
-function supportOutput(n,niche){return{
-  overview:`${n} — Emotional Support Bot (${niche})\nStack: Node.js + Express + Groq + Ollama fallback\nFeatures: Mood tracking, coping tools, journal prompts, crisis detection, resource finder\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── support.js\n│   ├── mood.js\n│   └── resources.js\n├── public/index.html\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { getSupport, detectCrisis } = require('./lib/support');
-const { logMood, getMoodHistory } = require('./lib/mood');
-const { findResources } = require('./lib/resources');
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));
-
-app.post('/support', async (req, res) => {
-  const { message, sessionId, mood } = req.body;
-  if (!message) return res.status(400).json({ error: 'Message required' });
-  try {
-    const crisis = detectCrisis(message);
-    const reply = await getSupport(message, mood, '${niche}');
-    if (mood) logMood(sessionId||'anon', mood);
-    res.json({ success: true, reply, crisis, resources: crisis ? await findResources('crisis') : null });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/mood/:sessionId', (req, res) => res.json({ history: getMoodHistory(req.params.sessionId) }));
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/support.js',code:`const Groq = require('groq-sdk');
-const fetch = require('node-fetch');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-const CRISIS_WORDS = ['suicide','kill myself','end it','hurt myself','dont want to live','self harm'];
-
-function detectCrisis(message) {
-  const lower = message.toLowerCase();
-  return CRISIS_WORDS.some(w => lower.includes(w));
+function addMsg(who, text) {
+  const box = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = text;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
 }
 
-async function getSupport(message, mood, niche) {
-  const prompt = \`You are ${n}, a compassionate ${niche} support companion.
-User message: "\${message}"
-User mood: \${mood||'unknown'}/10
-
-Respond with empathy and validation. Acknowledge their feelings before offering anything.
-If appropriate, gently suggest one coping strategy.
-IMPORTANT: If any crisis indicators, always include: "Please reach out to the 988 Suicide & Crisis Lifeline by calling or texting 988."
-Keep response warm, human, and under 150 words.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 256, temperature: 0.7 });
-    return res.choices[0].message.content.trim();
-  } catch {
-    const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
-    return (await res.json()).response.trim();
-  }
-}
-module.exports = { getSupport, detectCrisis };`},
-    {name:'lib/mood.js',code:`const logs = new Map();
-function logMood(sessionId, score) {
-  if (!logs.has(sessionId)) logs.set(sessionId, []);
-  logs.get(sessionId).push({ score, timestamp: new Date().toISOString() });
-}
-function getMoodHistory(sessionId) { return logs.get(sessionId) || []; }
-module.exports = { logMood, getMoodHistory };`},
-    {name:'lib/resources.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-const CRISIS_RESOURCES = [
-  { name: '988 Suicide & Crisis Lifeline', contact: 'Call or text 988', available: '24/7' },
-  { name: 'Crisis Text Line', contact: 'Text HOME to 741741', available: '24/7' },
-  { name: 'SAMHSA National Helpline', contact: '1-800-662-4357', available: '24/7' }
-];
-
-async function findResources(type) {
-  if (type === 'crisis') return CRISIS_RESOURCES;
-  return [];
-}
-module.exports = { findResources };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Support Bot (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /support — send a message, get empathetic response\nGET /mood/:sessionId — get mood history`}
-  ]
-};}
-
-function truckerOutput(n,niche){return{
-  overview:`${n} — Trucker Assistant (${niche})\nStack: Node.js + Express + Groq\nFeatures: HOS tracking, route planning, fuel calculator, compliance checker, load finder\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── hos.js\n│   ├── route.js\n│   └── compliance.js\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { checkHOS } = require('./lib/hos');
-const { planRoute } = require('./lib/route');
-const { checkCompliance } = require('./lib/compliance');
-const app = express();
-app.use(express.json());
-
-app.post('/hos', async (req, res) => {
-  const { hoursWorked, hoursRemaining, lastRest } = req.body;
-  try { res.json({ success: true, status: await checkHOS({ hoursWorked, hoursRemaining, lastRest }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/route', async (req, res) => {
-  const { origin, destination, loadType, restrictions } = req.body;
-  if (!origin || !destination) return res.status(400).json({ error: 'Origin and destination required' });
-  try { res.json({ success: true, plan: await planRoute({ origin, destination, loadType, restrictions, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/compliance', async (req, res) => {
-  const { state, loadType, weight, question } = req.body;
-  try { res.json({ success: true, info: await checkCompliance({ state, loadType, weight, question }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/hos.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function checkHOS({ hoursWorked, hoursRemaining, lastRest }) {
-  const prompt = \`You are a trucking HOS (Hours of Service) compliance expert.
-Driver data: Worked \${hoursWorked||0} hours, \${hoursRemaining||11} hours remaining today.
-Last rest: \${lastRest||'unknown'} hours ago.
-FMCSA rules: 11-hour driving limit, 14-hour on-duty limit, 30-min break after 8 hours, 10-hour off-duty minimum.
-Give: 1) Current compliance status 2) Hours remaining 3) When they must stop 4) Any violations to note.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 400 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'HOS check failed. Verify compliance manually.'; }
-}
-module.exports = { checkHOS };`},
-    {name:'lib/route.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function planRoute({ origin, destination, loadType, restrictions, niche }) {
-  const prompt = \`You are a ${niche} trucking route planner.
-Route: \${origin} to \${destination}
-Load type: \${loadType||'general freight'}
-Restrictions: \${(restrictions||[]).join(', ')||'standard'}
-Provide: estimated drive time, recommended rest stops, fuel stop suggestions, weather considerations, and any known route hazards or construction to watch for.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 600 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Route planning failed.'; }
-}
-module.exports = { planRoute };`},
-    {name:'lib/compliance.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function checkCompliance({ state, loadType, weight, question }) {
-  const prompt = \`You are a trucking compliance expert.
-State: \${state||'federal'}, Load: \${loadType||'general'}, Weight: \${weight||'standard'}
-Question: \${question||'What are the key compliance requirements?'}
-Give accurate, specific compliance information. Note when regulations vary by state.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Compliance check failed.'; }
-}
-module.exports = { checkCompliance };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Trucker Assistant (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /hos — check hours of service\nPOST /route — plan a route\nPOST /compliance — check regulations`}
-  ]
-};}
-
-function attorneyOutput(n,niche){return{
-  overview:`${n} — Legal Research Bot (${niche})\nStack: Node.js + Express + Groq + Ollama fallback\nFeatures: Case analysis, document drafting, citation generation, deadline tracking\nRequires: GROQ_API_KEY in .env\nIMPORTANT: Always advise users to consult a licensed attorney`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── research.js\n│   ├── draft.js\n│   └── citations.js\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { researchCase } = require('./lib/research');
-const { draftDocument } = require('./lib/draft');
-const { generateCitations } = require('./lib/citations');
-const app = express();
-app.use(express.json());
-
-const DISCLAIMER = 'DISCLAIMER: This AI provides legal research assistance only. Always consult a licensed attorney for legal advice.';
-
-app.post('/research', async (req, res) => {
-  const { question, jurisdiction, practiceArea } = req.body;
-  if (!question) return res.status(400).json({ error: 'Question required' });
-  try {
-    const result = await researchCase({ question, jurisdiction, practiceArea: practiceArea||'${niche}' });
-    res.json({ success: true, research: result, disclaimer: DISCLAIMER });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/draft', async (req, res) => {
-  const { docType, facts, parties, jurisdiction } = req.body;
-  try {
-    const doc = await draftDocument({ docType, facts, parties, jurisdiction, practiceArea: '${niche}' });
-    res.json({ success: true, document: doc, disclaimer: DISCLAIMER });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/citations', async (req, res) => {
-  const { topic, jurisdiction } = req.body;
-  try { res.json({ success: true, citations: await generateCitations({ topic, jurisdiction }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/research.js',code:`const Groq = require('groq-sdk');
-const fetch = require('node-fetch');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function researchCase({ question, jurisdiction, practiceArea }) {
-  const prompt = \`You are a ${niche} legal research assistant named ${n}.
-Question: \${question}
-Jurisdiction: \${jurisdiction||'general US law'}
-Practice area: \${practiceArea}
-
-Provide: 1) Relevant legal principles 2) Key case law references 3) Applicable statutes 4) Jurisdiction-specific notes 5) Practical considerations.
-Be thorough and cite specific laws where possible. Note that this is research assistance only.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
-    return res.choices[0].message.content.trim();
-  } catch {
-    const res = await fetch('http://localhost:11434/api/generate', { method: 'POST', body: JSON.stringify({ model: 'llama3', prompt, stream: false }) });
-    return (await res.json()).response.trim();
-  }
-}
-module.exports = { researchCase };`},
-    {name:'lib/draft.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function draftDocument({ docType, facts, parties, jurisdiction, practiceArea }) {
-  const prompt = \`Draft a ${niche} legal document template:
-Type: \${docType||'demand letter'}
-Parties: \${JSON.stringify(parties||{})}
-Key facts: \${facts||'to be filled in'}
-Jurisdiction: \${jurisdiction||'general'}
-Create a professional template with placeholders marked as [PLACEHOLDER]. Include standard legal language appropriate for \${practiceArea}.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Document draft failed.'; }
-}
-module.exports = { draftDocument };`},
-    {name:'lib/citations.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function generateCitations({ topic, jurisdiction }) {
-  const prompt = \`Generate relevant legal citations for: \${topic} in \${jurisdiction||'US federal'} law.
-Include: case names, citation format, brief holdings. Focus on ${niche} practice area.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 512 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Citation generation failed.'; }
-}
-module.exports = { generateCitations };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Legal Research Bot (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /research — legal research\nPOST /draft — document drafting\nPOST /citations — generate citations\nDISCLAIMER: Always consult a licensed attorney`}
-  ]
-};}
-
-function soccerOutput(n,niche){return{
-  overview:`${n} — Soccer Coach AI (${niche})\nStack: Node.js + Express + Groq\nFeatures: Drill generator, tactics builder, fitness plans, player tracking, match analysis\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── drills.js\n│   ├── tactics.js\n│   └── fitness.js\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { generateDrill } = require('./lib/drills');
-const { buildTactics } = require('./lib/tactics');
-const { buildFitnessPlan } = require('./lib/fitness');
-const app = express();
-app.use(express.json());
-
-app.post('/drill', async (req, res) => {
-  const { ageGroup, skill, duration, players, equipment } = req.body;
-  try { res.json({ success: true, drill: await generateDrill({ ageGroup, skill, duration, players, equipment, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/tactics', async (req, res) => {
-  const { formation, opposition, strengths, weaknesses } = req.body;
-  try { res.json({ success: true, tactics: await buildTactics({ formation, opposition, strengths, weaknesses, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/fitness', async (req, res) => {
-  const { ageGroup, position, fitnessLevel, weeks } = req.body;
-  try { res.json({ success: true, plan: await buildFitnessPlan({ ageGroup, position, fitnessLevel, weeks: weeks||4, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/drills.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function generateDrill({ ageGroup, skill, duration, players, equipment, niche }) {
-  const prompt = \`You are ${n}, a ${niche} soccer coach AI.
-Design a complete training drill:
-Age group: \${ageGroup||'U12'}, Skill focus: \${skill||'passing'}, Duration: \${duration||20} minutes
-Players: \${players||12}, Equipment: \${(equipment||['cones','balls']).join(', ')}
-
-Include: Setup diagram description, instructions step-by-step, coaching points, progressions (easier/harder), common mistakes to watch for.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Drill generation failed.'; }
-}
-module.exports = { generateDrill };`},
-    {name:'lib/tactics.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildTactics({ formation, opposition, strengths, weaknesses, niche }) {
-  const prompt = \`You are a ${niche} tactical soccer analyst.
-Our formation: \${formation||'4-3-3'}
-Opposition: \${opposition||'unknown'}
-Our strengths: \${(strengths||[]).join(', ')||'to be assessed'}
-Our weaknesses: \${(weaknesses||[]).join(', ')||'to be assessed'}
-Provide: tactical setup, pressing strategy, set piece approach, key matchups to target, and in-game adjustments.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Tactics generation failed.'; }
-}
-module.exports = { buildTactics };`},
-    {name:'lib/fitness.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function buildFitnessPlan({ ageGroup, position, fitnessLevel, weeks, niche }) {
-  const prompt = \`Create a \${weeks}-week soccer fitness plan for:
-Age group: \${ageGroup||'adult'}, Position: \${position||'general'}, Fitness level: \${fitnessLevel||'intermediate'}
-Include weekly structure, specific workouts, recovery days, and ${niche}-appropriate intensity levels.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Fitness plan generation failed.'; }
-}
-module.exports = { buildFitnessPlan };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Soccer Coach AI (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /drill — generate a training drill\nPOST /tactics — build match tactics\nPOST /fitness — create a fitness plan`}
-  ]
-};}
-
-function dadOutput(n,niche){return{
-  overview:`${n} — Dad Life Assistant (${niche})\nStack: Node.js + Express + Groq\nFeatures: Activity finder, chore charts, meal plans, bedtime stories, school tracking\nRequires: GROQ_API_KEY in .env`,
-  tree:`${n}/\n├── server.js\n├── lib/\n│   ├── activities.js\n│   ├── chores.js\n│   └── stories.js\n├── .env.example\n├── package.json\n└── README.md`,
-  files:[
-    {name:'server.js',code:`require('dotenv').config();
-const express = require('express');
-const { findActivities } = require('./lib/activities');
-const { buildChoreChart } = require('./lib/chores');
-const { generateStory } = require('./lib/stories');
-const app = express();
-app.use(express.json());
-
-app.post('/activities', async (req, res) => {
-  const { childAge, weather, budget, duration, interests } = req.body;
-  try { res.json({ success: true, activities: await findActivities({ childAge, weather, budget, duration, interests, niche: '${niche}' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/chores', async (req, res) => {
-  const { childAge, childName, numChores } = req.body;
-  try { res.json({ success: true, chart: await buildChoreChart({ childAge, childName, numChores: numChores||8 }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/story', async (req, res) => {
-  const { childName, age, theme, length } = req.body;
-  try { res.json({ success: true, story: await generateStory({ childName, age, theme, length: length||'short' }) }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/chat', async (req, res) => {
-  const { question } = req.body;
-  if (!question) return res.status(400).json({ error: 'Question required' });
-  try {
-    const Groq = require('groq-sdk');
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    const res2 = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'system', content: \`You are ${n}, a ${niche} parenting assistant. Be real, supportive, and practical.\` }, { role: 'user', content: question }],
-      max_tokens: 512
+// Init
+window.onload = () => {
+  addMsg('bot', CONFIG.WELCOME_MESSAGE);
+  
+  const sl = document.getElementById('suggList');
+  if (sl) {
+    CONFIG.SUGGESTED_PROMPTS.forEach(p => {
+      const d = document.createElement('div');
+      d.className = 'sugg';
+      d.textContent = p;
+      d.onclick = () => {
+        document.getElementById('inp').value = p;
+        send();
+      };
+      sl.appendChild(d);
     });
-    res.json({ success: true, answer: res2.choices[0].message.content.trim() });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok', name: '${n}' }));
-app.listen(3000, () => console.log('[${n}] http://localhost:3000'));`},
-    {name:'lib/activities.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
-async function findActivities({ childAge, weather, budget, duration, interests, niche }) {
-  const prompt = \`You are ${n}, a ${niche} dad-life assistant.
-Suggest 5 specific activities for a \${childAge||'7'} year old.
-Weather: \${weather||'any'}, Budget: \${budget||'low cost'}, Duration: \${duration||'1-2 hours'}
-Interests: \${(interests||[]).join(', ')||'general kids stuff'}
-For each activity: name, what you need, step-by-step how to do it, why kids love it, dad tip.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1024 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Activity suggestions failed.'; }
+  }
+};`;
 }
-module.exports = { findActivities };`},
-    {name:'lib/chores.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-async function buildChoreChart({ childAge, childName, numChores }) {
-  const prompt = \`Create a chore chart for \${childName||'my child'}, age \${childAge||'8'}.
-Include \${numChores} age-appropriate chores with: chore name, how to do it (simple steps), how often, reward points.
-Make it encouraging and achievable. Kids with ADHD should get extra clear, short instructions.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 800 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Chore chart generation failed.'; }
-}
-module.exports = { buildChoreChart };`},
-    {name:'lib/stories.js',code:`const Groq = require('groq-sdk');
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+function generateFallbackConfig(name, niche, lang, feats){
+return `// ${name} — Configuration
+// Edit this file to customize your bot
 
-async function generateStory({ childName, age, theme, length }) {
-  const wordCount = length==='short'?300:length==='medium'?600:1000;
-  const prompt = \`Write a bedtime story for \${childName||'a child'} (age \${age||7}).
-Theme: \${theme||'adventure and friendship'}.
-Length: ~\${wordCount} words. Make it imaginative, age-appropriate, with a positive message at the end.
-The child's name should appear as the hero of the story.\`;
-  try {
-    const res = await groq.chat.completions.create({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], max_tokens: 1200 });
-    return res.choices[0].message.content.trim();
-  } catch { return 'Story generation failed.'; }
-}
-module.exports = { generateStory };`},
-    {name:'.env.example',code:`GROQ_API_KEY=your_groq_key_here`},
-    {name:'package.json',code:`{"name":"${n.toLowerCase().replace(/\s+/g,'-')}","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js"},"dependencies":{"dotenv":"^16.0.0","express":"^4.18.0","groq-sdk":"^0.3.0","node-fetch":"^2.7.0"}}`},
-    {name:'README.md',code:`# ${n} — Dad Life Bot (${niche})\nnpm install && cp .env.example .env\nnpm start\nPOST /activities — find activities\nPOST /chores — build chore chart\nPOST /story — generate bedtime story\nPOST /chat — ask parenting questions`}
+const CONFIG = {
+  BOT_NAME: "${name}",
+  NICHE: "${niche}",
+  LANGUAGE: "${lang}",
+  GROQ_MODEL: "llama3-70b-8192",
+  
+  // 🔑 Add your Groq API key here (get free key at console.groq.com)
+  GROQ_API_KEY: "gsk_YOUR_KEY_HERE",
+  
+  SYSTEM_PROMPT: \`You are ${name}, an expert AI assistant specializing in ${niche}. 
+You speak ${lang} and provide helpful, accurate, and actionable advice.
+You are knowledgeable about: ${feats}.
+Always be conversational, encouraging, and focused on ${niche} topics.
+Keep responses clear and concise (2-4 sentences unless more detail is needed).\`,
+
+  WELCOME_MESSAGE: "Hi! I'm ${name}, your ${niche} assistant. How can I help you today?",
+  
+  FEATURES: [${feats.split(', ').map(f=>`"${f}"`).join(', ')}],
+  
+  SUGGESTED_PROMPTS: [
+    "What are the best strategies for ${niche}?",
+    "Help me get started with ${niche}",
+    "What mistakes should I avoid in ${niche}?",
+    "Give me a ${niche} action plan",
+    "What's trending in ${niche} right now?"
   ]
-};}
+};`;
+}
 
-// Reuse previous full outputs for remaining types
-function contentOutput(n,niche){return chatbotOutput(n,niche);}
-function magnetOutput(n,niche){return chatbotOutput(n,niche);}
-function socialOutput(n,niche){return chatbotOutput(n,niche);}
-function sleepOutput(n,niche){return chatbotOutput(n,niche);}
-function predictOutput(n,niche){return chatbotOutput(n,niche);}
+function generateFallbackREADME(name, niche, machineType){
+return `# ${name}
 
-// ---- RENDER OUTPUT ----
-function renderOutput(output){
-  const el=document.getElementById('codeOutput');el.innerHTML='';
-  const ov=document.createElement('div');ov.className='overview-box';
-  ov.innerHTML=`<strong>// project overview</strong>${output.overview.replace(/\n/g,'<br>')}`;
-  el.appendChild(ov);
-  const tr=document.createElement('div');tr.className='folder-tree';
-  tr.innerHTML=`<div style="font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;text-transform:uppercase">// folder structure</div>`+
-    output.tree.split('\n').map(line=>{
-      if(line.match(/\.(js|json|md|env)/)) return `<span class="file-t">${line}</span>`;
-      if(line.endsWith('/')) return `<span class="dir">${line}</span>`;
-      return line;
-    }).join('<br>');
-  el.appendChild(tr);
-  output.files.forEach(f=>{
-    const block=document.createElement('div');block.className='file-block';
-    const label=document.createElement('div');label.className='file-label';
-    label.innerHTML=`<span>${f.name}</span><button class="copy-file-btn" onclick="copyFile(this)">copy</button>`;
-    const pre=document.createElement('pre');pre.textContent=f.code;pre.dataset.code=f.code;
-    block.appendChild(label);block.appendChild(pre);el.appendChild(block);
+> Your AI-powered ${machineType} for ${niche}, built with Sin Studio.
+
+## 🚀 Quick Start
+
+1. Open \`config.js\`
+2. Replace \`gsk_YOUR_KEY_HERE\` with your free Groq API key
+   - Get one free at [console.groq.com](https://console.groq.com)
+3. Open \`index.html\` in your browser — that's it!
+
+## 🌐 Deploy in 60 seconds
+
+**Netlify (free):**
+1. Go to netlify.com → drag your project folder onto the dashboard
+2. Done. Live URL instantly.
+
+**Vercel (free):**
+1. vercel.com → "New Project" → upload folder
+2. Done.
+
+## 🔧 Customization
+
+Edit \`config.js\` to change:
+- \`BOT_NAME\` — rename your bot
+- \`SYSTEM_PROMPT\` — change the personality and expertise
+- \`SUGGESTED_PROMPTS\` — the quick-start questions shown in sidebar
+- \`WELCOME_MESSAGE\` — the first message users see
+
+## 💰 Monetization Ideas for ${niche}
+
+1. **Freemium** — free 10 messages/day, $9/mo unlimited
+2. **White-label** — sell access to other ${niche} businesses
+3. **Lead gen** — capture emails before chatting (add a form)
+4. **Coaching upsell** — bot books discovery calls automatically
+5. **Info products** — bot recommends your courses/ebooks
+
+## 📁 Files
+
+- \`index.html\` — full UI
+- \`bot.js\` — AI conversation logic  
+- \`config.js\` — all settings (edit this)
+- \`README.md\` — this file
+
+Built with ❤️ by [Sin Studio](https://simmonstia.gumroad.com)`;
+}
+
+// =====================
+// DOWNLOAD ZIP
+// =====================
+async function downloadZip(){
+  const zip = new JSZip();
+  const folder = zip.folder(state.name.toLowerCase().replace(/\s+/g,'-'));
+  Object.entries(state.generatedFiles).forEach(([name,content])=>{
+    folder.file(name, content);
   });
-}
-
-function renderCustomCode(){
-  const el=document.getElementById('codeOutput');el.innerHTML='';
-  const block=document.createElement('div');block.className='file-block';
-  const label=document.createElement('div');label.className='file-label';
-  label.innerHTML=`<span>server.js (AI generated)</span><button class="copy-file-btn" onclick="copyFile(this)">copy</button>`;
-  const pre=document.createElement('pre');pre.textContent=generatedCode;pre.dataset.code=generatedCode;
-  block.appendChild(label);block.appendChild(pre);el.appendChild(block);
-}
-
-function copyFile(btn){
-  const code=btn.closest('.file-block').querySelector('pre').dataset.code;
-  navigator.clipboard.writeText(code).then(()=>{btn.textContent='copied!';setTimeout(()=>btn.textContent='copy',1500);});
+  const blob = await zip.generateAsync({type:'blob'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`${state.name.toLowerCase().replace(/\s+/g,'-')}.zip`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function copyAll(){
-  const all=[...document.querySelectorAll('#codeOutput pre')].map(p=>p.dataset.code||p.textContent).join('\n\n// ========\n\n');
-  navigator.clipboard.writeText(all).then(()=>{
-    const b=document.getElementById('copyAllBtn');b.textContent='Copied!';setTimeout(()=>b.textContent='Copy all',1500);
+  const all = Object.entries(state.generatedFiles).map(([n,c])=>`// ===== ${n} =====\n${c}`).join('\n\n');
+  navigator.clipboard.writeText(all).then(()=>alert('Copied all files!'));
+}
+
+function copyFile(btn, fname){
+  navigator.clipboard.writeText(state.generatedFiles[fname]||'').then(()=>{
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',1200);
   });
 }
 
-// ---- APK DOWNLOAD ----
-const APK_BASE = 'https://github.com/sinhara666/ss-machine-zips/releases/latest/download/';
+// =====================
+// UTILS
+// =====================
+function show(id){ document.getElementById(id).classList.remove('hidden'); }
+function hide(id){ document.getElementById(id).classList.add('hidden'); }
+function scroll(id){ setTimeout(()=>document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}),120); }
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-const APK_MAP = {
-  chatbot:      'chatbot-machine.apk',
-  support:      'support-machine.apk',
-  attorney:     'attorney-machine.apk',
-  listing:      'listing-machine.apk',
-  nanny:        'nanny-machine.apk',
-  teacher:      'teacher-machine.apk',
-  adhd:         'adhd-machine.apk',
-  'adhd-tutor': 'adhd-tutor-machine.apk',
-  trucker:      'trucker-machine.apk',
-  soccer:       'soccer-machine.apk',
-  dad:          'dad-machine.apk',
-  content:      'content-machine.apk',
-  magnet:       'magnet-machine.apk',
-  social:       'social-machine.apk',
-  sleep:        'wellness-machine.apk',
-  predict:      'predict-machine.apk',
-  fitness:      'fitness-machine.apk',
-  fundraiser:   'fundraiser-machine.apk',
-  homework:     'homework-machine.apk',
-  tiktok:       'tiktok-machine.apk',
-  'mom-life':   'mom-life-machine.apk',
-  'womens-health': 'womens-health-machine.apk',
-  'young-adults':  'young-adults-machine.apk',
-  recipe:        'recipe-machine.apk',
-  petcare:       'petcare-machine.apk',
-  custom:       'custom-machine.apk',
-};
-
-function downloadApk(){
-  const btn = document.getElementById('apkBtn');
-  const type = (chosenType || 'custom').toLowerCase().replace(/\s+/g,'-');
-  const file = APK_MAP[type] || 'custom-machine.apk';
-  const url = APK_BASE + file;
-  btn.textContent = 'Downloading APK...';
-  btn.disabled = true;
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = file;
-  a.click();
-  setTimeout(()=>{ btn.textContent = '&#11015; Download APK'; btn.disabled = false; }, 2000);
-}
-
-async function downloadZip(){
-  const btn=document.getElementById('zipBtn');
-  btn.textContent='Building ZIP...';btn.disabled=true;
-  try{
-    const zip=new JSZip();
-    const folderName=(chosenName||'machine').toLowerCase().replace(/\s+/g,'-');
-    const folder=zip.folder(folderName);
-    const blocks=[...document.querySelectorAll('#codeOutput .file-block')];
-    blocks.forEach(block=>{
-      const fileName=block.querySelector('.file-label span').textContent.replace(' (AI generated)','');
-      const code=block.querySelector('pre').dataset.code||block.querySelector('pre').textContent;
-      const parts=fileName.split('/');
-      if(parts.length>1){
-        const subFolder=folder.folder(parts.slice(0,-1).join('/'));
-        subFolder.file(parts[parts.length-1],code);
-      } else {
-        folder.file(fileName,code);
-      }
+function randomMachine(){
+  const r = MACHINES[Math.floor(Math.random()*(MACHINES.length-1))];
+  document.getElementById('builder').scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>{
+    document.querySelectorAll('.mc').forEach((el,i)=>{
+      if(MACHINES[i]&&MACHINES[i].id===r.id) el.click();
     });
-    const blob=await zip.generateAsync({type:'blob'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;a.download=folderName+'.zip';a.click();
-    URL.revokeObjectURL(url);
-    btn.textContent='&#11015; Download ZIP';
-  }catch(e){
-    btn.textContent='ZIP failed — try copy instead';
-  }finally{
-    btn.disabled=false;
-  }
+  }, 600);
 }
 
 function resetAll(){
-  chosenType='';chosenNiche='';chosenName='';generatedCode='';demoHistory=[];chosenFeatures=[];chosenLanguage='English';
-  if(gearAnimId){cancelAnimationFrame(gearAnimId);gearAnimId=null;}
-  hide('phase2');hide('phase3');hide('phaseFeatures');hide('phase4');hide('d2');hide('d3');hide('dFeatures');
-  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('sel'));
+  state={machine:null,niche:null,features:[],name:'',language:'English',groqKey:'',generatedFiles:{},systemPrompt:'',demoHistory:[],demoCount:0};
+  ['phase2','d2','phaseFeatures','dFeatures','phase3','d3','phase4'].forEach(hide);
+  ['paywall','codeReveal','demoBox','aiChatBox'].forEach(hide);
+  document.querySelectorAll('.mc,.np').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('machineName').value='';
+  document.getElementById('licenseKey').value='';
+  document.getElementById('demoMessages').innerHTML='';
+  document.getElementById('chatLog').innerHTML='';
+  document.getElementById('codeOutput').innerHTML='';
+  document.getElementById('blueprintBox').style.display='';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
