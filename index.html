@@ -637,7 +637,7 @@ async function testGroqKey(){
   document.getElementById('keyStatus').textContent='Testing...';
   document.getElementById('keyStatus').className='key-status';
   try{
-    const r = await callGroq([{role:'user',content:'Say OK'}],'llama3-8b-8192',key,20);
+    const r = await callGroq([{role:'user',content:'Say OK'}],'llama-3.1-8b-instant',key,20);
     document.getElementById('keyStatus').textContent='✓ Key works — ready to build!';
     document.getElementById('keyStatus').className='key-status ok';
     state.groqKey=key;
@@ -802,12 +802,12 @@ Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
   // 3. Show the AI generation log box
   document.getElementById('aiChatBox').classList.remove('hidden');
   addChatLog('sys', `Wiring ${name} · ${niche} · ${featureList}`);
-  addChatLog('sys', `Calling Groq llama3-70b-8192 to generate your 4-file codebase...`);
+  addChatLog('sys', `Calling Groq llama-3- to generate your 4-file codebase...`);
 
   // 4. Build the prompt for full code generation
   const prompt = `You are a senior full-stack developer. Generate a COMPLETE, working, production-ready ${machineType} web app called "${name}" for the ${niche} niche.
 
-Tech stack: vanilla HTML/CSS/JS + Groq API (https://api.groq.com/openai/v1/chat/completions, model: llama3-70b-8192, Bearer token auth).
+Tech stack: vanilla HTML/CSS/JS + Groq API (https://api.groq.com/openai/v1/chat/completions, model: llama-3-, Bearer token auth).
 Language: ${lang}
 Features: ${featureList}
 
@@ -841,7 +841,7 @@ FILE 3: config.js
   NICHE: "${niche}",
   LANGUAGE: "${lang}",
   GROQ_API_KEY: "YOUR_GROQ_API_KEY_HERE",
-  GROQ_MODEL: "llama3-70b-8192",
+  GROQ_MODEL: "llama-3-",
   SYSTEM_PROMPT: (detailed 4-sentence persona for ${name} as a ${niche} ${machineType}),
   WELCOME_MESSAGE: (friendly opening for ${niche}),
   SUGGESTED_PROMPTS: [5 highly relevant questions a ${niche} user would ask],
@@ -858,13 +858,13 @@ FILE 4: README.md
 IMPORTANT: Every file must be 100% complete. No "// add your code here". No truncation. All files must work together as a real deployable product.`;
 
   try {
-    const reply = await callGroq([{role:'user',content:prompt}],'llama3-70b-8192',state.groqKey,4000);
+    const reply = await callGroq([{role:'user',content:prompt}],'llama-3-',state.groqKey,4000);
     addChatLog('ai','Code received — parsing files...');
     parseAndShowCode(reply);
   } catch(e) {
-    addChatLog('sys', `70b error: ${e.message} — trying llama3-8b-8192...`);
+    addChatLog('sys', `70b error: ${e.message} — trying llama-3.1-8b-instant...`);
     try {
-      const reply = await callGroq([{role:'user',content:prompt}],'llama3-8b-8192',state.groqKey,4000);
+      const reply = await callGroq([{role:'user',content:prompt}],'llama-3.1-8b-instant',state.groqKey,4000);
       addChatLog('ai','Code received (8b) — parsing files...');
       parseAndShowCode(reply);
     } catch(e2) {
@@ -1146,7 +1146,7 @@ async function sendDemo(){
 
   try {
     const messages = [{role:'system',content:state.systemPrompt},...state.demoHistory.slice(-8)];
-    const reply = await callGroq(messages,'llama3-8b-8192',state.groqKey,300);
+    const reply = await callGroq(messages,'llama-3.1-8b-instant',state.groqKey,300);
     typing.remove();
     state.demoHistory.push({role:'assistant',content:reply});
     addDemoMsg('bot', reply);
@@ -1336,7 +1336,7 @@ const CONFIG = {
   BOT_NAME: "${name}",
   NICHE: "${niche}",
   LANGUAGE: "${lang}",
-  GROQ_MODEL: "llama3-70b-8192",
+  GROQ_MODEL: "llama-3-",
   
   // 🔑 Add your Groq API key here (get free key at console.groq.com)
   GROQ_API_KEY: "gsk_YOUR_KEY_HERE",
