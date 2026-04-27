@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sin Studio — Money Machine Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --bg:#07071a;--surface:#0f0f2a;--surface2:#16163a;
+  --border:rgba(255,255,255,0.07);
+  --purple:#8B5CF6;--pl:#a78bfa;--cyan:#22d3ee;
+  --green:#10b981;--pink:#f472b6;
+  --text:#f0f0ff;--muted:#8888aa;
+  --mono:'Space Mono',monospace;--display:'Syne',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--display);overflow-x:hidden}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,26,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.nav-logo{font-size:17px;font-weight:800;color:var(--pl)}
+.nav-logo span{color:var(--cyan)}
+.btn-nav{background:var(--purple);color:#fff;border:none;border-radius:999px;padding:9px 20px;font-size:12px;font-family:var(--mono);font-weight:700;cursor:pointer}
+.btn-nav:hover{background:var(--pl)}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 40%,rgba(139,92,246,0.18),transparent 70%);pointer-events:none}
+.stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:tw var(--d) var(--dl) infinite;opacity:0}
+@keyframes tw{0%,100%{opacity:0}50%{opacity:var(--op)}}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.2);border-radius:999px;padding:8px 18px;font-size:11px;font-family:var(--mono);color:var(--cyan);letter-spacing:.1em;margin-bottom:24px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-size:clamp(38px,8vw,72px);font-weight:900;line-height:1.05;margin-bottom:18px}
+h1 em{font-style:normal;color:var(--pl)}
+h1 em span{color:var(--cyan)}
+.hero-sub{font-size:15px;color:var(--muted);max-width:480px;line-height:1.8;margin-bottom:40px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-hero{border:none;border-radius:999px;padding:15px 30px;font-size:14px;font-family:var(--mono);font-weight:700;cursor:pointer;transition:all .2s}
+.btn-hero.p{background:linear-gradient(135deg,var(--purple),#6366f1);color:#fff}
+.btn-hero.p:hover{opacity:.88;transform:translateY(-2px)}
+.btn-hero.g{background:transparent;border:1.5px solid rgba(255,255,255,0.15);color:var(--text)}
+.btn-hero.g:hover{border-color:var(--pl);transform:translateY(-2px)}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 24px}
+.sec{padding:70px 0}
+.sec-eye{font-size:10px;font-family:var(--mono);color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.sec-head{font-size:clamp(22px,4vw,32px);font-weight:800;margin-bottom:28px;line-height:1.2}
+.divider{height:1px;background:var(--border)}
+
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 16px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.mc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(139,92,246,.1),transparent 65%);opacity:0;transition:opacity .22s}
+.mc:hover{border-color:rgba(139,92,246,.45);transform:translateY(-3px)}
+.mc:hover::after,.mc.sel::after{opacity:1}
+.mc.sel{border-color:var(--purple);background:rgba(139,92,246,.08)}
+.mc.custom-c{border-style:dashed;border-color:rgba(34,211,238,.25)}
+.mc.custom-c.sel{border-style:solid;border-color:var(--cyan)}
+.mc-badge{position:absolute;top:10px;right:10px;font-size:9px;font-family:var(--mono);padding:3px 7px;border-radius:4px}
+.mc-badge.bk{background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.mc-badge.ai{background:rgba(139,92,246,.15);color:var(--pl);border:1px solid rgba(139,92,246,.3)}
+.mc-ico{width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px}
+.mc-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.mc-sub{font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+.ngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:8px;margin-bottom:18px}
+.np{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:12px;font-family:var(--mono);color:var(--muted);text-align:center;transition:all .15s}
+.np:hover{border-color:rgba(139,92,246,.4);color:var(--text)}
+.np.sel{border-color:var(--purple);color:var(--pl);background:rgba(139,92,246,.08)}
+
+input,textarea,select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px;font-size:13px;font-family:var(--mono);color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--purple)}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+.irow{display:flex;gap:10px}.irow input{flex:1}
+.ilabel{font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.inote{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:6px}
+.inote a{color:var(--cyan);text-decoration:none}
+
+.btn{border:none;border-radius:999px;padding:12px 26px;font-size:13px;font-family:var(--mono);font-weight:700;cursor:pointer;transition:all .2s}
+.btn.p{background:linear-gradient(135deg,var(--purple),#6366f1);color:#fff}
+.btn.p:hover{opacity:.88;transform:translateY(-1px)}
+.btn.g{background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text)}
+.btn.g:hover{border-color:var(--pl);color:var(--pl)}
+.btn.t{background:var(--cyan);color:#07071a;font-weight:700}
+.btn.t:hover{opacity:.88}
+.btn.sm{padding:8px 16px;font-size:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.blueprint{background:var(--surface);border:1px solid rgba(139,92,246,.2);border-radius:20px;padding:28px 20px;margin-bottom:20px;position:relative;overflow:hidden}
+.blueprint::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,92,246,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.bp-title{font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px}
+.bp-canvas{position:relative;width:100%;height:280px}
+canvas#gearCanvas{position:absolute;inset:0;width:100%;height:100%}
+svg#bpSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.bpnode{position:absolute;opacity:0;transition:opacity .4s,transform .4s;transform:scale(.7)}
+.bpnode.show{opacity:1;transform:scale(1)}
+.bpnode-inner{background:var(--surface2);border:1.5px solid rgba(139,92,246,.3);border-radius:10px;padding:8px 12px;font-size:11px;font-family:var(--mono);color:var(--muted);white-space:nowrap;transition:all .4s}
+.bpnode.lit .bpnode-inner{border-color:var(--purple);color:var(--pl);background:rgba(139,92,246,.12)}
+.bpnode.done .bpnode-inner{border-color:var(--cyan);color:var(--cyan);background:rgba(34,211,238,.07)}
+.bpnode.center .bpnode-inner{font-size:13px;font-weight:700;border-color:var(--purple);color:var(--pl);background:rgba(139,92,246,.18)}
+.bp-pbar-wrap{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:14px}
+.bp-pbar{height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan));border-radius:2px;width:0%;transition:width .5s}
+.bp-status{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:10px;min-height:20px}
+.bp-status em{color:var(--pl);font-style:normal}
+
+.demo-box{background:var(--surface);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:24px;margin-bottom:20px}
+.demo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.demo-title{font-size:12px;font-family:var(--mono);color:var(--cyan);letter-spacing:.1em}
+.demo-badge{font-size:9px;font-family:var(--mono);background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2);border-radius:4px;padding:3px 8px}
+.demo-messages{background:var(--surface2);border-radius:10px;padding:14px;height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.dmsg{max-width:85%;padding:10px 14px;border-radius:10px;font-size:12px;font-family:var(--mono);line-height:1.6}
+.dmsg.bot{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);color:var(--pl);align-self:flex-start}
+.dmsg.user{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.15);color:var(--cyan);align-self:flex-end}
+.dmsg.typing{color:var(--muted);font-style:italic}
+.demo-input-row{display:flex;gap:8px}
+.demo-input-row input{flex:1;font-size:12px;padding:10px 14px}
+.demo-note{font-size:10px;font-family:var(--mono);color:var(--muted);margin-top:8px;text-align:center}
+
+.ai-box{background:var(--surface);border:1px solid rgba(34,211,238,.2);border-radius:14px;padding:20px;margin-bottom:20px}
+.ai-box-head{font-size:10px;font-family:var(--mono);color:var(--cyan);letter-spacing:.12em;margin-bottom:14px}
+.chat-log{background:var(--surface2);border-radius:8px;padding:14px;max-height:180px;overflow-y:auto;font-family:var(--mono);font-size:12px;line-height:2}
+.cm.user{color:var(--pl)}.cm.ai{color:var(--cyan)}.cm.sys{color:var(--muted);font-style:italic}
+
+.pw-box{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(34,211,238,.06));border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:40px 28px;text-align:center;margin-top:4px}
+.pw-box h3{font-size:24px;font-weight:900;margin-bottom:8px}
+.pw-box p{font-size:13px;color:var(--muted);font-family:var(--mono);margin-bottom:26px;line-height:1.7}
+.key-row{display:flex;gap:10px;max-width:380px;margin:0 auto 12px}
+.key-row input{flex:1}
+.phint{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.phint a{color:var(--cyan);text-decoration:none}
+.shake{animation:shk .3s}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+.code-output{margin-top:20px}
+.code-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.unlocked{font-size:11px;font-family:var(--mono);color:var(--green);background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:5px;padding:4px 10px}
+.file-block{margin-bottom:20px}
+.file-label{font-size:11px;font-family:var(--mono);color:var(--cyan);background:var(--surface2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 14px;display:flex;justify-content:space-between;align-items:center}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 10px 10px;padding:20px;font-family:var(--mono);font-size:11px;line-height:1.9;color:#c4b5fd;max-height:320px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;margin:0}
+.copy-file-btn{font-size:10px;font-family:var(--mono);background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--muted);padding:3px 8px;cursor:pointer}
+.copy-file-btn:hover{border-color:var(--pl);color:var(--pl)}
+.overview-box{background:var(--surface);border:1px solid rgba(34,211,238,.15);border-radius:12px;padding:20px;margin-bottom:20px;font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--muted)}
+.overview-box strong{color:var(--cyan);display:block;margin-bottom:8px;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.folder-tree{font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--surface2);border-radius:8px;padding:16px;margin-bottom:20px;line-height:1.9}
+.folder-tree .dir{color:var(--pl)}
+.folder-tree .file-t{color:var(--cyan)}
+.dl-btns{display:flex;gap:10px;flex-wrap:wrap}
+
+/* GROQ KEY INPUT SECTION */
+.key-section{background:var(--surface);border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:22px;margin-bottom:24px}
+.key-section-title{font-size:10px;font-family:var(--mono);color:var(--pl);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+.key-row-inline{display:flex;gap:10px;align-items:center}
+.key-row-inline input{flex:1}
+.key-status{font-size:11px;font-family:var(--mono);margin-top:8px}
+.key-status.ok{color:var(--green)}
+.key-status.err{color:#f87171}
+
+/* LAUNCH CARDS */
+.launch-card{background:var(--surface);border:1px solid rgba(139,92,246,.2);border-radius:16px;padding:22px;display:flex;flex-direction:column}
+.launch-card.lc-gold{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.04)}
+.lc-icon{font-size:32px;margin-bottom:10px}
+.lc-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.lc-sub{font-size:11px;font-family:var(--mono);color:var(--muted);margin-bottom:14px;line-height:1.6}
+.lc-steps{display:flex;flex-direction:column;gap:7px}
+.ls{font-size:12px;font-family:var(--mono);color:var(--muted);line-height:1.5}
+.ls strong{color:var(--pl)}
+.ls a{color:var(--cyan);text-decoration:none}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Sin<span>Studio</span></div>
+  <button class="btn-nav" onclick="document.getElementById('builder').scrollIntoView({behavior:'smooth'})">Start Building</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="stars" id="stars"></div>
+  <div class="badge"><div class="badge-dot"></div>NO SUBSCRIPTIONS · OWN IT FOREVER · BYOK</div>
+  <h1>Build Your Own<br><em>Money <span>Machine</span></em></h1>
+  <p class="hero-sub">Pick a bot. Watch it assemble. Try it live. Then unlock the full source code — yours forever.</p>
+  <div class="hero-btns">
+    <button class="btn-hero p" onclick="document.getElementById('builder').scrollIntoView({behavior:'smooth'})">🚀 Start Building</button>
+    <button class="btn-hero g" onclick="randomMachine()">🎲 Random Idea</button>
+  </div>
+</div>
+
+<div class="divider"></div>
+<div id="builder">
+
+<!-- STEP 1: MACHINE TYPE -->
+<div class="wrap"><div class="sec" id="phase1">
+  <div class="sec-eye">Step 01</div>
+  <div class="sec-head">What kind of machine?</div>
+  <div class="mgrid" id="machineGrid"></div>
+</div></div>
+
+<div class="divider"></div>
+
+<!-- STEP 2: NICHE -->
+<div class="wrap"><div class="sec hidden" id="phase2">
+  <div class="sec-eye">Step 02</div>
+  <div class="sec-head" id="p2h">Pick your niche</div>
+  <div id="nicheSection">
+    <div class="ngrid" id="nicheGrid"></div>
+    <div class="ilabel">Or type your own</div>
+    <div class="irow">
+      <input type="text" id="customNiche" placeholder="e.g. real estate, gaming, crypto...">
+      <button class="btn g" onclick="setCustomNiche()">Use this</button>
+    </div>
+  </div>
+</div></div>
+
+<div class="divider hidden" id="d2"></div>
+
+<!-- STEP 3: FEATURES -->
+<div class="wrap"><div class="sec hidden" id="phaseFeatures">
+  <div class="sec-eye">Step 03</div>
+  <div class="sec-head">Configure your machine</div>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:22px;font-family:var(--mono)">// select features to include in your build</p>
+
+  <!-- GROQ API KEY -->
+  <div class="key-section">
+    <div class="key-section-title">// Your Groq API Key (BYOK — never stored)</div>
+    <div class="key-row-inline">
+      <input type="password" id="groqKeyMain" placeholder="gsk_...  — get a free key at console.groq.com">
+      <button class="btn g sm" onclick="testGroqKey()">Test key</button>
+    </div>
+    <div class="key-status" id="keyStatus"></div>
+    <p class="inote" style="margin-top:8px">Free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> · Llama 3 70B · unlimited generations</p>
+  </div>
+
+  <div class="key-section" style="margin-top:14px">
+    <div class="key-section-title">// Google Sheet License Web App</div>
+    <div class="key-row-inline">
+      <input type="text" id="appsScriptUrl" placeholder="Paste your Apps Script Web App URL here">
+      <button class="btn g sm" onclick="saveAppsScriptUrl()">Save</button>
+    </div>
+    <div class="key-status" id="appsScriptStatus"></div>
+    <p class="inote" style="margin-top:8px">Used to check license keys against your Google Sheet.</p>
+  </div>
+
+  <div style="margin-bottom:18px">
+    <div class="ilabel">Output language</div>
+    <select id="botLanguage">
+      <option value="English">🇺🇸 English</option>
+      <option value="Spanish">🇪🇸 Spanish</option>
+      <option value="French">🇫🇷 French</option>
+      <option value="Portuguese">🇧🇷 Portuguese</option>
+      <option value="German">🇩🇪 German</option>
+      <option value="Swahili">🌍 Swahili</option>
+      <option value="Yoruba">🌍 Yoruba</option>
+      <option value="Nigerian Pidgin">🇳🇬 Nigerian Pidgin</option>
+    </select>
+  </div>
+
+  <div class="ilabel">Features</div>
+  <div id="featureGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px"></div>
+  <button class="btn p" onclick="confirmFeatures()">Continue →</button>
+</div></div>
+
+<div class="divider hidden" id="dFeatures"></div>
+
+<!-- STEP 4: NAME -->
+<div class="wrap"><div class="sec hidden" id="phase3">
+  <div class="sec-eye">Step 04</div>
+  <div class="sec-head">Name your machine</div>
+  <div class="irow">
+    <input type="text" id="machineName" placeholder="e.g. LegalBot, FitLead, CoachAI...">
+    <button class="btn p" onclick="startBuild()">Build it →</button>
+  </div>
+</div></div>
+
+<div class="divider hidden" id="d3"></div>
+
+<!-- STEP 5: BUILD + OUTPUT -->
+<div class="wrap"><div class="sec hidden" id="phase4">
+  <div class="sec-eye">Step 05</div>
+  <div class="sec-head" id="buildTitle">Assembling your machine...</div>
+
+  <!-- BLUEPRINT ANIMATION -->
+  <div class="blueprint" id="blueprintBox">
+    <div class="bp-title">// blueprint assembly</div>
+    <div class="bp-canvas" id="bpCanvas">
+      <canvas id="gearCanvas"></canvas>
+      <svg id="bpSvg"></svg>
+    </div>
+    <div class="bp-pbar-wrap"><div class="bp-pbar" id="bpBar"></div></div>
+    <div class="bp-status" id="bpStatus">Initializing...</div>
+  </div>
+
+  <!-- LIVE DEMO -->
+  <div id="demoBox" class="hidden">
+    <div class="demo-box">
+      <div class="demo-head">
+        <div class="demo-title">// try it live — powered by your Groq key</div>
+        <div class="demo-badge">LIVE</div>
+      </div>
+      <div class="demo-messages" id="demoMessages"></div>
+      <div class="demo-input-row">
+        <input type="text" id="demoInput" placeholder="Ask your machine something..." onkeydown="if(event.key==='Enter')sendDemo()">
+        <button class="btn t sm" onclick="sendDemo()">Send</button>
+      </div>
+      <div class="demo-note">Talking to your machine via Groq · your key · your data</div>
+    </div>
+  </div>
+
+  <!-- PAYWALL -->
+  <div id="paywall" class="hidden">
+    <div class="pw-box">
+      <h3>🔒 Machine ready.</h3>
+      <p>Enter your license key to unlock<br>the full source code + zip download.<br><br><small style="color:#555;font-size:10px">Each key works once.</small></p>
+      <div class="key-row">
+        <input type="text" id="licenseKey" placeholder="SINST-XXXX-XXXX">
+        <button class="btn p" id="unlockBtn" onclick="checkKey()">Unlock</button>
+      </div>
+      <p class="phint">No key? <a href="https://simmonstia.gumroad.com" target="_blank">Get one at Sin Studio</a></p>
+    </div>
+  </div>
+
+  <!-- NO-CODE LAUNCH PAD -->
+  <div id="codeReveal" class="hidden">
+
+    <!-- SUCCESS HEADER -->
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:48px;margin-bottom:12px" id="machineEmoji">🤖</div>
+      <div style="font-size:22px;font-weight:900;color:var(--pl)" id="revealBotName">Your Bot</div>
+      <div style="font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:6px" id="revealBotSub">is built and ready to make money</div>
+    </div>
+
+    <!-- 3 LAUNCH PATHS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:28px">
+
+      <!-- PATH 1: WEBSITE -->
+      <div class="launch-card" id="pathWeb">
+        <div class="lc-icon">🌐</div>
+        <div class="lc-title">Launch as Website</div>
+        <div class="lc-sub">Free · Live in 60 seconds · No account needed</div>
+        <div class="lc-steps">
+          <div class="ls">1️⃣ Click <strong>Download ZIP</strong> below</div>
+          <div class="ls">2️⃣ Go to <a href="https://netlify.com/drop" target="_blank">netlify.com/drop</a></div>
+          <div class="ls">3️⃣ Drag your ZIP onto the page</div>
+          <div class="ls">4️⃣ Your bot is LIVE with a real link ✅</div>
+        </div>
+        <button class="btn t" style="width:100%;margin-top:16px" onclick="downloadZip()">⬇ Download ZIP</button>
+      </div>
+
+      <!-- PATH 2: PHONE APP -->
+      <div class="launch-card" id="pathPhone">
+        <div class="lc-icon">📱</div>
+        <div class="lc-title">Add to Phone</div>
+        <div class="lc-sub">Works on iPhone & Android · Feels like a real app</div>
+        <div class="lc-steps">
+          <div class="ls">1️⃣ Deploy as website (path above)</div>
+          <div class="ls">2️⃣ Open that link in your phone browser</div>
+          <div class="ls">3️⃣ iPhone: Share → <strong>Add to Home Screen</strong></div>
+          <div class="ls">3️⃣ Android: Menu → <strong>Add to Home Screen</strong></div>
+          <div class="ls">4️⃣ Tap the icon — it's your app ✅</div>
+        </div>
+        <button class="btn p" style="width:100%;margin-top:16px" onclick="downloadZip()">⬇ Get ZIP first</button>
+      </div>
+
+      <!-- PATH 3: SELL IT -->
+      <div class="launch-card lc-gold" id="pathSell">
+        <div class="lc-icon">💰</div>
+        <div class="lc-title">Sell It / Share It</div>
+        <div class="lc-sub">Charge clients · Sell on Gumroad · White-label it</div>
+        <div class="lc-steps">
+          <div class="ls">1️⃣ Deploy as website (get your link)</div>
+          <div class="ls">2️⃣ List on <a href="https://gumroad.com" target="_blank">Gumroad</a> or share the link</div>
+          <div class="ls">3️⃣ Charge $9–$97/mo for access</div>
+          <div class="ls">4️⃣ Swap your Groq key for theirs (config.js)</div>
+          <div class="ls">5️⃣ Scale — build more machines 💸</div>
+        </div>
+        <button class="btn" style="width:100%;margin-top:16px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;border-radius:999px;padding:12px;font-family:var(--mono);font-weight:700;cursor:pointer" onclick="downloadZip()">⬇ Get ZIP to sell</button>
+      </div>
+
+    </div>
+
+    <!-- ONE KEY STEP: ADD YOUR GROQ KEY -->
+    <div style="background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(34,211,238,.06));border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:24px;margin-bottom:24px">
+      <div style="font-size:11px;font-family:var(--mono);color:var(--cyan);letter-spacing:.15em;margin-bottom:12px">// ONE THING TO DO BEFORE YOU LAUNCH</div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:8px">Add your Groq API key to <code style="background:rgba(139,92,246,.15);padding:2px 8px;border-radius:4px;font-size:13px;color:var(--pl)">config.js</code></div>
+      <div style="font-size:12px;font-family:var(--mono);color:var(--muted);line-height:1.9">
+        1. Open the ZIP → find <strong style="color:var(--pl)">config.js</strong><br>
+        2. Find the line: <code style="color:#f87171">GROQ_API_KEY: "YOUR_GROQ_API_KEY_HERE"</code><br>
+        3. Replace with your key from <a href="https://console.groq.com" target="_blank" style="color:var(--cyan)">console.groq.com</a> (free, takes 30 seconds)<br>
+        4. Save the file and re-upload your ZIP to Netlify — done ✅
+      </div>
+    </div>
+
+    <!-- VIEW CODE TOGGLE -->
+    <div style="margin-bottom:16px">
+      <button class="btn g sm" onclick="toggleCodeView()" id="codeToggleBtn">👨‍💻 View source code (for developers)</button>
+    </div>
+    <div id="codeOutput" class="hidden"></div>
+
+    <div style="margin-top:20px;text-align:center">
+      <button class="btn g sm" onclick="resetAll()">🔄 Build another machine</button>
+    </div>
+  </div>
+</div></div>
+
+</div><!-- end #builder -->
+
+<script>
+// =====================
+// STARS
+// =====================
+(()=>{
+  const c=document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');s.className='star';
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--dl:${Math.random()*5}s;--op:${.3+Math.random()*.6}`;
+    c.appendChild(s);
+  }
+})();
+
+// =====================
+// DATA
+// =====================
+const MACHINES = [
+  {id:'chatbot',     icon:'🤖', title:'AI Chatbot',         sub:'lead gen + support',         badge:'bk', badgeText:'No-code'},
+  {id:'coach',       icon:'🏆', title:'AI Coach',           sub:'advice + motivation',         badge:'ai', badgeText:'AI'},
+  {id:'closer',      icon:'💰', title:'Sales Closer',       sub:'close deals on autopilot',    badge:'ai', badgeText:'AI'},
+  {id:'newsletter',  icon:'📧', title:'Newsletter Bot',     sub:'content + email',             badge:'bk', badgeText:'No-code'},
+  {id:'tutor',       icon:'📚', title:'AI Tutor',           sub:'teach any subject',           badge:'ai', badgeText:'AI'},
+  {id:'creator',     icon:'✍️',  title:'Content Creator',   sub:'posts, scripts, ads',         badge:'ai', badgeText:'AI'},
+  {id:'analyzer',    icon:'📊', title:'Data Analyzer',      sub:'insights on demand',          badge:'ai', badgeText:'AI'},
+  {id:'recruiter',   icon:'🎯', title:'AI Recruiter',       sub:'screen & hire faster',        badge:'ai', badgeText:'AI'},
+  {id:'therapist',   icon:'🧠', title:'Wellness Bot',       sub:'mental health support',       badge:'ai', badgeText:'AI'},
+  {id:'lawyer',      icon:'⚖️',  title:'Legal Assistant',   sub:'contracts, clauses, advice',  badge:'ai', badgeText:'AI'},
+  {id:'chef',        icon:'🍳', title:'AI Chef',            sub:'recipes, meal plans, macros', badge:'ai', badgeText:'AI'},
+  {id:'fitness',     icon:'💪', title:'Fitness Trainer',    sub:'workouts + nutrition',        badge:'ai', badgeText:'AI'},
+  {id:'realestate',  icon:'🏠', title:'Real Estate Bot',    sub:'listings, leads, advice',     badge:'bk', badgeText:'No-code'},
+  {id:'finance',     icon:'📈', title:'Finance Advisor',    sub:'budgets, stocks, savings',    badge:'ai', badgeText:'AI'},
+  {id:'ecomm',       icon:'🛒', title:'E-commerce Bot',     sub:'product help + upsells',      badge:'bk', badgeText:'No-code'},
+  {id:'hr',          icon:'👥', title:'HR Assistant',       sub:'onboarding + policies',       badge:'bk', badgeText:'No-code'},
+  {id:'travel',      icon:'✈️',  title:'Travel Planner',    sub:'itineraries + bookings',      badge:'ai', badgeText:'AI'},
+  {id:'social',      icon:'📱', title:'Social Media Bot',   sub:'captions, hooks, strategy',   badge:'ai', badgeText:'AI'},
+  {id:'podcast',     icon:'🎙️', title:'Podcast Assistant',  sub:'scripts, show notes, clips',  badge:'ai', badgeText:'AI'},
+  {id:'seo',         icon:'🔍', title:'SEO Machine',        sub:'keywords, audits, content',   badge:'ai', badgeText:'AI'},
+  {id:'translator',  icon:'🌐', title:'AI Translator',      sub:'multilingual content bot',    badge:'ai', badgeText:'AI'},
+  {id:'event',       icon:'🎪', title:'Event Planner',      sub:'logistics + scheduling',      badge:'bk', badgeText:'No-code'},
+  {id:'dropship',    icon:'📦', title:'Dropship Helper',    sub:'product research + suppliers',badge:'ai', badgeText:'AI'},
+  {id:'studybuddy',  icon:'🎓', title:'Study Buddy',        sub:'exams, summaries, Q&A',       badge:'ai', badgeText:'AI'},
+  {id:'custom',      icon:'⚡', title:'Custom Machine',     sub:'describe your idea',          badge:'ai', badgeText:'Custom', isCustom:true},
+];
+
+const NICHES = {
+  chatbot:    ['Fitness','Legal','Real Estate','E-commerce','Mental Health','Finance','Parenting','Travel'],
+  coach:      ['Business','Life','Fitness','Career','Mindset','Relationships','Sales','Sports'],
+  closer:     ['SaaS','Coaching','Agency','E-commerce','Real Estate','Insurance','Freelance','Consulting'],
+  newsletter: ['Tech','Crypto','Health','Marketing','Finance','Startups','Fashion','Food'],
+  tutor:      ['Math','Coding','Languages','Science','History','SAT Prep','Music','Writing'],
+  creator:    ['YouTube','TikTok','Instagram','LinkedIn','Podcasting','Blogging','Twitter/X','Shorts'],
+  analyzer:   ['Sales Data','Social Media','SEO','Finance','HR','Marketing','Competitors','Products'],
+  recruiter:  ['Tech','Marketing','Finance','Healthcare','Legal','Sales','Design','Operations'],
+  therapist:  ['Anxiety','Depression','Stress','Relationships','Grief','Self-esteem','Addiction','Burnout'],
+  lawyer:     ['Contracts','Employment','Real Estate','IP / Copyright','Immigration','Business','Criminal','Family'],
+  chef:       ['Keto','Vegan','Meal Prep','Budget Cooking','Fine Dining','Baking','Mediterranean','High Protein'],
+  fitness:    ['Weight Loss','Muscle Gain','HIIT','Yoga','Running','Calisthenics','Powerlifting','Flexibility'],
+  realestate: ['Buyers','Sellers','Renters','Investors','Commercial','Luxury','First-time Buyers','Airbnb'],
+  finance:    ['Budgeting','Investing','Crypto','Retirement','Debt Payoff','Side Hustles','Tax','FIRE'],
+  ecomm:      ['Fashion','Electronics','Beauty','Home Goods','Supplements','Pet Products','Sports','Dropshipping'],
+  hr:         ['Startups','Enterprise','Remote Teams','Retail','Healthcare','Tech','Non-profits','Agencies'],
+  travel:     ['Budget Travel','Luxury','Solo','Family','Business','Adventure','Backpacking','Digital Nomad'],
+  social:     ['Instagram','TikTok','LinkedIn','YouTube','Twitter/X','Pinterest','Facebook','Threads'],
+  podcast:    ['True Crime','Business','Health','Comedy','Tech','Politics','Sports','Spirituality'],
+  seo:        ['Local SEO','E-commerce SEO','Blog SEO','Technical SEO','YouTube SEO','Amazon SEO','Agency SEO','News SEO'],
+  translator: ['English','Spanish','French','Portuguese','Arabic','Mandarin','Swahili','Yoruba'],
+  event:      ['Weddings','Corporate','Birthdays','Concerts','Conferences','Galas','Virtual Events','Sports'],
+  dropship:   ['Fashion','Gadgets','Home Decor','Pet Niche','Beauty','Fitness Gear','Kids Products','Garden'],
+  studybuddy: ['High School','University','Med School','Law School','Coding Bootcamp','Language Exams','CPA','Bar Exam'],
+  custom:     [],
+};
+
+const FEATURES = {
+  chatbot:    ['User onboarding flow','Lead capture form','FAQ auto-answer','Appointment booking','Email follow-up','Analytics dashboard','Multi-language support','Human handoff'],
+  coach:      ['Goal-setting wizard','Daily check-in prompts','Progress tracker','Motivational messages','Habit builder','Resource library','Accountability reminders','Session notes'],
+  closer:     ['Objection handler','Price anchoring logic','Urgency triggers','Follow-up sequences','Deal scoring','CRM integration hooks','Script generator','Win/loss tracker'],
+  newsletter: ['Topic generator','Intro/outro writer','Subject line A/B tester','Subscriber segmenter','RSS to content','Social snippets','Open-rate tips','Scheduling logic'],
+  tutor:      ['Quiz generator','Adaptive difficulty','Flashcard system','Progress badges','Concept explainer','Error analyzer','Study schedule','Parent report'],
+  creator:    ['Hook generator','Script writer','Caption builder','Hashtag finder','Thumbnail ideas','Post scheduler','Repurpose engine','Trend detector'],
+  analyzer:   ['CSV upload & parse','Chart generator','Trend highlighter','Anomaly alerts','Natural-language Q&A','Export to PDF','Weekly digest','Benchmark comparison'],
+  recruiter:  ['Resume screener','Job description writer','Interview question builder','Candidate scorer','Culture fit checker','Offer letter generator','Rejection email writer','Pipeline tracker'],
+  therapist:  ['Mood check-in','CBT exercise prompts','Breathing guides','Journal prompts','Crisis resources','Progress log','Coping toolkit','Therapist referral flow'],
+  lawyer:     ['Contract reviewer','Clause explainer','Red-flag detector','Plain-English summary','Template generator','Jurisdiction selector','Negotiation tips','FAQ library'],
+  chef:       ['Recipe generator','Macro calculator','Meal plan builder','Ingredient substitutions','Shopping list maker','Cooking timer prompts','Dietary filter','Wine pairing'],
+  fitness:    ['Workout plan builder','Rep & set tracker','Calorie calculator','Rest day scheduler','Form tips','Progress photos log','Supplement guide','Goal milestone alerts'],
+  realestate: ['Property Q&A','Market insights','Lead qualifier','Showing scheduler','Mortgage estimator','Neighborhood guide','Offer script','Document checklist'],
+  finance:    ['Budget builder','Savings goal tracker','Investment explainer','Debt payoff calculator','Tax tips','Net worth tracker','Expense categorizer','Crypto tracker'],
+  ecomm:      ['Product recommender','Abandoned cart recovery','Review responder','Upsell engine','Size guide helper','Return policy explainer','Live inventory Q&A','Coupon dispenser'],
+  hr:         ['Onboarding checklist','Policy Q&A','Benefits explainer','Performance review helper','PTO calculator','Job description writer','Culture FAQ','Exit interview guide'],
+  travel:     ['Itinerary builder','Budget estimator','Visa requirement lookup','Packing list generator','Flight tip advisor','Hotel recommender','Local phrases guide','Safety tips'],
+  social:     ['Caption writer','Hook generator','Hashtag researcher','Content calendar builder','Engagement reply helper','Bio optimizer','Viral idea generator','Competitor spy'],
+  podcast:    ['Episode outline builder','Intro/outro writer','Show notes generator','Guest question generator','Clip highlight finder','Transcript summarizer','Title A/B tester','Promo copy writer'],
+  seo:        ['Keyword researcher','Meta tag writer','Content brief builder','Internal linking suggester','Competitor gap analyzer','Schema markup helper','Page speed tips','Blog outline generator'],
+  translator: ['Real-time translation','Tone adapter','Cultural notes','Slang explainer','Formal vs casual toggle','Document translator','Phrase library','Pronunciation guide'],
+  event:      ['Venue checklist','Timeline builder','Guest list manager','Budget tracker','Vendor Q&A','RSVP flow','Day-of schedule','Post-event survey'],
+  dropship:   ['Product research assistant','Supplier finder tips','Profit margin calculator','Ad copy writer','Product description generator','Trend spotter','Competition analyzer','Store name generator'],
+  studybuddy: ['Concept explainer','Practice test generator','Flashcard builder','Study schedule planner','Essay feedback','Citation helper','Memory tricks','Exam countdown tracker'],
+  custom:     ['AI conversation','Custom persona','Data storage','API integrations','Analytics','Multi-step flows','Notifications','Export / reporting'],
+};
+
+const BUILD_STEPS = [
+  'Parsing blueprint...',
+  'Loading AI modules...',
+  'Wiring conversation engine...',
+  'Injecting niche knowledge...',
+  'Configuring features...',
+  'Generating system prompt...',
+  'Building file structure...',
+  'Writing main bot logic...',
+  'Adding UI components...',
+  'Finalizing & packaging...',
+];
+
+// =====================
+// STATE
+// =====================
+let state = {
+  machine: null,
+  niche: null,
+  features: [],
+  name: '',
+  language: 'English',
+  groqKey: '',
+  appsScriptUrl: localStorage.getItem('sin_apps_script_url') || '',
+  generatedFiles: {},
+  systemPrompt: '',
+  demoHistory: [],
+  demoCount: 0,
+};
+
+document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
+
+// =====================
+// STEP 1 — MACHINE GRID
+// =====================
+(()=>{
+  const g = document.getElementById('machineGrid');
+  MACHINES.forEach(m=>{
+    const d = document.createElement('div');
+    d.className = 'mc' + (m.isCustom?' custom-c':'');
+    d.innerHTML = `
+      <div class="mc-badge ${m.badge}">${m.badgeText}</div>
+      <div class="mc-ico">${m.icon}</div>
+      <div class="mc-title">${m.title}</div>
+      <div class="mc-sub">${m.sub}</div>`;
+    d.onclick = ()=> selectMachine(m, d);
+    g.appendChild(d);
+  });
+})();
+
+function selectMachine(m, cardEl){
+  document.querySelectorAll('.mc').forEach(el=>el.classList.remove('sel'));
+  if(cardEl) cardEl.classList.add('sel');
+  state.machine = m;
+  state.niche = null;
+  state.features = [];
+
+  // Build niche grid
+  const ng = document.getElementById('nicheGrid');
+  ng.innerHTML = '';
+  const niches = NICHES[m.id] || [];
+  niches.forEach(n=>{
+    const b = document.createElement('div');
+    b.className='np'; b.textContent=n;
+    b.onclick=()=>selectNiche(n, b);
+    ng.appendChild(b);
+  });
+
+  document.getElementById('p2h').textContent = m.isCustom ? 'Describe your machine' : 'Pick your niche';
+  document.getElementById('nicheSection').style.display = m.isCustom ? 'none' : '';
+
+  show('phase2');
+  scroll('phase2');
+}
+
+function selectNiche(n, el){
+  document.querySelectorAll('.np').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  state.niche = n;
+
+  // Build feature grid
+  buildFeatureGrid();
+  show('phaseFeatures'); show('d2');
+  scroll('phaseFeatures');
+}
+
+function setCustomNiche(){
+  const v = document.getElementById('customNiche').value.trim();
+  if(!v) return;
+  state.niche = v;
+  buildFeatureGrid();
+  show('phaseFeatures'); show('d2');
+  scroll('phaseFeatures');
+}
+
+// =====================
+// STEP 3 — FEATURES
+// =====================
+function buildFeatureGrid(){
+  const fg = document.getElementById('featureGrid');
+  fg.innerHTML = '';
+  const feats = FEATURES[state.machine.id] || [];
+  feats.forEach(f=>{
+    const d = document.createElement('div');
+    d.dataset.feature = f;
+    d.style.cssText='background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;font-size:12px;font-family:var(--mono);color:var(--muted);transition:all .15s;display:flex;align-items:center;gap:10px';
+    d.innerHTML=`<span style="color:var(--purple);font-size:14px">□</span>${f}`;
+    d.onclick=()=>{
+      const on = d.dataset.on==='1';
+      d.dataset.on = on?'0':'1';
+      d.style.borderColor = on?'var(--border)':'rgba(139,92,246,.5)';
+      d.style.background = on?'var(--surface)':'rgba(139,92,246,.08)';
+      d.style.color = on?'var(--muted)':'var(--pl)';
+      d.querySelector('span').textContent = on?'□':'■';
+      if(on) state.features=state.features.filter(x=>x!==f);
+      else state.features.push(f);
+    };
+    fg.appendChild(d);
+  });
+}
+
+function applyFeatureSelection(features){
+  state.features = [...features];
+  document.querySelectorAll('#featureGrid > div').forEach(d=>{
+    const on = state.features.includes(d.dataset.feature);
+    d.dataset.on = on ? '1' : '0';
+    d.style.borderColor = on ? 'rgba(139,92,246,.5)' : 'var(--border)';
+    d.style.background = on ? 'rgba(139,92,246,.08)' : 'var(--surface)';
+    d.style.color = on ? 'var(--pl)' : 'var(--muted)';
+    d.querySelector('span').textContent = on ? '■' : '□';
+  });
+}
+
+function confirmFeatures(){
+  const key = document.getElementById('groqKeyMain').value.trim();
+  if(!key){
+    document.getElementById('keyStatus').textContent='⚠ Please enter your Groq API key first';
+    document.getElementById('keyStatus').className='key-status err';
+    document.getElementById('groqKeyMain').focus();
+    return;
+  }
+  state.groqKey = key;
+  state.language = document.getElementById('botLanguage').value;
+  state.appsScriptUrl = document.getElementById('appsScriptUrl').value.trim() || localStorage.getItem('sin_apps_script_url') || '';
+  if(state.features.length===0){
+    // auto-select first 4
+    state.features = (FEATURES[state.machine.id]||[]).slice(0,4);
+  }
+  show('phase3'); show('dFeatures');
+  scroll('phase3');
+}
+
+function saveAppsScriptUrl(){
+  const url = document.getElementById('appsScriptUrl').value.trim();
+  const status = document.getElementById('appsScriptStatus');
+  if(!url || !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/i.test(url)){
+    status.textContent = 'Paste the Apps Script Web App URL that ends with /exec';
+    status.className = 'key-status err';
+    return;
+  }
+  localStorage.setItem('sin_apps_script_url', url);
+  state.appsScriptUrl = url;
+  status.textContent = '✓ Apps Script URL saved';
+  status.className = 'key-status ok';
+}
+
+async function testGroqKey(){
+  const key = document.getElementById('groqKeyMain').value.trim();
+  if(!key){document.getElementById('keyStatus').textContent='Enter a key first';document.getElementById('keyStatus').className='key-status err';return;}
+  document.getElementById('keyStatus').textContent='Testing...';
+  document.getElementById('keyStatus').className='key-status';
+  try{
+    const r = await callGroq([{role:'user',content:'Say OK'}],'llama-3.1-8b-instant',key,20);
+    document.getElementById('keyStatus').textContent='✓ Key works — ready to build!';
+    document.getElementById('keyStatus').className='key-status ok';
+    state.groqKey=key;
+  }catch(e){
+    document.getElementById('keyStatus').textContent='✗ Invalid key or network error';
+    document.getElementById('keyStatus').className='key-status err';
+  }
+}
+
+// =====================
+// STEP 4 — NAME + BUILD
+// =====================
+function startBuild(){
+  const n = document.getElementById('machineName').value.trim();
+  if(!n){document.getElementById('machineName').style.borderColor='#f87171';setTimeout(()=>document.getElementById('machineName').style.borderColor='',1200);return;}
+  state.name = n;
+  show('phase4'); show('d3');
+  scroll('phase4');
+  runBlueprintAnimation();
+}
+
+// =====================
+// BLUEPRINT ANIMATION
+// =====================
+function runBlueprintAnimation(){
+  document.getElementById('buildTitle').textContent = `Building ${state.name}...`;
+
+  const canvas = document.getElementById('gearCanvas');
+  const svg = document.getElementById('bpSvg');
+  const container = document.getElementById('bpCanvas');
+  canvas.width = container.offsetWidth||800;
+  canvas.height = container.offsetHeight||280;
+  const ctx = canvas.getContext('2d');
+
+  // Animated grid particles
+  let particles = [];
+  for(let i=0;i<18;i++) particles.push({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    vx:(Math.random()-.5)*.4, vy:(Math.random()-.5)*.4,
+    r:1+Math.random()*2, op:Math.random()
+  });
+
+  let animRunning=true;
+  function drawParticles(){
+    if(!animRunning)return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width)p.vx*=-1;
+      if(p.y<0||p.y>canvas.height)p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(139,92,246,${p.op*.5})`;
+      ctx.fill();
+    });
+    // connecting lines
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(139,92,246,${.15*(1-dist/120)})`;
+          ctx.lineWidth=1;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // Nodes
+  const nodeData = [
+    {label:`${state.machine.icon} ${state.name}`, x:'50%', y:'44%', cls:'center'},
+    {label:'AI Engine', x:'18%', y:'18%', cls:''},
+    {label:'Niche: '+state.niche, x:'78%', y:'18%', cls:''},
+    {label:'Features', x:'12%', y:'68%', cls:''},
+    {label:'Language: '+state.language, x:'72%', y:'68%', cls:''},
+    {label:'Groq LLM', x:'82%', y:'44%', cls:''},
+  ];
+
+  svg.innerHTML='';
+  const nodes=[];
+  nodeData.forEach((nd,i)=>{
+    const wrap=document.createElement('div');
+    wrap.className='bpnode '+(nd.cls||'');
+    wrap.style.left=nd.x; wrap.style.top=nd.y;
+    wrap.style.transform='translate(-50%,-50%) scale(.7)';
+    wrap.innerHTML=`<div class="bpnode-inner">${nd.label}</div>`;
+    document.getElementById('bpCanvas').appendChild(wrap);
+    nodes.push(wrap);
+    setTimeout(()=>wrap.classList.add('show'),i*120+200);
+  });
+
+  // SVG lines (drawn after nodes placed)
+  setTimeout(()=>{
+    const w=canvas.width, h=canvas.height;
+    const cx=w*.5, cy=h*.44;
+    [[w*.18,h*.18],[w*.78,h*.18],[w*.12,h*.68],[w*.72,h*.68],[w*.82,h*.44]].forEach(([x,y])=>{
+      const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',cx); line.setAttribute('y1',cy);
+      line.setAttribute('x2',x); line.setAttribute('y2',y);
+      line.setAttribute('stroke','rgba(139,92,246,.18)');
+      line.setAttribute('stroke-width','1');
+      line.setAttribute('stroke-dasharray','4 4');
+      svg.appendChild(line);
+    });
+  },800);
+
+  // Step through build phases then generate code
+  let step=0;
+  const bar=document.getElementById('bpBar');
+  const status=document.getElementById('bpStatus');
+
+  function nextStep(){
+    if(step>=BUILD_STEPS.length){
+      animRunning=false;
+      // light all nodes done
+      nodes.forEach(n=>{ n.classList.remove('lit'); n.classList.add('done'); });
+      bar.style.width='100%';
+      status.innerHTML='<em>Done!</em> Generating your code...';
+      setTimeout(()=>generateCode(nodes), 400);
+      return;
+    }
+    status.innerHTML = BUILD_STEPS[step];
+    bar.style.width = ((step+1)/BUILD_STEPS.length*85)+'%';
+    // light a node
+    const ni = step < nodes.length ? step : 0;
+    nodes.forEach(n=>n.classList.remove('lit'));
+    nodes[ni].classList.add('lit');
+    step++;
+    setTimeout(nextStep, 480 + Math.random()*300);
+  }
+  nextStep();
+}
+
+// =====================
+// CODE GENERATION (via Groq)
+// =====================
+async function generateCode(nodes){
+  document.getElementById('buildTitle').textContent = `${state.name} — generating code...`;
+
+  const featureList = state.features.length>0 ? state.features.join(', ') : 'core conversation, help responses, smart replies';
+  const lang = state.language;
+  const niche = state.niche || 'general';
+  const machineType = state.machine.title;
+  const name = state.name;
+
+  // 1. Build system prompt for live demo
+  state.systemPrompt = `You are ${name}, a ${machineType} specialized in ${niche}. 
+You speak ${lang} and help users with ${featureList}.
+Be conversational, helpful, and stay focused on ${niche}.
+Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
+
+  // 2. Show demo chat IMMEDIATELY — user can play while code generates
+  document.getElementById('demoBox').classList.remove('hidden');
+  addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
+
+  // 3. Show the AI generation log box
+  document.getElementById('aiChatBox').classList.remove('hidden');
+  addChatLog('sys', `Wiring ${name} · ${niche} · ${featureList}`);
+  addChatLog('sys', `Calling Groq llama-3.3-70b-versatile to generate your 4-file codebase...`);
+
+  // 4. Build the prompt for full code generation
+  const prompt = `You are a senior full-stack developer. Generate a COMPLETE, working, production-ready ${machineType} web app called "${name}" for the ${niche} niche.
+
+Tech stack: vanilla HTML/CSS/JS + Groq API (https://api.groq.com/openai/v1/chat/completions, model: llama-3.3-70b-versatile, Bearer token auth).
+Language: ${lang}
+Features: ${featureList}
+
+Output EXACTLY 4 files using this format for each:
+===FILE: filename.ext===
+(complete file contents here — no truncation, no placeholders)
+===END===
+
+FILE 1: index.html
+- Full single-page chat UI
+- Dark theme: bg #07071a, surface #0f0f2a, purple #8B5CF6, cyan #22d3ee
+- Font: Space Mono (Google Fonts)
+- Left sidebar: bot name "${name}", niche badge, online status dot, 5 suggested prompts buttons
+- Main area: scrollable message list, text input bar, send button
+- Mobile responsive
+- Loads config.js then bot.js
+
+FILE 2: bot.js  
+- Reads all settings from CONFIG object (defined in config.js)
+- sendMessage() function: takes user input, appends to history, calls Groq API, streams or shows reply
+- Groq API call: POST https://api.groq.com/openai/v1/chat/completions with Authorization: Bearer CONFIG.GROQ_API_KEY
+- Maintains conversation history array (max 20 messages)
+- Shows typing indicator while waiting
+- Handles errors gracefully with user-friendly messages
+- On page load: shows CONFIG.WELCOME_MESSAGE, populates suggested prompts from CONFIG.SUGGESTED_PROMPTS
+- Implements ALL of these features in the conversation logic: ${featureList}
+
+  FILE 3: config.js
+- Defines window.CONFIG = { ... } with:
+  BOT_NAME: "${name}",
+  NICHE: "${niche}",
+  LANGUAGE: "${lang}",
+  GROQ_API_KEY: "YOUR_GROQ_API_KEY_HERE",
+  GROQ_MODEL: "llama-3.3-70b-versatile",
+  SYSTEM_PROMPT: (detailed 4-sentence persona for ${name} as a ${niche} ${machineType}),
+  WELCOME_MESSAGE: (friendly opening for ${niche}),
+  SUGGESTED_PROMPTS: [5 highly relevant questions a ${niche} user would ask],
+  FEATURES: [${featureList.split(', ').map(f=>`"${f}"`).join(',')}]
+
+FILE 4: README.md
+- Title: # ${name}
+- Quick Start: unzip the file, open config.js, paste the Groq key, then open index.html
+- Website Launch: Netlify Drop, Vercel, and GitHub Pages step-by-step instructions
+- Phone Web App: iPhone and Android Add to Home Screen instructions after the site is deployed
+- Customization: what to edit in config.js for ${niche}
+- Monetization: 5 specific ways to make money with this ${machineType} in the ${niche} niche
+- Files Included: explain index.html, bot.js, config.js, and README.md
+- Troubleshooting: common errors + fixes for API key, blank page, and mobile launch
+
+IMPORTANT: Every file must be 100% complete. No "// add your code here". No truncation. All files must work together as a real deployable product.`;
+
+  try {
+    const reply = await callGroq([{role:'user',content:prompt}],'llama-3.3-70b-versatile',state.groqKey,4000);
+    addChatLog('ai','Code received — parsing files...');
+    parseAndShowCode(reply);
+  } catch(e) {
+    addChatLog('sys', `70b error: ${e.message} — trying llama-3.1-8b-instant...`);
+    try {
+      const reply = await callGroq([{role:'user',content:prompt}],'llama-3.1-8b-instant',state.groqKey,4000);
+      addChatLog('ai','Code received (8b) — parsing files...');
+      parseAndShowCode(reply);
+    } catch(e2) {
+      addChatLog('sys', `Both models failed: ${e2.message}. No template fallback used.`);
+      showGenerationError(e2.message);
+    }
+  }
+}
+
+function parseAndShowCode(raw){
+  const files = {};
+  const regex = /===FILE:\s*(.+?)===([\s\S]*?)===END===/g;
+  let m;
+  while((m=regex.exec(raw))!==null){
+    files[m[1].trim()] = m[2].trim();
+  }
+
+  // If parsing failed, try splitting on common patterns
+  if(Object.keys(files).length===0){
+    // Try to extract code blocks
+    const codeBlocks = raw.match(/```[\w]*\n([\s\S]*?)```/g)||[];
+    const names=['index.html','bot.js','config.js','README.md'];
+    codeBlocks.forEach((block,i)=>{
+      if(i<names.length){
+        files[names[i]] = block.replace(/```[\w]*\n/,'').replace(/```$/,'').trim();
+      }
+    });
+  }
+
+  // If still nothing, use fallback
+  if(Object.keys(files).length===0){
+    showGenerationError('AI returned code, but it did not include the required 4-file format.');
+    return;
+  }
+
+  state.generatedFiles = files;
+  showCodeReveal(files);
+}
+
+function showFallbackCode(){
+  showGenerationError('Template fallback is disabled. Add a working Groq key and generate again.');
+}
+
+function showGenerationError(message){
+  document.getElementById('buildTitle').textContent = `Build failed — try again`;
+  document.getElementById('blueprintBox').style.display='none';
+  document.getElementById('aiChatBox').classList.remove('hidden');
+  addChatLog('sys', `No machine was created because generation failed: ${message}`);
+  addChatLog('sys', 'Nothing was replaced with placeholder/template code.');
+}
+
+function showCodeReveal(files){
+  document.getElementById('buildTitle').textContent = `✓ ${state.name} — ready to ship!`;
+  document.getElementById('blueprintBox').style.display='none';
+  document.getElementById('aiChatBox').classList.add('hidden');
+
+  // Populate launch pad
+  document.getElementById('machineEmoji').textContent = state.machine.icon;
+  document.getElementById('revealBotName').textContent = state.name;
+  document.getElementById('revealBotSub').textContent = `${state.machine.title} · ${state.niche} · built and ready to make money`;
+
+  // Pre-build the code output (hidden until toggled)
+  buildCodeOutput(files);
+
+  document.getElementById('paywall').classList.remove('hidden');
+  scroll('paywall');
+}
+
+function buildCodeOutput(files){
+  const out = document.getElementById('codeOutput');
+  out.innerHTML = '';
+
+  // Overview
+  const ov = document.createElement('div');
+  ov.className = 'overview-box';
+  ov.innerHTML = `<strong>// your files</strong>${state.name} &mdash; ${state.machine.title} &middot; ${state.niche} &middot; ${state.language}<br>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn t sm" onclick="downloadZip()">⬇ Download ZIP</button>
+      <button class="btn g sm" id="copyAllBtn" onclick="copyAll()">📋 Copy all files</button>
+    </div>`;
+  out.appendChild(ov);
+
+  Object.entries(files).forEach(([fname, content])=>{
+    if(!fname.includes('.')) return; // skip safeKey dupes
+    const block = document.createElement('div');
+    block.className='file-block';
+    const safeKey = fname.replace(/[^a-z0-9._-]/gi,'_');
+    state.generatedFiles[safeKey] = content;
+    block.innerHTML=`
+      <div class="file-label">
+        <span>📄 ${fname}</span>
+        <button class="copy-file-btn" onclick="copyFile(this,'${safeKey}')">Copy</button>
+      </div>
+      <pre>${escHtml(content)}</pre>`;
+    out.appendChild(block);
+  });
+}
+
+function toggleCodeView(){
+  const out = document.getElementById('codeOutput');
+  const btn = document.getElementById('codeToggleBtn');
+  const hidden = out.classList.contains('hidden');
+  out.classList.toggle('hidden');
+  btn.textContent = hidden ? '🙈 Hide source code' : '👨‍💻 View source code (for developers)';
+  if(hidden) scroll('codeOutput');
+}
+
+// =====================
+// PAYWALL / UNLOCK
+// =====================
+async function checkKey(){
+  const k = document.getElementById('licenseKey').value.trim().toUpperCase();
+  const url = state.appsScriptUrl || localStorage.getItem('sin_apps_script_url') || '';
+  const box = document.querySelector('.pw-box');
+  if(!url){
+    document.getElementById('licenseKey').style.borderColor='#f87171';
+    box.querySelector('p').innerHTML = 'Paste and save your Apps Script Web App URL first.<br><br><small style="color:#555;font-size:10px">It must connect to your Google Sheet license list.</small>';
+    return;
+  }
+  if(!k){
+    document.getElementById('licenseKey').style.borderColor='#f87171';
+    return;
+  }
+  const unlockBtn = document.getElementById('unlockBtn');
+  unlockBtn.disabled = true;
+  unlockBtn.textContent = 'Checking...';
+  try{
+    const qs = new URLSearchParams({
+      action: 'verifyLicense',
+      key: k,
+      machine: state.name || '',
+      type: state.machine ? state.machine.title : '',
+      niche: state.niche || ''
+    });
+    const resp = await fetch(`${url}?${qs.toString()}`);
+    const data = await resp.json();
+    if(data && data.valid === true){
+    document.getElementById('paywall').classList.add('hidden');
+    showCodeFiles(state.generatedFiles);
+    } else {
+      throw new Error(data && data.message ? data.message : 'License not found or already used');
+    }
+  }catch(err){
+    box.classList.add('shake');
+    setTimeout(()=>box.classList.remove('shake'),400);
+    document.getElementById('licenseKey').style.borderColor='#f87171';
+    setTimeout(()=>document.getElementById('licenseKey').style.borderColor='',1500);
+    box.querySelector('p').innerHTML = `${escHtml(err.message)}<br><br><small style="color:#555;font-size:10px">Checked against your Google Sheet through Apps Script.</small>`;
+  }finally{
+    unlockBtn.disabled = false;
+    unlockBtn.textContent = 'Unlock';
+  }
+}
+
+function showCodeFiles(files){
+  // Build the code output section (hidden by default)
+  buildCodeOutput(files);
+  document.getElementById('codeReveal').classList.remove('hidden');
+  scroll('codeReveal');
+}
+
+// =====================
+// DOWNLOADS
+// =====================
+async function downloadZip(){
+  if(!window.JSZip){alert('JSZip not loaded');return;}
+  const zip = new JSZip();
+  const folderName = state.name.toLowerCase().replace(/\s+/g,'-');
+  const folder = zip.folder(folderName);
+  // Use original filename keys only (not safeKey duplicates)
+  const origFiles = {};
+  Object.entries(state.generatedFiles).forEach(([k,v])=>{
+    if(k.includes('.')){origFiles[k]=v;}
+  });
+  Object.entries(origFiles).forEach(([name,content])=> folder.file(name, content));
+  const blob = await zip.generateAsync({type:'blob'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`${folderName}.zip`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function downloadApk(){
+  // APK = a zip structured as a basic Android WebView project shell
+  if(!window.JSZip){alert('JSZip not loaded');return;}
+  const zip = new JSZip();
+  const folderName = state.name.toLowerCase().replace(/\s+/g,'-');
+  const pkg = 'com.sinstudio.' + folderName.replace(/-/g,'');
+
+  // Put all web files in the assets/www folder (Cordova/WebView convention)
+  const assets = zip.folder('assets/www');
+  const origFiles = {};
+  Object.entries(state.generatedFiles).forEach(([k,v])=>{
+    if(k.includes('.')){origFiles[k]=v;}
+  });
+  Object.entries(origFiles).forEach(([name,content])=> assets.file(name, content));
+
+  // Minimal AndroidManifest.xml
+  zip.file('AndroidManifest.xml', `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="${pkg}" android:versionCode="1" android:versionName="1.0">
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <application android:label="${state.name}" android:allowBackup="true">
+    <activity android:name=".MainActivity" android:exported="true"
+        android:configChanges="orientation|keyboardHidden|screenSize">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>`);
+
+  // MainActivity.java (WebView wrapper)
+  const javaDir = zip.folder(`src/${pkg.replace(/\./g,'/')}`);
+  javaDir.file('MainActivity.java',`package ${pkg};
+import android.app.Activity;
+import android.os.Bundle;
+import android.webkit.*;
+public class MainActivity extends Activity {
+  WebView webView;
+  @Override protected void onCreate(Bundle b){
+    super.onCreate(b);
+    webView = new WebView(this);
+    webView.getSettings().setJavaScriptEnabled(true);
+    webView.getSettings().setDomStorageEnabled(true);
+    webView.loadUrl("file:///android_asset/www/index.html");
+    setContentView(webView);
+  }
+  @Override public void onBackPressed(){
+    if(webView.canGoBack()) webView.goBack(); else super.onBackPressed();
+  }
+}`);
+
+  // build.gradle stub
+  zip.file('build.gradle',`apply plugin: 'com.android.application'
+android {
+  compileSdkVersion 34
+  defaultConfig {
+    applicationId "${pkg}"
+    minSdkVersion 21
+    targetSdkVersion 34
+    versionCode 1
+    versionName "1.0"
+  }
+}
+dependencies { implementation 'androidx.appcompat:appcompat:1.6.1' }`);
+
+  // README for the APK
+  zip.file('HOW_TO_BUILD_APK.md',`# How to build the ${state.name} APK
+
+## Option A — Android Studio (recommended)
+1. Open Android Studio → "Open an existing project" → select this folder
+2. Add your Groq API key to assets/www/config.js
+3. Build → Generate Signed APK → install on your Android device
+
+## Option B — Sideload as Web App (no build needed)
+1. Open assets/www/index.html directly in Chrome on Android
+2. Chrome menu → "Add to Home Screen" → acts like an app
+
+## Option C — Online APK Builder
+- Upload this ZIP to https://gonative.io or https://appery.io
+- They wrap the web app and generate a real APK for you
+
+## The bot inside
+- Name: ${state.name}
+- Type: ${state.machine.title}
+- Niche: ${state.niche}
+- Language: ${state.language}
+`);
+
+  const blob = await zip.generateAsync({type:'blob'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`${folderName}-apk-bundle.zip`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// =====================
+// LIVE DEMO CHAT
+// =====================
+function addDemoMsg(who, text){
+  const box = document.getElementById('demoMessages');
+  const d = document.createElement('div');
+  d.className = `dmsg ${who}`;
+  d.textContent = text;
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+}
+
+async function sendDemo(){
+  const inp = document.getElementById('demoInput');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value='';
+
+  addDemoMsg('user', msg);
+  state.demoHistory.push({role:'user',content:msg});
+  state.demoCount++;
+
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.className='dmsg bot typing';
+  typing.textContent='typing...';
+  document.getElementById('demoMessages').appendChild(typing);
+  document.getElementById('demoMessages').scrollTop=9999;
+
+  try {
+    const messages = [{role:'system',content:state.systemPrompt},...state.demoHistory.slice(-8)];
+    const reply = await callGroq(messages,'llama-3.1-8b-instant',state.groqKey,300);
+    typing.remove();
+    state.demoHistory.push({role:'assistant',content:reply});
+    addDemoMsg('bot', reply);
+  } catch(e) {
+    typing.remove();
+    addDemoMsg('bot', `⚠ Error: ${e.message}. Check your Groq key.`);
+  }
+}
+
+// =====================
+// GROQ API CALL
+// =====================
+async function callGroq(messages, model, apiKey, maxTokens=500){
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':`Bearer ${apiKey}`
+    },
+    body: JSON.stringify({model, messages, max_tokens:maxTokens, temperature:0.7})
+  });
+  if(!resp.ok){
+    const err=await resp.json().catch(()=>({}));
+    throw new Error(err.error?.message||`HTTP ${resp.status}`);
+  }
+  const data=await resp.json();
+  return data.choices?.[0]?.message?.content||'';
+}
+
+// =====================
+// CHAT LOG (code gen)
+// =====================
+function addChatLog(who, text){
+  const log=document.getElementById('chatLog');
+  if(!log) return;
+  const d=document.createElement('div');
+  d.className=`cm ${who}`;
+  d.textContent = who==='sys'? `[system] ${text}` : who==='ai'? `[ai] ${text}` : `[user] ${text}`;
+  log.appendChild(d);
+  log.scrollTop=log.scrollHeight;
+  document.getElementById('aiChatBox').classList.remove('hidden');
+}
+
+// =====================
+// FALLBACK CODE TEMPLATES
+// =====================
+function generateFallbackHTML(name, niche){
+return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#07071a;color:#f0f0ff;font-family:'Space Mono',monospace;display:flex;height:100vh}
+.sidebar{width:240px;background:#0f0f2a;border-right:1px solid rgba(255,255,255,.07);padding:24px;display:flex;flex-direction:column;gap:16px}
+.bot-name{font-size:18px;font-weight:700;color:#a78bfa}
+.bot-niche{font-size:11px;color:#8888aa;letter-spacing:.1em}
+.status{display:flex;align-items:center;gap:8px;font-size:11px;color:#10b981}
+.dot{width:8px;height:8px;border-radius:50%;background:#10b981;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.suggestions{margin-top:auto}
+.sugg-title{font-size:10px;color:#8888aa;margin-bottom:8px}
+.sugg{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:8px;font-size:11px;color:#a78bfa;cursor:pointer;margin-bottom:6px;transition:all .15s}
+.sugg:hover{background:rgba(139,92,246,.18)}
+.main{flex:1;display:flex;flex-direction:column}
+.messages{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:75%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.6}
+.msg.bot{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);color:#a78bfa;align-self:flex-start}
+.msg.user{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.15);color:#22d3ee;align-self:flex-end}
+.input-area{padding:16px 24px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:10px}
+input{flex:1;background:#0f0f2a;border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:12px 20px;color:#f0f0ff;font-family:'Space Mono',monospace;font-size:13px;outline:none}
+input:focus{border-color:#8B5CF6}
+button{background:#8B5CF6;border:none;border-radius:999px;padding:12px 24px;color:#fff;font-family:'Space Mono',monospace;font-weight:700;cursor:pointer}
+button:hover{opacity:.88}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div>
+    <div class="bot-name">${name}</div>
+    <div class="bot-niche">${niche.toUpperCase()} ASSISTANT</div>
+  </div>
+  <div class="status"><div class="dot"></div>Online</div>
+  <div class="suggestions">
+    <div class="sugg-title">// try asking</div>
+    <div id="suggList"></div>
+  </div>
+</div>
+<div class="main">
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <input type="text" id="inp" placeholder="Ask ${name} anything..." onkeydown="if(event.key==='Enter')send()">
+    <button onclick="send()">Send</button>
+  </div>
+</div>
+<script src="config.js"><\/script>
+<script src="bot.js"><\/script>
+</body>
+</html>`;
+}
+
+function generateFallbackJS(name, niche, feats){
+return `// ${name} — Bot Logic
+// Generated by Sin Studio
+
+const history = [];
+
+async function send() {
+  const inp = document.getElementById('inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+
+  addMsg('user', msg);
+  history.push({ role: 'user', content: msg });
+
+  const typing = addMsg('bot', '...');
+  
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CONFIG.GROQ_API_KEY
+      },
+      body: JSON.stringify({
+        model: CONFIG.GROQ_MODEL,
+        messages: [
+          { role: 'system', content: CONFIG.SYSTEM_PROMPT },
+          ...history.slice(-10)
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      })
+    });
+
+    if (!response.ok) throw new Error('API error: ' + response.status);
+    const data = await response.json();
+    const reply = data.choices[0].message.content;
+
+    typing.textContent = reply;
+    history.push({ role: 'assistant', content: reply });
+  } catch (e) {
+    typing.textContent = 'Error: ' + e.message + '. Check your API key in config.js';
+    typing.style.color = '#f87171';
+  }
+}
+
+function addMsg(who, text) {
+  const box = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = text;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  return d;
+}
+
+// Init
+window.onload = () => {
+  addMsg('bot', CONFIG.WELCOME_MESSAGE);
+  
+  const sl = document.getElementById('suggList');
+  if (sl) {
+    CONFIG.SUGGESTED_PROMPTS.forEach(p => {
+      const d = document.createElement('div');
+      d.className = 'sugg';
+      d.textContent = p;
+      d.onclick = () => {
+        document.getElementById('inp').value = p;
+        send();
+      };
+      sl.appendChild(d);
+    });
+  }
+};`;
+}
+
+function generateFallbackConfig(name, niche, lang, feats){
+return `// ${name} — Configuration
+// Edit this file to customize your bot
+
+const CONFIG = {
+  BOT_NAME: "${name}",
+  NICHE: "${niche}",
+  LANGUAGE: "${lang}",
+  GROQ_MODEL: "llama-3.3-70b-versatile",
+  
+  // 🔑 Add your Groq API key here (get free key at console.groq.com)
+  GROQ_API_KEY: "gsk_YOUR_KEY_HERE",
+  
+  SYSTEM_PROMPT: \`You are ${name}, an expert AI assistant specializing in ${niche}. 
+You speak ${lang} and provide helpful, accurate, and actionable advice.
+You are knowledgeable about: ${feats}.
+Always be conversational, encouraging, and focused on ${niche} topics.
+Keep responses clear and concise (2-4 sentences unless more detail is needed).\`,
+
+  WELCOME_MESSAGE: "Hi! I'm ${name}, your ${niche} assistant. How can I help you today?",
+  
+  FEATURES: [${feats.split(', ').map(f=>`"${f}"`).join(', ')}],
+  
+  SUGGESTED_PROMPTS: [
+    "What are the best strategies for ${niche}?",
+    "Help me get started with ${niche}",
+    "What mistakes should I avoid in ${niche}?",
+    "Give me a ${niche} action plan",
+    "What's trending in ${niche} right now?"
+  ]
+};`;
+}
+
+function generateFallbackREADME(name, niche, machineType){
+return `# ${name}
+
+> Your AI-powered ${machineType} for ${niche}, built with Sin Studio.
+
+## 🚀 Quick Start
+
+1. Open \`config.js\`
+2. Replace \`gsk_YOUR_KEY_HERE\` with your free Groq API key
+   - Get one free at [console.groq.com](https://console.groq.com)
+3. Open \`index.html\` in your browser — that's it!
+
+## 📦 What You Get
+
+- \`index.html\` — the web app screen people open
+- \`bot.js\` — the AI chat logic
+- \`config.js\` — the file where you paste your Groq key and edit settings
+- \`README.md\` — these instructions
+
+## 🌐 Deploy in 60 seconds
+
+**Netlify (free):**
+1. Go to netlify.com → drag your project folder onto the dashboard
+2. Done. Live URL instantly.
+
+**Vercel (free):**
+1. vercel.com → "New Project" → upload folder
+2. Done.
+
+## 📱 Use It Like a Phone App
+
+1. Deploy the folder as a website first.
+2. Open the live website link on your phone.
+3. iPhone: tap Share → Add to Home Screen.
+4. Android: tap menu → Add to Home Screen.
+5. The machine now opens from a phone icon like an app.
+
+## 🔧 Customization
+
+Edit \`config.js\` to change:
+- \`BOT_NAME\` — rename your bot
+- \`SYSTEM_PROMPT\` — change the personality and expertise
+- \`SUGGESTED_PROMPTS\` — the quick-start questions shown in sidebar
+- \`WELCOME_MESSAGE\` — the first message users see
+
+## 💰 Monetization Ideas for ${niche}
+
+1. **Freemium** — free 10 messages/day, $9/mo unlimited
+2. **White-label** — sell access to other ${niche} businesses
+3. **Lead gen** — capture emails before chatting (add a form)
+4. **Coaching upsell** — bot books discovery calls automatically
+5. **Info products** — bot recommends your courses/ebooks
+
+## 📁 Files
+
+- \`index.html\` — full UI
+- \`bot.js\` — AI conversation logic  
+- \`config.js\` — all settings (edit this)
+- \`README.md\` — this file
+
+Built with ❤️ by [Sin Studio](https://simmonstia.gumroad.com)`;
+}
+
+function copyAll(){
+  const origFiles = {};
+  Object.entries(state.generatedFiles).forEach(([k,v])=>{if(k.includes('.'))origFiles[k]=v;});
+  const all = Object.entries(origFiles).map(([n,c])=>`// ===== ${n} =====\n${c}`).join('\n\n');
+  navigator.clipboard.writeText(all).then(()=>{
+    const btn = document.getElementById('copyAllBtn');
+    if(btn){btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent='📋 Copy all',1500);}
+  });
+}
+
+function copyFile(btn, key){
+  const content = state.generatedFiles[key]||'';
+  navigator.clipboard.writeText(content).then(()=>{
+    btn.textContent='✓ Copied!';
+    setTimeout(()=>btn.textContent='Copy',1400);
+  });
+}
+
+// =====================
+// UTILS
+// =====================
+function show(id){ document.getElementById(id).classList.remove('hidden'); }
+function hide(id){ document.getElementById(id).classList.add('hidden'); }
+function scroll(id){ setTimeout(()=>document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'}),120); }
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function randomMachine(){
+  const choices = MACHINES.filter(m=>!m.isCustom);
+  const r = choices[Math.floor(Math.random()*choices.length)];
+  const niches = NICHES[r.id] || [];
+  const niche = niches[Math.floor(Math.random()*niches.length)] || 'Business';
+  const features = (FEATURES[r.id] || []).slice(0,4);
+  const name = makeRandomMachineName(r, niche);
+
+  const machineIndex = MACHINES.findIndex(m=>m.id===r.id);
+  const card = document.querySelectorAll('.mc')[machineIndex];
+  selectMachine(r, card);
+  state.niche = niche;
+  buildFeatureGrid();
+  applyFeatureSelection(features);
+  document.querySelectorAll('.np').forEach(el=>{
+    el.classList.toggle('sel', el.textContent === niche);
+  });
+  document.getElementById('machineName').value = name;
+  state.name = name;
+  show('phaseFeatures'); show('d2'); show('phase3'); show('dFeatures');
+
+  document.getElementById('builder').scrollIntoView({behavior:'smooth'});
+  setTimeout(()=>scroll('phaseFeatures'), 350);
+}
+
+function makeRandomMachineName(machine, niche){
+  const cleanNiche = String(niche || 'Smart').replace(/[^a-z0-9 ]/gi,'').trim().split(/\s+/)[0] || 'Smart';
+  const endings = {
+    chatbot: 'Bot', coach: 'Coach', closer: 'Closer', newsletter: 'Brief', tutor: 'Tutor',
+    creator: 'Creator', analyzer: 'Analyzer', recruiter: 'Hire', therapist: 'Care',
+    lawyer: 'Legal', chef: 'Chef', fitness: 'Fit', realestate: 'Home',
+    finance: 'Money', ecomm: 'Shop', hr: 'HR', travel: 'Trip',
+    social: 'Social', podcast: 'Cast', seo: 'Rank', translator: 'Translate',
+    event: 'Event', dropship: 'Drop', studybuddy: 'Study'
+  };
+  const prefixes = ['Nova','Spark','Prime','Quick','Bright','Launch','Smart','Pro'];
+  return `${prefixes[Math.floor(Math.random()*prefixes.length)]}${cleanNiche}${endings[machine.id] || 'AI'}`;
+}
+
+function resetAll(){
+  state={machine:null,niche:null,features:[],name:'',language:'English',groqKey:'',generatedFiles:{},systemPrompt:'',demoHistory:[],demoCount:0};
+  ['phase2','d2','phaseFeatures','dFeatures','phase3','d3','phase4'].forEach(hide);
+  ['paywall','codeReveal','demoBox','aiChatBox'].forEach(hide);
+  document.querySelectorAll('.mc,.np').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('machineName').value='';
+  document.getElementById('licenseKey').value='';
+  document.getElementById('demoMessages').innerHTML='';
+  document.getElementById('chatLog').innerHTML='';
+  document.getElementById('codeOutput').innerHTML='';
+  document.getElementById('codeOutput').classList.add('hidden');
+  const tb = document.getElementById('codeToggleBtn');
+  if(tb) tb.textContent='👨‍💻 View source code (for developers)';
+  document.getElementById('blueprintBox').style.display='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
