@@ -286,7 +286,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
     <div class="bp-status" id="bpStatus">Initializing...</div>
   </div>
 
-  <div class="live-panels">
+  <div class="live-panels hidden" id="livePanels">
   <!-- LIVE DEMO -->
   <div id="demoBox" class="hidden">
     <div class="demo-box">
@@ -827,11 +827,7 @@ Be conversational, helpful, and stay focused on ${niche}.
 Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
 
   // 2. Show demo chat IMMEDIATELY — user can play while code generates
-  document.getElementById('demoBox').classList.remove('hidden');
-  document.getElementById('paywall').classList.remove('hidden');
-  addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
-
-  // 3. Show the AI generation log box
+  // 2. Show the AI generation log box while the machine builds
   document.getElementById('aiChatBox').classList.remove('hidden');
   addChatLog('sys', `Wiring ${name} · ${niche} · ${featureList}`);
   addChatLog('sys', `Calling Groq llama-3.3-70b-versatile to generate your Netlify-ready app package...`);
@@ -994,7 +990,12 @@ function showCodeReveal(files){
   // Pre-build the code output (hidden until toggled)
   buildCodeOutput(files);
 
+  document.getElementById('livePanels').classList.remove('hidden');
+  document.getElementById('demoBox').classList.remove('hidden');
   document.getElementById('paywall').classList.remove('hidden');
+  document.getElementById('demoMessages').innerHTML = '';
+  addDemoMsg('bot', `Hi! I'm ${state.name}, your ${state.niche} ${state.machine.title.toLowerCase()}. How can I help you today?`);
+  scroll('livePanels');
 }
 
 function buildCodeOutput(files){
@@ -1075,7 +1076,8 @@ async function checkKey(){
     });
     const resp = await fetch(`${url}?${qs.toString()}`);
     const data = await resp.json();
-    const ok = data && (data.valid === true || data.ok === true || data.status === 'valid' || data.status === 'success');
+    const validText = String(data?.valid ?? data?.ok ?? data?.status ?? '').toLowerCase();
+    const ok = data && (data.valid === true || data.ok === true || validText === 'true' || validText === 'valid' || validText === 'success' || validText === 'ok');
     if(ok){
       document.getElementById('paywall').classList.add('hidden');
       showCodeFiles(state.generatedFiles);
@@ -1667,7 +1669,7 @@ function makeRandomMachineName(machine, niche){
 function resetAll(){
   state={machine:null,niche:null,features:[],name:'',language:'English',groqKey:'',generatedFiles:{},systemPrompt:'',demoHistory:[],demoCount:0};
   ['phase2','d2','phaseFeatures','dFeatures','phase3','d3','phase4'].forEach(hide);
-  ['paywall','codeReveal','demoBox','aiChatBox'].forEach(hide);
+  ['livePanels','paywall','codeReveal','demoBox','aiChatBox'].forEach(hide);
   document.querySelectorAll('.mc,.np').forEach(el=>el.classList.remove('sel'));
   document.getElementById('machineName').value='';
   document.getElementById('licenseKey').value='';
