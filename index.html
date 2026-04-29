@@ -105,7 +105,8 @@ svg#bpSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .bp-status{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:10px;min-height:20px}
 .bp-status em{color:var(--pl);font-style:normal}
 
-.demo-box{background:var(--surface);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:24px;margin-bottom:20px}
+.live-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:16px;align-items:stretch;margin-bottom:24px}
+.demo-box{background:var(--surface);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:24px;height:100%}
 .demo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .demo-title{font-size:12px;font-family:var(--mono);color:var(--cyan);letter-spacing:.1em}
 .demo-badge{font-size:9px;font-family:var(--mono);background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2);border-radius:4px;padding:3px 8px}
@@ -123,7 +124,7 @@ svg#bpSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .chat-log{background:var(--surface2);border-radius:8px;padding:14px;max-height:180px;overflow-y:auto;font-family:var(--mono);font-size:12px;line-height:2}
 .cm.user{color:var(--pl)}.cm.ai{color:var(--cyan)}.cm.sys{color:var(--muted);font-style:italic}
 
-.pw-box{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(34,211,238,.06));border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:40px 28px;text-align:center;margin-top:4px}
+.pw-box{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(34,211,238,.06));border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:28px 22px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center}
 .pw-box h3{font-size:24px;font-weight:900;margin-bottom:8px}
 .pw-box p{font-size:13px;color:var(--muted);font-family:var(--mono);margin-bottom:26px;line-height:1.7}
 .key-row{display:flex;gap:10px;max-width:380px;margin:0 auto 12px}
@@ -168,6 +169,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 .ls strong{color:var(--pl)}
 .ls a{color:var(--cyan);text-decoration:none}
 
+@media(max-width:760px){.live-panels{grid-template-columns:1fr}.key-row{flex-direction:column;max-width:none}.pw-box{padding:24px 18px}}
 .hidden{display:none!important}
 </style>
 </head>
@@ -284,6 +286,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
     <div class="bp-status" id="bpStatus">Initializing...</div>
   </div>
 
+  <div class="live-panels">
   <!-- LIVE DEMO -->
   <div id="demoBox" class="hidden">
     <div class="demo-box">
@@ -311,6 +314,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
       </div>
       <p class="phint">No key? <a id="gumroadBuyLink" href="https://simmonstia.gumroad.com/l/ksxorp" target="_blank">Buy a one-time token on Gumroad</a></p>
     </div>
+  </div>
   </div>
 
   <!-- NO-CODE LAUNCH PAD -->
@@ -1037,7 +1041,7 @@ function toggleCodeView(){
 // PAYWALL / UNLOCK
 // =====================
 async function checkKey(){
-  const k = document.getElementById('licenseKey').value.trim().toUpperCase();
+  const k = document.getElementById('licenseKey').value.trim();
   const url = state.appsScriptUrl;
   const box = document.querySelector('.pw-box');
   if(Object.keys(state.generatedFiles || {}).length===0){
@@ -1061,17 +1065,22 @@ async function checkKey(){
     const qs = new URLSearchParams({
       action: 'verifyLicense',
       key: k,
+      code: k,
+      token: k,
+      license: k,
+      licenseKey: k,
       machine: state.name || '',
       type: state.machine ? state.machine.title : '',
       niche: state.niche || ''
     });
     const resp = await fetch(`${url}?${qs.toString()}`);
     const data = await resp.json();
-    if(data && data.valid === true){
-    document.getElementById('paywall').classList.add('hidden');
-    showCodeFiles(state.generatedFiles);
+    const ok = data && (data.valid === true || data.ok === true || data.status === 'valid' || data.status === 'success');
+    if(ok){
+      document.getElementById('paywall').classList.add('hidden');
+      showCodeFiles(state.generatedFiles);
     } else {
-      throw new Error(data && data.message ? data.message : 'License not found or already used');
+      throw new Error((data && (data.message || data.reason || data.error)) ? (data.message || data.reason || data.error) : 'License not found or already used');
     }
   }catch(err){
     box.classList.add('shake');
