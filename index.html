@@ -236,6 +236,16 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
   </div>
 
   <div class="key-section" style="margin-top:14px">
+    <div class="key-section-title">// Gumroad One-Time Token Link</div>
+    <div class="key-row-inline">
+      <input type="url" id="gumroadUrl" placeholder="Paste your Gumroad product link for one-time token purchases">
+      <button class="btn g sm" onclick="saveGumroadUrl()">Save</button>
+    </div>
+    <div class="key-status" id="gumroadStatus"></div>
+    <p class="inote" style="margin-top:8px">Buyers use this link, then enter the one-time token you send from your Apps Script/Sheet list.</p>
+  </div>
+
+  <div class="key-section" style="margin-top:14px">
     <div class="key-section-title">// One-Time Free Tokens</div>
     <div class="key-row-inline">
       <input type="text" id="freeUnlockToken" placeholder="Create tokens to give out: FREE-001, FREE-002, FREE-003">
@@ -329,7 +339,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
         <input type="text" id="licenseKey" placeholder="SINST-XXXX-XXXX or FREE-SIN-2026">
         <button class="btn p" id="unlockBtn" onclick="checkKey()">Unlock</button>
       </div>
-      <p class="phint">No key? <a href="https://simmonstia.gumroad.com" target="_blank">Get one at Sin Studio</a></p>
+      <p class="phint">No key? <a id="gumroadBuyLink" href="https://simmonstia.gumroad.com/l/ksxorp" target="_blank">Buy a one-time token on Gumroad</a></p>
     </div>
   </div>
 
@@ -382,7 +392,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
         <div class="lc-sub">Charge clients · Sell on Gumroad · White-label it</div>
         <div class="lc-steps">
           <div class="ls">1️⃣ Deploy as website (get your link)</div>
-          <div class="ls">2️⃣ List on <a href="https://gumroad.com" target="_blank">Gumroad</a> or share the link</div>
+          <div class="ls">2️⃣ Send buyers to <a id="gumroadSellLink" href="https://simmonstia.gumroad.com/l/ksxorp" target="_blank">your Gumroad token link</a></div>
           <div class="ls">3️⃣ Charge $9–$97/mo for access</div>
           <div class="ls">4️⃣ Keep keys in env vars, never config.js</div>
           <div class="ls">5️⃣ Scale — build more machines 💸</div>
@@ -542,6 +552,7 @@ let state = {
   language: 'English',
   groqKey: '',
   appsScriptUrl: localStorage.getItem('sin_apps_script_url') || '',
+  gumroadUrl: localStorage.getItem('sin_gumroad_url') || 'https://simmonstia.gumroad.com/l/ksxorp',
   freeUnlockToken: localStorage.getItem('sin_free_unlock_tokens') || '',
   generatedFiles: {},
   systemPrompt: '',
@@ -550,7 +561,9 @@ let state = {
 };
 
 document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
+document.getElementById('gumroadUrl').value = state.gumroadUrl;
 document.getElementById('freeUnlockToken').value = state.freeUnlockToken;
+updateGumroadLink();
 
 // =====================
 // STEP 1 — MACHINE GRID
@@ -683,6 +696,29 @@ function saveAppsScriptUrl(){
   localStorage.setItem('sin_apps_script_url', url);
   state.appsScriptUrl = url;
   status.textContent = '✓ Apps Script URL saved';
+  status.className = 'key-status ok';
+}
+
+function updateGumroadLink(){
+  const url = state.gumroadUrl || 'https://simmonstia.gumroad.com/l/ksxorp';
+  ['gumroadBuyLink','gumroadSellLink'].forEach(id=>{
+    const a = document.getElementById(id);
+    if(a) a.href = url;
+  });
+}
+
+function saveGumroadUrl(){
+  const url = document.getElementById('gumroadUrl').value.trim();
+  const status = document.getElementById('gumroadStatus');
+  if(!url || !/^https:\/\/([a-z0-9-]+\.)?gumroad\.com\/.+/i.test(url)){
+    status.textContent = 'Paste your Gumroad product link';
+    status.className = 'key-status err';
+    return;
+  }
+  state.gumroadUrl = url;
+  localStorage.setItem('sin_gumroad_url', url);
+  updateGumroadLink();
+  status.textContent = 'Gumroad token purchase link saved';
   status.className = 'key-status ok';
 }
 
