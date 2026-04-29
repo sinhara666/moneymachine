@@ -368,11 +368,11 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
         <div class="lc-steps">
           <div class="ls">1️⃣ Deploy the website/backend first</div>
           <div class="ls">2️⃣ Use Add to Home Screen for instant mobile</div>
-          <div class="ls">3️⃣ Or download the APK/WebView project bundle</div>
+          <div class="ls">3️⃣ Or download the APK build project</div>
           <div class="ls">4️⃣ Point it at your deployed HTTPS API</div>
-          <div class="ls">5️⃣ Build in Android Studio when ready</div>
+          <div class="ls">5️⃣ Build in GitHub Actions or Android Studio</div>
         </div>
-        <button class="btn p" style="width:100%;margin-top:16px" onclick="downloadApk()">⬇ Download APK Bundle</button>
+        <button class="btn p" style="width:100%;margin-top:16px" onclick="downloadApk()">⬇ Download APK Build Project</button>
       </div>
 
       <!-- PATH 3: SELL IT -->
@@ -1054,7 +1054,7 @@ function buildCodeOutput(files){
   ov.innerHTML = `<strong>// your files</strong>${state.name} &mdash; ${state.machine.title} &middot; ${state.niche} &middot; ${state.language}<br>
     <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn t sm" onclick="downloadZip()">⬇ Download Netlify ZIP</button>
-      <button class="btn p sm" onclick="downloadApk()">⬇ APK/WebView bundle</button>
+      <button class="btn p sm" onclick="downloadApk()">⬇ APK build project</button>
       <button class="btn g sm" id="copyAllBtn" onclick="copyAll()">📋 Copy all files</button>
     </div>`;
   out.appendChild(ov);
@@ -1180,26 +1180,62 @@ async function downloadZip(){
 }
 
 async function downloadApk(){
-  // APK = a zip structured as a basic Android WebView project shell
+  // APK bundle = buildable Android WebView project shell + GitHub Actions APK builder.
   if(!window.JSZip){alert('JSZip not loaded');return;}
   const zip = new JSZip();
   const folderName = state.name.toLowerCase().replace(/\s+/g,'-');
   const pkg = 'com.sinstudio.' + folderName.replace(/-/g,'');
 
-  // Put all web files in the assets/www folder (Cordova/WebView convention)
-  const assets = zip.folder('assets/www');
+  zip.file('settings.gradle', `pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+rootProject.name = '${state.name.replace(/'/g,'')}'
+include ':app'
+`);
+
+  zip.file('build.gradle', `plugins {
+    id 'com.android.application' version '8.5.2' apply false
+}`);
+
+  zip.file('app/build.gradle', `plugins { id 'com.android.application' }
+
+android {
+  namespace '${pkg}'
+  compileSdk 35
+
+  defaultConfig {
+    applicationId '${pkg}'
+    minSdk 23
+    targetSdk 35
+    versionCode 1
+    versionName '1.0'
+  }
+}
+`);
+
+  // Put all web files in the Android assets folder. The APK must call a deployed backend URL.
+  const assets = zip.folder('app/src/main/assets/www');
   const origFiles = {};
   Object.entries(state.generatedFiles).forEach(([k,v])=>{
     if(k.includes('.')){origFiles[k]=v;}
   });
-  Object.entries(origFiles).forEach(([name,content])=> assets.file(name, content));
+  Object.entries(origFiles).forEach(([name,content])=>{
+    let out = content;
+    if(name === 'config.js'){
+      out = out.replace(/CHAT_ENDPOINT:\s*["'][^"']+["']/, 'CHAT_ENDPOINT: "https://YOUR-NETLIFY-SITE.netlify.app/.netlify/functions/chat"');
+    }
+    assets.file(name, out);
+  });
 
-  // Minimal AndroidManifest.xml
-  zip.file('AndroidManifest.xml', `<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="${pkg}" android:versionCode="1" android:versionName="1.0">
+  zip.file('app/src/main/AndroidManifest.xml', `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.INTERNET"/>
-  <application android:label="${state.name}" android:allowBackup="true">
+  <application android:label="${state.name}" android:theme="@style/AppTheme" android:allowBackup="true" android:usesCleartextTraffic="false">
     <activity android:name=".MainActivity" android:exported="true"
         android:configChanges="orientation|keyboardHidden|screenSize">
       <intent-filter>
@@ -1210,8 +1246,15 @@ async function downloadApk(){
   </application>
 </manifest>`);
 
-  // MainActivity.java (WebView wrapper)
-  const javaDir = zip.folder(`src/${pkg.replace(/\./g,'/')}`);
+  zip.file('app/src/main/res/values/styles.xml', `<resources>
+  <style name="AppTheme" parent="android:style/Theme.Material.NoActionBar">
+    <item name="android:windowLightStatusBar">false</item>
+    <item name="android:statusBarColor">#07071a</item>
+    <item name="android:navigationBarColor">#07071a</item>
+  </style>
+</resources>`);
+
+  const javaDir = zip.folder(`app/src/main/java/${pkg.replace(/\./g,'/')}`);
   javaDir.file('MainActivity.java',`package ${pkg};
 import android.app.Activity;
 import android.os.Bundle;
@@ -1223,6 +1266,7 @@ public class MainActivity extends Activity {
     webView = new WebView(this);
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDomStorageEnabled(true);
+    webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
     webView.loadUrl("file:///android_asset/www/index.html");
     setContentView(webView);
   }
@@ -1231,19 +1275,38 @@ public class MainActivity extends Activity {
   }
 }`);
 
-  // build.gradle stub
-  zip.file('build.gradle',`apply plugin: 'com.android.application'
-android {
-  compileSdkVersion 34
-  defaultConfig {
-    applicationId "${pkg}"
-    minSdkVersion 21
-    targetSdkVersion 34
-    versionCode 1
-    versionName "1.0"
-  }
-}
-dependencies { implementation 'androidx.appcompat:appcompat:1.6.1' }`);
+  zip.file('.github/workflows/build-apk.yml', `name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${folderName}-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+`);
 
   // README for the APK
   zip.file('HOW_TO_BUILD_APK.md',`# How to build the ${state.name} APK
@@ -1251,16 +1314,19 @@ dependencies { implementation 'androidx.appcompat:appcompat:1.6.1' }`);
 ## Option A — Android Studio (recommended)
 1. Open Android Studio → "Open an existing project" → select this folder
 2. Deploy the Netlify/backend ZIP first and get its HTTPS chat endpoint
-3. In assets/www/config.js, set CHAT_ENDPOINT to that deployed endpoint
-4. Build → Generate Signed APK → install on your Android device
+3. In app/src/main/assets/www/config.js, set CHAT_ENDPOINT to that deployed endpoint
+4. Build -> Build Bundle(s) / APK(s) -> Build APK(s) -> install on your Android device
 
-## Option B — Sideload as Web App (no build needed)
-1. Open assets/www/index.html directly in Chrome on Android
-2. Chrome menu → "Add to Home Screen" → acts like an app
+## Option B - GitHub builds the APK for you
+1. Create a new GitHub repo and upload this APK bundle
+2. Edit app/src/main/assets/www/config.js with your deployed Netlify chat endpoint
+3. Go to the repo's Actions tab
+4. Run the Build Android APK workflow
+5. Download the .apk from the workflow artifacts
 
-## Option C — Online APK Builder
-- Upload this ZIP to https://gonative.io or https://appery.io
-- They wrap the web app and generate a real APK for you
+## Backend reminder
+The APK does not store a Groq key. It calls your deployed backend endpoint, and that backend reads GROQ_API_KEY from environment variables.
+
 
 ## The bot inside
 - Name: ${state.name}
