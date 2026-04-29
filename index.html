@@ -246,16 +246,6 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
   </div>
 
   <div class="key-section" style="margin-top:14px">
-    <div class="key-section-title">// One-Time Free Tokens</div>
-    <div class="key-row-inline">
-      <input type="text" id="freeUnlockToken" placeholder="Create tokens to give out: FREE-001, FREE-002, FREE-003">
-      <button class="btn g sm" onclick="saveFreeUnlockToken()">Save</button>
-    </div>
-    <div class="key-status" id="freeTokenStatus"></div>
-    <p class="inote" style="margin-top:8px">Separate tokens with commas or spaces. Each saved token unlocks once on this machine. Use Google Sheets for one-time tokens across multiple devices.</p>
-  </div>
-
-  <div class="key-section" style="margin-top:14px">
     <div class="key-section-title">// Google Sheet License Web App</div>
     <div class="key-row-inline">
       <input type="text" id="appsScriptUrl" placeholder="Paste your Apps Script Web App URL here">
@@ -334,9 +324,9 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
   <div id="paywall" class="hidden">
     <div class="pw-box">
       <h3>🔒 Machine ready.</h3>
-      <p>Enter a license key or one-time free token to unlock<br>the full source code + zip download.<br><br><small style="color:#555;font-size:10px">Free tokens are consumed after use. Sheet keys work across devices.</small></p>
+      <p>Enter the one-time code you received after purchase to unlock<br>the full source code + zip download.<br><br><small style="color:#555;font-size:10px">Codes are checked through Sin Studio and can only be used once.</small></p>
       <div class="key-row">
-        <input type="text" id="licenseKey" placeholder="SINST-XXXX-XXXX or FREE-SIN-2026">
+        <input type="text" id="licenseKey" placeholder="SINST-XXXX-XXXX">
         <button class="btn p" id="unlockBtn" onclick="checkKey()">Unlock</button>
       </div>
       <p class="phint">No key? <a id="gumroadBuyLink" href="https://simmonstia.gumroad.com/l/ksxorp" target="_blank">Buy a one-time token on Gumroad</a></p>
@@ -553,7 +543,6 @@ let state = {
   groqKey: '',
   appsScriptUrl: localStorage.getItem('sin_apps_script_url') || 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec',
   gumroadUrl: localStorage.getItem('sin_gumroad_url') || 'https://simmonstia.gumroad.com/l/ksxorp',
-  freeUnlockToken: localStorage.getItem('sin_free_unlock_tokens') || '',
   generatedFiles: {},
   systemPrompt: '',
   demoHistory: [],
@@ -562,7 +551,6 @@ let state = {
 
 document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
 document.getElementById('gumroadUrl').value = state.gumroadUrl;
-document.getElementById('freeUnlockToken').value = state.freeUnlockToken;
 updateGumroadLink();
 
 // =====================
@@ -719,29 +707,6 @@ function saveGumroadUrl(){
   localStorage.setItem('sin_gumroad_url', url);
   updateGumroadLink();
   status.textContent = 'Gumroad token purchase link saved';
-  status.className = 'key-status ok';
-}
-
-function parseTokenList(raw){
-  return [...new Set((raw || '').toUpperCase().split(/[\s,]+/).map(t=>t.trim()).filter(Boolean))];
-}
-
-function saveFreeUnlockToken(){
-  const raw = document.getElementById('freeUnlockToken').value;
-  const tokens = parseTokenList(raw);
-  const status = document.getElementById('freeTokenStatus');
-  if(tokens.length===0){
-    localStorage.removeItem('sin_free_unlock_tokens');
-    localStorage.removeItem('sin_used_free_unlock_tokens');
-    state.freeUnlockToken = '';
-    status.textContent = 'One-time tokens cleared';
-    status.className = 'key-status';
-    return;
-  }
-  state.freeUnlockToken = tokens.join(', ');
-  localStorage.setItem('sin_free_unlock_tokens', state.freeUnlockToken);
-  document.getElementById('freeUnlockToken').value = state.freeUnlockToken;
-  status.textContent = `Saved ${tokens.length} one-time token${tokens.length===1?'':'s'}`;
   status.className = 'key-status ok';
 }
 
@@ -1136,28 +1101,9 @@ async function checkKey(){
     return;
   }
 
-  const availableTokens = parseTokenList(localStorage.getItem('sin_free_unlock_tokens') || state.freeUnlockToken || '');
-  const usedTokens = parseTokenList(localStorage.getItem('sin_used_free_unlock_tokens') || '');
-  if(availableTokens.includes(k)){
-    const remaining = availableTokens.filter(t=>t!==k);
-    usedTokens.push(k);
-    localStorage.setItem('sin_free_unlock_tokens', remaining.join(', '));
-    localStorage.setItem('sin_used_free_unlock_tokens', [...new Set(usedTokens)].join(', '));
-    state.freeUnlockToken = remaining.join(', ');
-    document.getElementById('freeUnlockToken').value = state.freeUnlockToken;
-    document.getElementById('paywall').classList.add('hidden');
-    showCodeFiles(state.generatedFiles);
-    return;
-  }
-  if(usedTokens.includes(k)){
-    document.getElementById('licenseKey').style.borderColor='#f87171';
-    box.querySelector('p').innerHTML = 'That free token was already used.<br><br><small style="color:#555;font-size:10px">Create another token or verify through your license sheet.</small>';
-    return;
-  }
-
   if(!url){
     document.getElementById('licenseKey').style.borderColor='#f87171';
-    box.querySelector('p').innerHTML = 'Token not found. Paste and save your Apps Script Web App URL to check paid/sheet keys.<br><br><small style="color:#555;font-size:10px">Local one-time free tokens must be saved above first.</small>';
+    box.querySelector('p').innerHTML = 'Token checker is not configured.<br><br><small style="color:#555;font-size:10px">Contact Sin Studio for access.</small>';
     return;
   }
   const unlockBtn = document.getElementById('unlockBtn');
