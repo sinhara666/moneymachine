@@ -105,7 +105,7 @@ svg#bpSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .bp-status{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:10px;min-height:20px}
 .bp-status em{color:var(--pl);font-style:normal}
 
-.live-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:16px;align-items:stretch;margin-bottom:24px}
+.live-panels{display:block;margin-bottom:24px}
 .demo-box{background:var(--surface);border:1px solid rgba(34,211,238,.25);border-radius:16px;padding:24px;height:100%}
 .demo-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .demo-title{font-size:12px;font-family:var(--mono);color:var(--cyan);letter-spacing:.1em}
@@ -828,6 +828,11 @@ Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
 
   // 2. Show demo chat IMMEDIATELY — user can play while code generates
   // 2. Show the AI generation log box while the machine builds
+  document.getElementById('livePanels').classList.remove('hidden');
+  document.getElementById('demoBox').classList.remove('hidden');
+  document.getElementById('demoMessages').innerHTML = '';
+  addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
+
   document.getElementById('aiChatBox').classList.remove('hidden');
   addChatLog('sys', `Wiring ${name} · ${niche} · ${featureList}`);
   addChatLog('sys', `Calling Groq llama-3.3-70b-versatile to generate your Netlify-ready app package...`);
@@ -993,9 +998,7 @@ function showCodeReveal(files){
   document.getElementById('livePanels').classList.remove('hidden');
   document.getElementById('demoBox').classList.remove('hidden');
   document.getElementById('paywall').classList.remove('hidden');
-  document.getElementById('demoMessages').innerHTML = '';
-  addDemoMsg('bot', `Hi! I'm ${state.name}, your ${state.niche} ${state.machine.title.toLowerCase()}. How can I help you today?`);
-  scroll('livePanels');
+  scroll('paywall');
 }
 
 function buildCodeOutput(files){
