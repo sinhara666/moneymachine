@@ -911,6 +911,7 @@ Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
 
   // 2. Show demo chat IMMEDIATELY — user can play while code generates
   document.getElementById('demoBox').classList.remove('hidden');
+  document.getElementById('paywall').classList.remove('hidden');
   addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
 
   // 3. Show the AI generation log box
@@ -1077,7 +1078,6 @@ function showCodeReveal(files){
   buildCodeOutput(files);
 
   document.getElementById('paywall').classList.remove('hidden');
-  scroll('paywall');
 }
 
 function buildCodeOutput(files){
@@ -1127,6 +1127,10 @@ async function checkKey(){
   const k = document.getElementById('licenseKey').value.trim().toUpperCase();
   const url = state.appsScriptUrl || localStorage.getItem('sin_apps_script_url') || 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec';
   const box = document.querySelector('.pw-box');
+  if(Object.keys(state.generatedFiles || {}).length===0){
+    box.querySelector('p').innerHTML = 'Your machine is still building. Demo it while the files finish, then enter your code here.<br><br><small style="color:#555;font-size:10px">Your token has not been used yet.</small>';
+    return;
+  }
   if(!k){
     document.getElementById('licenseKey').style.borderColor='#f87171';
     return;
