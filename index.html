@@ -551,7 +551,7 @@ let state = {
   name: '',
   language: 'English',
   groqKey: '',
-  appsScriptUrl: localStorage.getItem('sin_apps_script_url') || '',
+  appsScriptUrl: localStorage.getItem('sin_apps_script_url') || 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec',
   gumroadUrl: localStorage.getItem('sin_gumroad_url') || 'https://simmonstia.gumroad.com/l/ksxorp',
   freeUnlockToken: localStorage.getItem('sin_free_unlock_tokens') || '',
   generatedFiles: {},
@@ -676,7 +676,7 @@ function confirmFeatures(){
   }
   state.groqKey = key;
   state.language = document.getElementById('botLanguage').value;
-  state.appsScriptUrl = document.getElementById('appsScriptUrl').value.trim() || localStorage.getItem('sin_apps_script_url') || '';
+  state.appsScriptUrl = document.getElementById('appsScriptUrl').value.trim() || localStorage.getItem('sin_apps_script_url') || state.appsScriptUrl;
   if(state.features.length===0){
     // auto-select first 4
     state.features = (FEATURES[state.machine.id]||[]).slice(0,4);
@@ -1125,7 +1125,7 @@ function toggleCodeView(){
 // =====================
 async function checkKey(){
   const k = document.getElementById('licenseKey').value.trim().toUpperCase();
-  const url = state.appsScriptUrl || localStorage.getItem('sin_apps_script_url') || '';
+  const url = state.appsScriptUrl || localStorage.getItem('sin_apps_script_url') || 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec';
   const box = document.querySelector('.pw-box');
   if(!k){
     document.getElementById('licenseKey').style.borderColor='#f87171';
