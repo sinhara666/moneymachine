@@ -235,26 +235,6 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
     <p class="inote" style="margin-top:8px">Free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> · Llama 3 70B · unlimited generations</p>
   </div>
 
-  <div class="key-section" style="margin-top:14px">
-    <div class="key-section-title">// Gumroad One-Time Token Link</div>
-    <div class="key-row-inline">
-      <input type="url" id="gumroadUrl" placeholder="Paste your Gumroad product link for one-time token purchases">
-      <button class="btn g sm" onclick="saveGumroadUrl()">Save</button>
-    </div>
-    <div class="key-status" id="gumroadStatus"></div>
-    <p class="inote" style="margin-top:8px">Buyers use this link, then enter the one-time token you send from your Apps Script/Sheet list.</p>
-  </div>
-
-  <div class="key-section" style="margin-top:14px">
-    <div class="key-section-title">// Google Sheet License Web App</div>
-    <div class="key-row-inline">
-      <input type="text" id="appsScriptUrl" placeholder="Paste your Apps Script Web App URL here">
-      <button class="btn g sm" onclick="saveAppsScriptUrl()">Save</button>
-    </div>
-    <div class="key-status" id="appsScriptStatus"></div>
-    <p class="inote" style="margin-top:8px">Used to check license keys against your Google Sheet.</p>
-  </div>
-
   <div style="margin-bottom:18px">
     <div class="ilabel">Output language</div>
     <select id="botLanguage">
@@ -541,16 +521,14 @@ let state = {
   name: '',
   language: 'English',
   groqKey: '',
-  appsScriptUrl: localStorage.getItem('sin_apps_script_url') || 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec',
-  gumroadUrl: localStorage.getItem('sin_gumroad_url') || 'https://simmonstia.gumroad.com/l/ksxorp',
+  appsScriptUrl: 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec',
+  gumroadUrl: 'https://simmonstia.gumroad.com/l/ksxorp',
   generatedFiles: {},
   systemPrompt: '',
   demoHistory: [],
   demoCount: 0,
 };
 
-document.getElementById('appsScriptUrl').value = state.appsScriptUrl;
-document.getElementById('gumroadUrl').value = state.gumroadUrl;
 updateGumroadLink();
 
 // =====================
@@ -664,7 +642,6 @@ function confirmFeatures(){
   }
   state.groqKey = key;
   state.language = document.getElementById('botLanguage').value;
-  state.appsScriptUrl = document.getElementById('appsScriptUrl').value.trim() || localStorage.getItem('sin_apps_script_url') || state.appsScriptUrl;
   if(state.features.length===0){
     // auto-select first 4
     state.features = (FEATURES[state.machine.id]||[]).slice(0,4);
@@ -673,41 +650,12 @@ function confirmFeatures(){
   scroll('phase3');
 }
 
-function saveAppsScriptUrl(){
-  const url = document.getElementById('appsScriptUrl').value.trim();
-  const status = document.getElementById('appsScriptStatus');
-  if(!url || !/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/i.test(url)){
-    status.textContent = 'Paste the Apps Script Web App URL that ends with /exec';
-    status.className = 'key-status err';
-    return;
-  }
-  localStorage.setItem('sin_apps_script_url', url);
-  state.appsScriptUrl = url;
-  status.textContent = '✓ Apps Script URL saved';
-  status.className = 'key-status ok';
-}
-
 function updateGumroadLink(){
   const url = state.gumroadUrl || 'https://simmonstia.gumroad.com/l/ksxorp';
   ['gumroadBuyLink','gumroadSellLink'].forEach(id=>{
     const a = document.getElementById(id);
     if(a) a.href = url;
   });
-}
-
-function saveGumroadUrl(){
-  const url = document.getElementById('gumroadUrl').value.trim();
-  const status = document.getElementById('gumroadStatus');
-  if(!url || !/^https:\/\/([a-z0-9-]+\.)?gumroad\.com\/.+/i.test(url)){
-    status.textContent = 'Paste your Gumroad product link';
-    status.className = 'key-status err';
-    return;
-  }
-  state.gumroadUrl = url;
-  localStorage.setItem('sin_gumroad_url', url);
-  updateGumroadLink();
-  status.textContent = 'Gumroad token purchase link saved';
-  status.className = 'key-status ok';
 }
 
 async function testGroqKey(){
@@ -1090,7 +1038,7 @@ function toggleCodeView(){
 // =====================
 async function checkKey(){
   const k = document.getElementById('licenseKey').value.trim().toUpperCase();
-  const url = state.appsScriptUrl || localStorage.getItem('sin_apps_script_url') || 'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec';
+  const url = state.appsScriptUrl;
   const box = document.querySelector('.pw-box');
   if(Object.keys(state.generatedFiles || {}).length===0){
     box.querySelector('p').innerHTML = 'Your machine is still building. Demo it while the files finish, then enter your code here.<br><br><small style="color:#555;font-size:10px">Your token has not been used yet.</small>';
