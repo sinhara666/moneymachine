@@ -957,7 +957,7 @@ function parseAndShowCode(raw){
 
   // If still nothing, use fallback
   if(Object.keys(files).length===0){
-    showGenerationError('AI returned code, but it did not include the required 4-file format.');
+    showGenerationError('AI returned code, but it did not include the required app file format.');
     return;
   }
 
@@ -1332,20 +1332,30 @@ async function sendDemo(){
 // GROQ API CALL
 // =====================
 async function callGroq(messages, model, apiKey, maxTokens=500){
-  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'Authorization':`Bearer ${apiKey}`
-    },
-    body: JSON.stringify({model, messages, max_tokens:maxTokens, temperature:0.7})
-  });
-  if(!resp.ok){
-    const err=await resp.json().catch(()=>({}));
-    throw new Error(err.error?.message||`HTTP ${resp.status}`);
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), maxTokens > 1000 ? 90000 : 30000);
+  try{
+    const resp = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${apiKey}`
+      },
+      signal: controller.signal,
+      body: JSON.stringify({model, messages, max_tokens:maxTokens, temperature:0.7})
+    });
+    if(!resp.ok){
+      const err=await resp.json().catch(()=>({}));
+      throw new Error(err.error?.message||`HTTP ${resp.status}`);
+    }
+    const data=await resp.json();
+    return data.choices?.[0]?.message?.content||'';
+  }catch(e){
+    if(e.name === 'AbortError') throw new Error('Groq took too long to answer. Try again with fewer features or a different key.');
+    throw e;
+  }finally{
+    clearTimeout(timeout);
   }
-  const data=await resp.json();
-  return data.choices?.[0]?.message?.content||'';
 }
 
 // =====================
