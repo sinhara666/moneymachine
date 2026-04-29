@@ -1063,27 +1063,32 @@ async function checkKey(){
   unlockBtn.disabled = true;
   unlockBtn.textContent = 'Checking...';
   try{
-    const qs = new URLSearchParams({
-      action: 'verifyLicense',
-      key: k,
-      code: k,
-      token: k,
-      license: k,
-      licenseKey: k,
-      machine: state.name || '',
-      type: state.machine ? state.machine.title : '',
-      niche: state.niche || ''
-    });
-    const resp = await fetch(`${url}?${qs.toString()}`);
-    const data = await resp.json();
-    const validText = String(data?.valid ?? data?.ok ?? data?.status ?? '').toLowerCase();
-    const ok = data && (data.valid === true || data.ok === true || validText === 'true' || validText === 'valid' || validText === 'success' || validText === 'ok');
-    if(ok){
-      document.getElementById('paywall').classList.add('hidden');
-      showCodeFiles(state.generatedFiles);
-    } else {
-      throw new Error((data && (data.message || data.reason || data.error)) ? (data.message || data.reason || data.error) : 'License not found or already used');
+    const actions = ['verifyLicense','verify','check','validate','redeem',''];
+    let lastData = null;
+    for(const action of actions){
+      const qs = new URLSearchParams({
+        key: k,
+        code: k,
+        token: k,
+        license: k,
+        licenseKey: k,
+        machine: state.name || '',
+        type: state.machine ? state.machine.title : '',
+        niche: state.niche || ''
+      });
+      if(action) qs.set('action', action);
+      const resp = await fetch(`${url}?${qs.toString()}`);
+      const data = await resp.json();
+      lastData = data;
+      const validText = String(data?.valid ?? data?.ok ?? data?.status ?? data?.result ?? '').toLowerCase();
+      const ok = data && (data.valid === true || data.ok === true || validText === 'true' || validText === 'valid' || validText === 'success' || validText === 'ok' || validText === 'approved');
+      if(ok){
+        document.getElementById('paywall').classList.add('hidden');
+        showCodeFiles(state.generatedFiles);
+        return;
+      }
     }
+    throw new Error((lastData && (lastData.message || lastData.reason || lastData.error)) ? (lastData.message || lastData.reason || lastData.error) : 'License not found or already used');
   }catch(err){
     box.classList.add('shake');
     setTimeout(()=>box.classList.remove('shake'),400);
@@ -1677,7 +1682,7 @@ function makeRandomMachineName(machine, niche){
 }
 
 function resetAll(){
-  state={machine:null,niche:null,features:[],name:'',language:'English',groqKey:'',generatedFiles:{},systemPrompt:'',demoHistory:[],demoCount:0};
+  state={machine:null,niche:null,features:[],name:'',language:'English',groqKey:'',appsScriptUrl:'https://script.google.com/macros/s/AKfycbxJHYJH3Bm4_dkJPa-LfMxOwg1ypLE3NTXEjNJLOz1w1i9pL11MR3oOJ0w5RNv2W6ox0w/exec',gumroadUrl:'https://simmonstia.gumroad.com/l/ksxorp',generatedFiles:{},systemPrompt:'',demoHistory:[],demoCount:0};
   ['phase2','d2','phaseFeatures','dFeatures','phase3','d3','phase4'].forEach(hide);
   ['livePanels','paywall','codeReveal','demoBox','aiChatBox'].forEach(hide);
   document.querySelectorAll('.mc,.np').forEach(el=>el.classList.remove('sel'));
