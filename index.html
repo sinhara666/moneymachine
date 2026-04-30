@@ -51,6 +51,10 @@ h1 em span{color:var(--cyan)}
 .divider{height:1px;background:var(--border)}
 
 .mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.machine-section{margin-bottom:26px}
+.machine-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 10px}
+.machine-section-title{font-size:12px;font-family:var(--mono);color:var(--cyan);letter-spacing:.15em;text-transform:uppercase}
+.machine-section-note{font-size:11px;font-family:var(--mono);color:var(--muted);text-align:right}
 .mc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 16px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
 .mc::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0,rgba(139,92,246,.1),transparent 65%);opacity:0;transition:opacity .22s}
 .mc:hover{border-color:rgba(139,92,246,.45);transform:translateY(-3px)}
@@ -199,7 +203,7 @@ pre{background:var(--surface);border:1px solid var(--border);border-radius:0 0 1
 <div class="wrap"><div class="sec" id="phase1">
   <div class="sec-eye">Step 01</div>
   <div class="sec-head">What kind of machine?</div>
-  <div class="mgrid" id="machineGrid"></div>
+  <div id="machineGrid"></div>
 </div></div>
 
 <div class="divider"></div>
@@ -443,6 +447,30 @@ const MACHINES = [
   {id:'event',       icon:'🎪', title:'Event Planner',      sub:'logistics + scheduling',      badge:'bk', badgeText:'No-code'},
   {id:'dropship',    icon:'📦', title:'Dropship Helper',    sub:'product research + suppliers',badge:'ai', badgeText:'AI'},
   {id:'studybuddy',  icon:'🎓', title:'Study Buddy',        sub:'exams, summaries, Q&A',       badge:'ai', badgeText:'AI'},
+  {id:'businessowner',icon:'🏢', title:'Business Owner AI',   sub:'ops, growth, decisions',      badge:'ai', badgeText:'AI'},
+  {id:'tiktokstudio',icon:'🎬', title:'TikTok Studio',        sub:'viral scripts + hooks',       badge:'ai', badgeText:'AI'},
+  {id:'promoter',    icon:'📣', title:'Promoter Bot',         sub:'events, offers, launches',    badge:'ai', badgeText:'AI'},
+  {id:'listing',     icon:'🏷️', title:'Listing Machine',     sub:'sales listings + copy',       badge:'bk', badgeText:'No-code'},
+  {id:'trucker',     icon:'🚚', title:'Trucker Assistant',    sub:'loads, routes, dispatch',     badge:'ai', badgeText:'AI'},
+  {id:'receptionist',icon:'☎️', title:'Receptionist Bot',     sub:'calls, booking, intake',      badge:'bk', badgeText:'No-code'},
+  {id:'wellnesstool',icon:'🌿', title:'Wellness Tool',        sub:'self-care + routines',        badge:'ai', badgeText:'AI'},
+  {id:'womenshealth',icon:'🩷', title:"Women's Health",       sub:'cycles, wellness, support',   badge:'ai', badgeText:'AI'},
+  {id:'momlife',     icon:'👩‍👧', title:'Mom Life Bot',       sub:'family planning + support',   badge:'ai', badgeText:'AI'},
+  {id:'petcare',     icon:'🐾', title:'Pet Care Bot',         sub:'pet health + routines',       badge:'ai', badgeText:'AI'},
+  {id:'curriculum',  icon:'🧾', title:'Curriculum Builder',   sub:'lesson plans + units',        badge:'ai', badgeText:'AI'},
+  {id:'adhdcoach',   icon:'🧩', title:'ADHD Coach',           sub:'focus, routines, planning',   badge:'ai', badgeText:'AI'},
+  {id:'adhdtutor',   icon:'📝', title:'ADHD Tutor',           sub:'learning support',            badge:'ai', badgeText:'AI'},
+  {id:'nanny',       icon:'🍼', title:'Nanny Checklist',      sub:'care routines + notes',       badge:'bk', badgeText:'No-code'},
+  {id:'youngadults', icon:'🧭', title:'Young Adults',         sub:'life skills + choices',       badge:'ai', badgeText:'AI'},
+  {id:'attorney',    icon:'📑', title:'Attorney Bot',         sub:'legal intake + documents',    badge:'ai', badgeText:'AI'},
+  {id:'autosing',    icon:'🎵', title:'AutoSing',             sub:'songs, hooks, lyrics',        badge:'ai', badgeText:'AI'},
+  {id:'bookmachine', icon:'📖', title:'Book Machine',         sub:'outlines + chapters',         badge:'ai', badgeText:'AI'},
+  {id:'soccercoach', icon:'⚽', title:'Soccer Coach',          sub:'training + tactics',          badge:'ai', badgeText:'AI'},
+  {id:'dadlife',     icon:'👨‍👧', title:'Dad Life Bot',       sub:'family, planning, advice',    badge:'ai', badgeText:'AI'},
+  {id:'leadmagnet',  icon:'🧲', title:'Lead Magnet',          sub:'freebies + funnels',          badge:'bk', badgeText:'No-code'},
+  {id:'contentmachine',icon:'🏭', title:'Content Machine',    sub:'bulk content systems',        badge:'ai', badgeText:'AI'},
+  {id:'prediction',  icon:'🔮', title:'Prediction Market',    sub:'forecasts + scenarios',       badge:'ai', badgeText:'AI'},
+  {id:'support',     icon:'🎧', title:'Support Bot',          sub:'customer support desk',       badge:'bk', badgeText:'No-code'},
   {id:'custom',      icon:'⚡', title:'Custom Machine',     sub:'describe your idea',          badge:'ai', badgeText:'Custom', isCustom:true},
 ];
 
@@ -471,6 +499,30 @@ const NICHES = {
   event:      ['Weddings','Corporate','Birthdays','Concerts','Conferences','Galas','Virtual Events','Sports'],
   dropship:   ['Fashion','Gadgets','Home Decor','Pet Niche','Beauty','Fitness Gear','Kids Products','Garden'],
   studybuddy: ['High School','University','Med School','Law School','Coding Bootcamp','Language Exams','CPA','Bar Exam'],
+  businessowner:['Restaurants','Salons','Gyms','Agencies','Retail','Trades','Healthcare','Online Business'],
+  tiktokstudio:['Beauty','Fitness','Food','Music','Local Business','Coaching','Fashion','Comedy'],
+  promoter:   ['Events','Music','Real Estate','Courses','Products','Fundraisers','Nightlife','Local Services'],
+  listing:    ['Facebook Marketplace','Airbnb','Etsy','Cars','Real Estate','Products','Services','Classifieds'],
+  trucker:    ['Owner-operators','Dispatch','Route Planning','Compliance','Fuel Savings','Load Boards','Maintenance','Hiring'],
+  receptionist:['Med Spa','Dental','Salon','Clinic','Law Firm','Real Estate','Home Services','Restaurant'],
+  wellnesstool:['Self-care','Meditation','Sleep','Stress','Nutrition','Journaling','Routines','Mindfulness'],
+  womenshealth:['Cycle Tracking','Hormones','Fitness','Nutrition','Pregnancy','Postpartum','Menopause','Self-care'],
+  momlife:    ['Meal Planning','School','Toddlers','Teens','Budgeting','Schedules','Self-care','Home Routines'],
+  petcare:    ['Dogs','Cats','Birds','Grooming','Training','Nutrition','Vet Prep','Pet Sitting'],
+  curriculum: ['Homeschool','Elementary','Middle School','High School','ESL','STEM','History','Arts'],
+  adhdcoach:  ['Adults','Students','Parents','Work Focus','Home Routines','Time Blocking','Emotional Regulation','Planning'],
+  adhdtutor:  ['Math','Reading','Writing','Science','Homework','Test Prep','Executive Function','Study Skills'],
+  nanny:      ['Infants','Toddlers','After-school','Meal Notes','Safety','Schedules','Activities','Parent Updates'],
+  youngadults:['Career','Money','School','Relationships','Apartment Life','Mental Health','Time Management','Fitness'],
+  attorney:   ['Client Intake','Personal Injury','Family Law','Criminal','Estate Planning','Business','Immigration','Employment'],
+  autosing:   ['Pop','R&B','Rap','Country','Gospel','Afrobeats','Jingles','Kids Songs'],
+  bookmachine:['Fiction','Memoir','Self-help','Business','Children','Romance','Fantasy','Non-fiction'],
+  soccercoach:['Youth','High School','Strikers','Goalkeepers','Defenders','Fitness','Tactics','Parent Coach'],
+  dadlife:    ['New Dad','Teens','Co-parenting','Budgeting','Activities','Discipline','Fitness','Home Projects'],
+  leadmagnet: ['Coaches','Realtors','Local Services','Creators','Agencies','E-commerce','Consultants','Courses'],
+  contentmachine:['YouTube','TikTok','Instagram','Blogs','Newsletters','Podcasts','LinkedIn','Ads'],
+  prediction: ['Sports','Crypto','Business','Politics','Markets','Trends','Weather','Entertainment'],
+  support:    ['SaaS','E-commerce','Local Services','Healthcare','Education','Memberships','Software','Retail'],
   custom:     [],
 };
 
@@ -499,6 +551,30 @@ const FEATURES = {
   event:      ['Venue checklist','Timeline builder','Guest list manager','Budget tracker','Vendor Q&A','RSVP flow','Day-of schedule','Post-event survey'],
   dropship:   ['Product research assistant','Supplier finder tips','Profit margin calculator','Ad copy writer','Product description generator','Trend spotter','Competition analyzer','Store name generator'],
   studybuddy: ['Concept explainer','Practice test generator','Flashcard builder','Study schedule planner','Essay feedback','Citation helper','Memory tricks','Exam countdown tracker'],
+  businessowner:['Daily operations checklist','Revenue ideas','Customer retention plan','Staff task helper','Local marketing prompts','Expense review','Offer builder','Decision advisor'],
+  tiktokstudio:['Viral hook generator','Script builder','Trend remix ideas','Caption writer','Hashtag set','Shot list','Posting calendar','Comment reply helper'],
+  promoter:   ['Launch plan','Promo copy writer','Audience targeting','Countdown sequence','Flyer text','DM script','Influencer outreach','Follow-up messages'],
+  listing:    ['Title optimizer','Description writer','Price positioning','Photo checklist','Buyer FAQ','Urgency copy','Cross-posting helper','Offer response scripts'],
+  trucker:    ['Route checklist','Load note helper','Fuel estimate prompts','Compliance reminders','Maintenance log','Dispatcher messages','Rate negotiation script','Trip summary'],
+  receptionist:['Appointment intake','FAQ answers','Lead qualification','Callback notes','Booking script','Policy explainer','After-hours replies','Escalation rules'],
+  wellnesstool:['Daily routine builder','Mood check-in','Sleep prompts','Breathing exercise','Journal prompts','Habit tracker','Self-care plan','Progress reflection'],
+  womenshealth:['Cycle notes','Symptom tracker prompts','Wellness reminders','Nutrition suggestions','Workout adaptations','Question prep for doctor','Mood journal','Resource library'],
+  momlife:    ['Family schedule builder','Meal plan helper','School reminder prompts','Chore planner','Budget tips','Activity ideas','Self-care nudges','Emergency checklist'],
+  petcare:    ['Feeding schedule','Training prompts','Grooming reminders','Vet visit prep','Symptom notes','Pet sitter instructions','Exercise plan','Shopping checklist'],
+  curriculum: ['Lesson plan builder','Unit outline','Quiz generator','Rubric maker','Activity ideas','Reading list','Standards notes','Parent summary'],
+  adhdcoach:  ['Focus timer prompts','Task breakdown','Routine builder','Distraction plan','Reward system','Planning check-in','Emotional regulation prompts','Accountability messages'],
+  adhdtutor:  ['Step-by-step explainer','Short quizzes','Memory tricks','Homework helper','Study breaks','Progress praise','Visual outline prompts','Review schedule'],
+  nanny:      ['Daily care checklist','Meal notes','Nap tracker prompts','Activity plan','Safety reminders','Parent update summary','Supply list','Incident note helper'],
+  youngadults:['Budget helper','Career checklist','Apartment checklist','Relationship scripts','Study plan','Goal setting','Decision guide','Life admin reminders'],
+  attorney:   ['Client intake flow','Document checklist','FAQ responder','Case summary draft','Deadline reminders','Plain-English explainer','Consult prep','Referral prompts'],
+  autosing:   ['Song idea generator','Hook writer','Verse builder','Rhyme helper','Style selector','Jingle mode','Melody notes','Performance tips'],
+  bookmachine:['Outline builder','Chapter planner','Character profile','Scene prompts','Research notes','Back-cover copy','Editing checklist','Publishing plan'],
+  soccercoach:['Practice plan','Drill generator','Position tips','Game recap','Fitness plan','Parent update','Tactics explainer','Player goals'],
+  dadlife:    ['Weekend plan','Budget helper','Conversation scripts','Chore plan','Fitness nudge','School support','Project checklist','Family routine'],
+  leadmagnet: ['Freebie idea generator','Landing page copy','Email capture script','Follow-up sequence','Audience pain points','Offer bridge','CTA writer','Delivery checklist'],
+  contentmachine:['Batch idea generator','Repurpose plan','Hook bank','Calendar builder','Caption writer','SEO outline','CTA variants','Analytics review'],
+  prediction: ['Scenario builder','Probability notes','Trend tracker','Risk factors','News summary','Outcome comparison','Confidence scoring','Watchlist'],
+  support:    ['FAQ responder','Ticket triage','Refund policy explainer','Troubleshooting flow','Escalation rules','Tone adapter','Macro generator','Satisfaction follow-up'],
   custom:     ['AI conversation','Custom persona','Data storage','API integrations','Analytics','Multi-step flows','Notifications','Export / reporting'],
 };
 
@@ -539,18 +615,44 @@ updateGumroadLink();
 // =====================
 // STEP 1 — MACHINE GRID
 // =====================
+const MACHINE_SECTIONS = [
+  {title:'Customer Service', note:'support, reception, sales help', ids:['support','receptionist','chatbot','ecomm','realestate','listing']},
+  {title:'Adult Life', note:'family, wellness, life skills', ids:['youngadults','momlife','dadlife','nanny','petcare','travel']},
+  {title:'Business & Sales', note:'money, teams, growth', ids:['businessowner','closer','coach','finance','hr','recruiter','analyzer','leadmagnet']},
+  {title:'Content & Social', note:'posts, funnels, audience', ids:['creator','contentmachine','social','tiktokstudio','newsletter','seo','promoter','podcast']},
+  {title:'Health & Wellness', note:'fitness, care, routines', ids:['therapist','wellnesstool','womenshealth','fitness','chef']},
+  {title:'Education & Kids', note:'learning, curriculum, focus', ids:['tutor','studybuddy','curriculum','adhdcoach','adhdtutor']},
+  {title:'Legal & Professional', note:'documents, intake, language', ids:['lawyer','attorney','translator']},
+  {title:'Creative & Media', note:'music, books, sports', ids:['autosing','bookmachine','soccercoach','event']},
+  {title:'Growth & Automation', note:'markets, products, custom tools', ids:['prediction','dropship','trucker','custom']},
+];
+
 (()=>{
   const g = document.getElementById('machineGrid');
-  MACHINES.forEach(m=>{
+  const byId = Object.fromEntries(MACHINES.map(m=>[m.id,m]));
+  MACHINE_SECTIONS.forEach(section=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'machine-section';
+    wrap.innerHTML = `
+      <div class="machine-section-head">
+        <div class="machine-section-title">${section.title}</div>
+        <div class="machine-section-note">${section.note}</div>
+      </div>
+      <div class="mgrid"></div>`;
+    const grid = wrap.querySelector('.mgrid');
+    section.ids.map(id=>byId[id]).filter(Boolean).forEach(m=>{
     const d = document.createElement('div');
     d.className = 'mc' + (m.isCustom?' custom-c':'');
+    d.dataset.machineId = m.id;
     d.innerHTML = `
       <div class="mc-badge ${m.badge}">${m.badgeText}</div>
       <div class="mc-ico">${m.icon}</div>
       <div class="mc-title">${m.title}</div>
       <div class="mc-sub">${m.sub}</div>`;
     d.onclick = ()=> selectMachine(m, d);
-    g.appendChild(d);
+    grid.appendChild(d);
+    });
+    g.appendChild(wrap);
   });
 })();
 
@@ -1661,8 +1763,7 @@ function randomMachine(){
   const features = (FEATURES[r.id] || []).slice(0,4);
   const name = makeRandomMachineName(r, niche);
 
-  const machineIndex = MACHINES.findIndex(m=>m.id===r.id);
-  const card = document.querySelectorAll('.mc')[machineIndex];
+  const card = document.querySelector(`.mc[data-machine-id="${r.id}"]`);
   selectMachine(r, card);
   state.niche = niche;
   buildFeatureGrid();
@@ -1686,7 +1787,13 @@ function makeRandomMachineName(machine, niche){
     lawyer: 'Legal', chef: 'Chef', fitness: 'Fit', realestate: 'Home',
     finance: 'Money', ecomm: 'Shop', hr: 'HR', travel: 'Trip',
     social: 'Social', podcast: 'Cast', seo: 'Rank', translator: 'Translate',
-    event: 'Event', dropship: 'Drop', studybuddy: 'Study'
+    event: 'Event', dropship: 'Drop', studybuddy: 'Study',
+    businessowner: 'Boss', tiktokstudio: 'Tok', promoter: 'Promo', listing: 'List',
+    trucker: 'Route', receptionist: 'Desk', wellnesstool: 'Well', womenshealth: 'Care',
+    momlife: 'Mom', petcare: 'Pet', curriculum: 'Class', adhdcoach: 'Focus',
+    adhdtutor: 'Learn', nanny: 'Care', youngadults: 'Life', attorney: 'Law',
+    autosing: 'Song', bookmachine: 'Book', soccercoach: 'Soccer', dadlife: 'Dad',
+    leadmagnet: 'Lead', contentmachine: 'Content', prediction: 'Predict', support: 'Support'
   };
   const prefixes = ['Nova','Spark','Prime','Quick','Bright','Launch','Smart','Pro'];
   return `${prefixes[Math.floor(Math.random()*prefixes.length)]}${cleanNiche}${endings[machine.id] || 'AI'}`;
