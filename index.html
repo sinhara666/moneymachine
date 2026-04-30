@@ -830,6 +830,7 @@ Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
   // 2. Show the AI generation log box while the machine builds
   document.getElementById('livePanels').classList.remove('hidden');
   document.getElementById('demoBox').classList.remove('hidden');
+  document.getElementById('paywall').classList.remove('hidden');
   document.getElementById('demoMessages').innerHTML = '';
   addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
 
