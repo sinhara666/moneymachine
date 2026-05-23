@@ -956,6 +956,7 @@ Keep replies concise (2-4 sentences). Always stay in character as ${name}.`;
   document.getElementById('demoMessages').innerHTML = '';
   addDemoMsg('bot', `Hi! I'm ${name}, your ${niche} ${machineType.toLowerCase()}. How can I help you today?`);
 
+  const chatBox=
   document.getElementById('aiChatBox').classList.remove('hidden');
   addChatLog('sys', `Wiring ${name} · ${niche} · ${featureList}`);
   addChatLog('sys', `Calling Groq llama-3.3-70b-versatile to generate your Netlify-ready app package...`);
